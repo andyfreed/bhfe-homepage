@@ -17,9 +17,11 @@
 
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
-/** Superscript ® in display text (mirrors the theme's bhfe_sup_reg convention). */
+/** Escape hero text. NOTE: the theme hooks the `esc_html` filter (bhfe_allow_sup) to
+ *  superscript ® site-wide, so esc_html() both escapes AND superscripts — we must NOT
+ *  convert ® again here or it double-wraps (<sup><sup>…</sup></sup>). */
 function bhfe_hp_sup( $text ) {
-    return str_replace( '®', '<sup><small>&reg;</small></sup>', esc_html( $text ) );
+    return esc_html( $text );
 }
 
 /** Ethics catalog URL for a credit_type slug (portable; verified). */
