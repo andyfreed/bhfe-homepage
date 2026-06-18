@@ -1,0 +1,221 @@
+/* ============================================================
+   BHFE homepage — below-hero redesign · VARIATION A
+   Credential finder (expand-in-place, row-aware drawer)
+   · multi-license finder · promo · benefits · browse
+   ------------------------------------------------------------
+   • Every selector namespaced .bhfe-*  (homepage.css is site-wide)
+   • Mobile-first; breakpoints scale up
+   • No inline styles anywhere — all visual state lives here
+   • AA contrast + visible focus rings (see :focus-visible block)
+   PASTE/REPLACE: drop this block over the existing below-hero
+   rules in wp-content/themes/bhfe/min/css/homepage.css
+   ============================================================ */
+
+:root{
+  --bhfe-navy:#00213a;
+  --bhfe-navy-2:#012f50;
+  --bhfe-amber:#ffb300;
+  --bhfe-amber-ink:#7d5700;      /* amber-toned TEXT — AA on white (>5:1) */
+  --bhfe-ink:#191102;
+  --bhfe-gray:#f7f7f7;
+  --bhfe-muted:#55606b;
+  --bhfe-tag:#586471;
+  --bhfe-line:#e2e6ea;
+}
+
+/* ---------- shared band shell ---------- */
+.bhfe-band{max-width:1180px;margin:0 auto;padding:0 20px;font-family:Georgia,"Times New Roman",serif;color:var(--bhfe-ink)}
+.bhfe-band + .bhfe-band{margin-top:32px}
+.bhfe-card{background:#fff;border-radius:20px;box-shadow:0 24px 60px -28px rgba(0,33,58,.35);padding:40px 24px}
+@media (min-width:760px){.bhfe-card{padding:56px}}
+@media (min-width:1000px){.bhfe-finder.bhfe-card{padding:64px 56px}}
+.bhfe-sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+/* ============================================================
+   1 · CREDENTIAL FINDER  (expand-in-place, row-aware drawer)
+   ============================================================ */
+.bhfe-finder__head{text-align:center;max-width:660px;margin:0 auto 32px}
+.bhfe-finder__kicker{font-family:"Patua One",Georgia,serif;color:var(--bhfe-amber-ink);letter-spacing:2px;font-size:13px;text-transform:uppercase;margin:0}
+.bhfe-finder__title{font-family:"Patua One",Georgia,serif;color:var(--bhfe-navy);font-size:30px;line-height:1.12;margin:8px 0 10px;text-wrap:balance}
+.bhfe-finder__sub{color:var(--bhfe-muted);font-size:18px;line-height:1.5;margin:0;text-wrap:pretty}
+@media (min-width:1000px){.bhfe-finder__title{font-size:40px}}
+
+.bhfe-finder__stack{display:flex;flex-direction:column;gap:18px}
+.bhfe-credrow{display:grid;grid-template-columns:1fr;gap:18px;align-items:start}
+@media (min-width:680px){.bhfe-credrow{grid-template-columns:1fr 1fr}}
+@media (min-width:900px){.bhfe-credrow{grid-template-columns:repeat(3,1fr)}}
+
+/* tile (collapsed + direct) */
+.bhfe-cred{display:flex;align-items:center;justify-content:space-between;gap:14px;width:100%;min-height:96px;padding:22px;text-align:left;background:#fff;border:1.5px solid var(--bhfe-line);border-radius:16px;cursor:pointer;font:inherit;text-decoration:none;transition:box-shadow .2s,border-color .2s,background .2s}
+.bhfe-cred:hover{box-shadow:0 18px 40px -22px rgba(0,33,58,.45);border-color:var(--bhfe-navy)}
+.bhfe-cred__name{display:block;font-family:"Patua One",Georgia,serif;color:var(--bhfe-navy);font-size:21px;line-height:1.15}
+.bhfe-cred__name sup{font-size:.62em}
+.bhfe-cred__tag{display:block;font-family:Georgia,serif;color:var(--bhfe-tag);font-size:13.5px;margin-top:3px}
+.bhfe-cred__mark{flex:none;width:34px;height:34px;border-radius:50%;background:#fff4d6;color:var(--bhfe-navy);font-family:"Patua One",serif;font-size:22px;line-height:32px;text-align:center}
+.bhfe-cred__mark--go{background:var(--bhfe-navy);color:var(--bhfe-amber);font-size:18px;line-height:34px}
+/* active (open) tile — navy fill, matches drawer */
+.bhfe-cred[aria-expanded="true"]{background:var(--bhfe-navy);border-color:var(--bhfe-navy);box-shadow:0 16px 34px -20px rgba(0,33,58,.8)}
+.bhfe-cred[aria-expanded="true"] .bhfe-cred__name{color:#fff}
+.bhfe-cred[aria-expanded="true"] .bhfe-cred__tag{color:#9fb3c4}
+.bhfe-cred[aria-expanded="true"] .bhfe-cred__mark{background:var(--bhfe-amber);color:var(--bhfe-navy)}
+.bhfe-cred__mark--minus{display:none}
+.bhfe-cred[aria-expanded="true"] .bhfe-cred__mark--plus{display:none}
+.bhfe-cred[aria-expanded="true"] .bhfe-cred__mark--minus{display:block}
+
+/* drawer */
+.bhfe-drawer{position:relative;background:linear-gradient(150deg,var(--bhfe-navy),var(--bhfe-navy-2));border-radius:16px;padding:28px 24px;color:#fff}
+@media (min-width:760px){.bhfe-drawer{padding:28px 30px}}
+.bhfe-drawer[hidden]{display:none}
+.bhfe-drawer__pointer{display:none}
+@media (min-width:900px){
+  .bhfe-drawer__pointer{display:block;position:absolute;top:-8px;width:16px;height:16px;background:var(--bhfe-navy);border-radius:3px;transform:translateX(-50%) rotate(45deg)}
+  .bhfe-drawer[data-col="0"] .bhfe-drawer__pointer{left:15.8%}
+  .bhfe-drawer[data-col="1"] .bhfe-drawer__pointer{left:47.8%}
+  .bhfe-drawer[data-col="2"] .bhfe-drawer__pointer{left:84.2%}
+}
+.bhfe-drawer__head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+.bhfe-drawer__kicker{font-family:"Patua One",Georgia,serif;color:var(--bhfe-amber);letter-spacing:1.5px;font-size:12px;text-transform:uppercase}
+.bhfe-drawer__name{font-family:"Patua One",Georgia,serif;font-size:26px;line-height:1.1;margin-top:4px}
+.bhfe-drawer__name sup{font-size:.6em}
+.bhfe-drawer__tag{font-family:Georgia,serif;color:#9fb3c4;font-size:14.5px}
+.bhfe-drawer__opts{display:grid;grid-template-columns:1fr;gap:14px;align-items:start}
+@media (min-width:620px){.bhfe-drawer__opts{grid-template-columns:1fr 1fr}}
+
+/* option tile inside drawer */
+.bhfe-opt{display:flex;flex-direction:column;justify-content:space-between;gap:20px;min-height:158px;background:#fff;border-radius:12px;padding:22px;text-decoration:none;color:var(--bhfe-navy);transition:transform .18s,box-shadow .18s}
+.bhfe-opt:hover{transform:translateY(-3px);box-shadow:0 16px 34px -16px rgba(0,0,0,.5)}
+.bhfe-opt__kicker{align-self:flex-start;font-family:"Patua One",serif;font-size:11px;letter-spacing:1.2px;color:var(--bhfe-amber-ink);background:#fff4d6;padding:4px 9px;border-radius:5px}
+.bhfe-opt__label{display:block;font-family:"Patua One",Georgia,serif;font-size:20px;line-height:1.15}
+.bhfe-opt__desc{display:block;color:var(--bhfe-muted);font-size:14px;margin-top:6px}
+.bhfe-opt__cta{margin-top:auto;font-family:"Patua One",Georgia,serif;font-size:15px}
+.bhfe-opt__cta span{color:#e09e00}
+
+/* CPA state-gated ethics (native GET form, works without JS) */
+.bhfe-state{display:flex;flex-direction:column;gap:12px;min-height:158px;background:#fff;border-radius:12px;padding:22px}
+.bhfe-state__select{font:inherit;font-size:15px;color:var(--bhfe-navy);padding:11px 12px;border:1.5px solid #cfd6dd;border-radius:10px;background:#fff;width:100%;cursor:pointer}
+.bhfe-state__go{margin-top:auto;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:10px;padding:12px 14px;font-family:"Patua One",Georgia,serif;font-size:15px;cursor:pointer;background:var(--bhfe-amber);color:var(--bhfe-navy)}
+.bhfe-state__go:hover{filter:brightness(.94)}
+.bhfe-state__go[disabled]{background:#eef0f2;color:#6b7785;cursor:not-allowed;filter:none}
+
+/* ============================================================
+   2 · MULTI-LICENSE FINDER
+   ============================================================ */
+.bhfe-multi{display:grid;grid-template-columns:1fr;gap:32px;align-items:center}
+@media (min-width:860px){.bhfe-multi{grid-template-columns:0.9fr 1.1fr;gap:48px}}
+.bhfe-multi__kicker{font-family:"Patua One",Georgia,serif;color:var(--bhfe-amber-ink);letter-spacing:2px;font-size:13px;text-transform:uppercase;margin:0}
+.bhfe-multi__title{font-family:"Patua One",Georgia,serif;color:var(--bhfe-navy);font-size:30px;line-height:1.12;margin:10px 0 12px;text-wrap:balance}
+@media (min-width:1000px){.bhfe-multi__title{font-size:34px}}
+.bhfe-multi__text{color:var(--bhfe-muted);font-size:17px;line-height:1.55;margin:0;text-wrap:pretty}
+.bhfe-multi__text strong{color:var(--bhfe-navy)}
+.bhfe-multi__panel{background:var(--bhfe-gray);border:1.5px solid #eceff1;border-radius:16px;padding:24px}
+@media (min-width:760px){.bhfe-multi__panel{padding:30px}}
+.bhfe-multi__legend{font-family:"Patua One",Georgia,serif;color:var(--bhfe-navy);font-size:15px;margin-bottom:14px;padding:0}
+.bhfe-chips{display:flex;flex-wrap:wrap;gap:10px;border:0;padding:0;margin:0}
+.bhfe-chip{position:relative;display:inline-flex;align-items:center;gap:9px;padding:10px 16px;border-radius:24px;border:1.5px solid #cfd6dd;background:#fff;color:var(--bhfe-navy);font-family:"Patua One",Georgia,serif;font-size:15px;cursor:pointer;transition:background .15s,border-color .15s,color .15s}
+.bhfe-chip:hover{border-color:var(--bhfe-navy)}
+.bhfe-chip sup{font-size:.62em}
+.bhfe-chip__box{flex:none;width:18px;height:18px;border-radius:50%;border:1.5px solid #b9c0c7;background:transparent;color:var(--bhfe-navy);font-size:12px;line-height:15px;text-align:center}
+.bhfe-chip__input{position:absolute;opacity:0;width:1px;height:1px}
+.bhfe-chip__input:checked + .bhfe-chip{background:var(--bhfe-navy);border-color:var(--bhfe-navy);color:#fff}
+.bhfe-chip__input:checked + .bhfe-chip .bhfe-chip__box{background:var(--bhfe-amber);border-color:var(--bhfe-amber)}
+.bhfe-chip__input:checked + .bhfe-chip .bhfe-chip__box::after{content:"\2713"}
+.bhfe-chip__input:focus-visible + .bhfe-chip{outline:3px solid var(--bhfe-navy);outline-offset:2px}
+.bhfe-multi__result{margin-top:22px;padding-top:22px;border-top:1px solid var(--bhfe-line)}
+.bhfe-multi__row{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.bhfe-multi__rlabel{font-family:Georgia,serif;color:var(--bhfe-muted);font-size:13px}
+.bhfe-multi__rnames{font-family:"Patua One",Georgia,serif;color:var(--bhfe-navy);font-size:18px;line-height:1.2;margin-top:2px}
+.bhfe-multi__go{flex:none;display:inline-flex;align-items:center;gap:9px;text-decoration:none;background:var(--bhfe-amber);color:var(--bhfe-navy);font-family:"Patua One",Georgia,serif;font-size:16px;padding:13px 24px;border:0;border-radius:11px;cursor:pointer;box-shadow:0 14px 28px -12px rgba(255,179,0,.7)}
+.bhfe-multi__go:hover{filter:brightness(.95)}
+.bhfe-multi__go[disabled]{background:#eef0f2;color:#6b7785;box-shadow:none;cursor:not-allowed;filter:none}
+.bhfe-multi__hint{display:flex;align-items:center;gap:10px;color:#9aa4ad;font-family:Georgia,serif;font-size:15px}
+.bhfe-multi__hint span{flex:none;width:22px;height:22px;border-radius:50%;background:#eef0f2;color:#9aa4ad;font-family:"Patua One",serif;font-size:14px;line-height:22px;text-align:center}
+
+/* ============================================================
+   3 · PROMO
+   ============================================================ */
+.bhfe-promo{position:relative;overflow:hidden;background:linear-gradient(135deg,var(--bhfe-navy),var(--bhfe-navy-2) 60%,#013a5e);border-radius:20px;padding:32px;display:grid;grid-template-columns:1fr;gap:28px;align-items:center}
+@media (min-width:820px){.bhfe-promo{grid-template-columns:1fr 1.05fr;padding:44px 48px;gap:44px}}
+.bhfe-promo__badge{display:inline-block;white-space:nowrap;font-family:"Patua One",serif;color:var(--bhfe-navy);background:var(--bhfe-amber);font-size:12px;letter-spacing:1.2px;padding:5px 12px;border-radius:20px}
+.bhfe-promo__title{font-family:"Patua One",Georgia,serif;color:#fff;font-size:30px;line-height:1.12;margin:14px 0 10px}
+.bhfe-promo__text{color:#aebecd;font-size:17px;line-height:1.5;margin:0;text-wrap:pretty}
+.bhfe-promo__tiers{display:flex;gap:16px}
+.bhfe-tier{flex:1;border-radius:16px;padding:24px 18px;text-align:center}
+.bhfe-tier--base{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16)}
+.bhfe-tier--best{position:relative;background:var(--bhfe-amber);box-shadow:0 16px 36px -14px rgba(255,179,0,.6)}
+.bhfe-tier__pct{font-family:"Patua One",Georgia,serif;font-size:46px;line-height:1}
+.bhfe-tier__pct sup{font-size:.46em;vertical-align:super}
+.bhfe-tier--base .bhfe-tier__pct{color:var(--bhfe-amber)}
+.bhfe-tier--best .bhfe-tier__pct{color:var(--bhfe-navy)}
+.bhfe-tier__note{font-size:14px;margin-top:8px}
+.bhfe-tier__note strong{display:block}
+.bhfe-tier--base .bhfe-tier__note{color:#cdd9e4}
+.bhfe-tier--base .bhfe-tier__note strong{color:#fff}
+.bhfe-tier--best .bhfe-tier__note{color:#5a4300}
+.bhfe-tier--best .bhfe-tier__note strong{color:var(--bhfe-navy)}
+.bhfe-tier__flag{position:absolute;top:-11px;left:50%;transform:translateX(-50%);white-space:nowrap;background:var(--bhfe-navy);color:var(--bhfe-amber);font-family:"Patua One",serif;font-size:11px;letter-spacing:1px;padding:4px 12px;border-radius:20px}
+
+/* ============================================================
+   4 · BENEFIT CARDS
+   ============================================================ */
+.bhfe-benefits{display:grid;grid-template-columns:1fr;gap:16px}
+@media (min-width:560px){.bhfe-benefits{grid-template-columns:1fr 1fr}}
+@media (min-width:960px){.bhfe-benefits{grid-template-columns:repeat(4,1fr)}}
+.bhfe-benefit{background:var(--bhfe-gray);border-radius:14px;border-top:4px solid var(--bhfe-amber);padding:24px}
+.bhfe-benefit__title{font-family:"Patua One",Georgia,serif;color:var(--bhfe-navy);font-size:18px;margin:0 0 10px}
+.bhfe-benefit__body{color:var(--bhfe-muted);font-size:15px;line-height:1.55;margin:0;text-wrap:pretty}
+.bhfe-benefit__stat{font-family:"Patua One",Georgia,serif;color:var(--bhfe-amber-ink);font-size:30px;line-height:1.1}
+.bhfe-benefit__stat-label{color:var(--bhfe-muted);font-size:14px}
+.bhfe-benefit__stat-group + .bhfe-benefit__stat-group{margin-top:10px}
+
+/* ============================================================
+   5 · BROWSE ROW
+   ============================================================ */
+.bhfe-browse{text-align:center;border-top:1px solid #ececec;padding-top:36px}
+.bhfe-browse__title{font-family:"Patua One",Georgia,serif;color:var(--bhfe-navy);font-size:28px;margin:0 0 20px}
+.bhfe-browse__btn{display:inline-flex;align-items:center;gap:10px;text-decoration:none;background:var(--bhfe-amber);color:var(--bhfe-navy);font-family:"Patua One",Georgia,serif;font-size:18px;padding:14px 30px;border-radius:12px;box-shadow:0 14px 30px -12px rgba(255,179,0,.65)}
+.bhfe-browse__btn:hover{filter:brightness(.95)}
+.bhfe-pills{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:24px auto 0;max-width:760px;padding:0;list-style:none}
+.bhfe-pills li{display:flex}
+.bhfe-pill{text-decoration:none;color:var(--bhfe-navy);border:1.5px solid #cfd6dd;border-radius:24px;padding:9px 18px;font-size:15px}
+.bhfe-pill:hover{background:var(--bhfe-navy);color:#fff;border-color:var(--bhfe-navy)}
+.bhfe-browse__pdf{margin-top:20px;color:var(--bhfe-muted);font-size:15px}
+.bhfe-browse__pdf a{color:var(--bhfe-navy);font-weight:bold}
+
+/* ============================================================
+   FOCUS RINGS  (WCAG 2.4.7 / 2.4.13 — 3px, >=3:1 vs surface)
+   ============================================================ */
+.bhfe-band :focus-visible{outline:3px solid var(--bhfe-navy);outline-offset:2px;border-radius:8px}
+.bhfe-cred[aria-expanded="true"]:focus-visible{outline-color:var(--bhfe-amber)}
+
+@media (prefers-reduced-motion:reduce){
+  .bhfe-cred,.bhfe-opt,.bhfe-browse__btn,.bhfe-chip{transition:none}
+}
+
+/* ============================================================
+   0 · HERO  (plugin-rendered; full-bleed, reads ACF hero band)
+   ============================================================ */
+.bhfe-hero{position:relative;overflow:hidden;background:var(--bhfe-navy)}
+.bhfe-hero__media{position:absolute;inset:0;z-index:0}
+.bhfe-hero__media img{width:100%;height:100%;object-fit:cover;display:block}
+.bhfe-hero__overlay{position:absolute;inset:0;z-index:0;background:rgba(0,33,58,.6)}
+.bhfe-hero__inner{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:2.75rem 20px;text-align:center}
+@media (max-width:767px){.bhfe-hero__inner{padding:2rem 20px}}
+.bhfe-hero__title{font-family:"Patua One",Georgia,serif;color:var(--bhfe-amber);font-size:38px;line-height:1.1;margin:0 0 12px;text-wrap:balance}
+@media (min-width:1000px){.bhfe-hero__title{font-size:50px}}
+@media (max-width:767px){.bhfe-hero__title{font-size:29px}}
+.bhfe-hero__title sup{font-size:.5em}
+.bhfe-hero__sub{color:#fff;font-size:19px;line-height:1.5;margin:0 auto;max-width:46em;text-wrap:pretty}
+@media (max-width:767px){.bhfe-hero__sub{font-size:17px}}
+.bhfe-hero__sub sup{font-size:.6em}
+.bhfe-hero__ctas{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:26px}
+.bhfe-hero__btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:13px 26px;border-radius:11px;font-family:"Patua One",Georgia,serif;font-size:17px;text-decoration:none;border:2px solid var(--bhfe-amber);background:var(--bhfe-amber);color:var(--bhfe-navy);transition:background .2s,color .2s,border-color .2s}
+.bhfe-hero__btn:hover{background:#ffc233;border-color:#ffc233}
+.bhfe-hero__btn--ghost{background:transparent;border-color:#fff;color:#fff}
+.bhfe-hero__btn--ghost:hover{background:#fff;border-color:#fff;color:var(--bhfe-navy)}
+@media (max-width:560px){.bhfe-hero__btn{flex:1 1 100%}}
+.bhfe-hero :focus-visible{outline:3px solid #fff;outline-offset:2px;border-radius:8px}
+
+/* spacing: bands sit below the full-bleed hero, with breathing room before the footer */
+.bhfe-hero + .bhfe-band{margin-top:32px}
+.bhfe-band:last-of-type{margin-bottom:48px}
+#find-courses{scroll-margin-top:6rem}
