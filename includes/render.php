@@ -303,50 +303,105 @@ function bhfe_hp_band_benefits() {
 }
 
 /**
- * Band — browse by credential. One column per license: heading links to that
- * license's catalog; subject links below are scoped to it (credit_type[]+subject).
- * Subject term IDs resolve by name at render time. NOTE: the per-license subject
- * lists below are a sensible default mapping — adjust the $map arrays to match
- * which subjects actually have courses for each credential.
+ * Browse-by-category data — computed LIVE from the catalog and cached.
+ * For each credential, find the 'subject' terms that actually have courses
+ * carrying that license's credit (the only catalog-filterable subject route),
+ * ranked by course count. Auto-refreshes via a transient, so it tracks the
+ * catalog with no manual upkeep. Returns: [ credential_id => [ ['label','id'], … ] ].
+ * Bust the cache anytime with: delete_transient('bhfe_hp_browse_v1').
+ */
+function bhfe_hp_browse_data() {
+    $cached = get_transient( 'bhfe_hp_browse_v1' );
+    if ( is_array( $cached ) ) {
+        return $cached;
+    }
+
+    global $wpdb;
+    $table = defined( 'FLMS_COURSE_QUERY_TABLE' ) ? FLMS_COURSE_QUERY_TABLE : $wpdb->prefix . 'flms_course_metadata';
+
+    // credential id => course-credit meta key(s) meaning "carries this license"
+    $credit_keys = array(
+        'cpa'    => array( 'cpa' ),
+        'cfp'    => array( 'cfp' ),
+        'eaotrp' => array( 'eaotrp', 'erpa' ),
+        'iar'    => array( 'iar' ),
+        'cima'   => array( 'iwicimaall', 'iwicimatr', 'cimacpwarmaethics' ),
+        'cdfa'   => array( 'cdfa' ),
+    );
+    // friendlier labels for a few verbose subject names
+    $friendly = array(
+        'Retirement Savings & Income Planning'       => 'Retirement Planning',
+        'Investment Planning'                        => 'Investments',
+        'Product & Practice (IAR)'                   => 'Product & Practice',
+        'Ethics & Professional Responsibility (IAR)' => 'Ethics & Professional Responsibility',
+    );
+    // ethics has its own dedicated link; skip ethics buckets + vague CPE catch-alls
+    $skip = array( 'ethics', 'regulatory ethics', 'behavioral ethics',
+        'ethics & professional responsibility (iar)', 'specialized knowledge',
+        'personal development', 'personnel/hr', 'production' );
+
+    $cap  = 6;
+    $min  = 3;
+    $data = array();
+
+    foreach ( $credit_keys as $cid => $keys ) {
+        $data[ $cid ] = array();
+        $in  = implode( ',', array_map( function ( $k ) { return "'" . esc_sql( $k ) . "'"; }, $keys ) );
+        $ids = $wpdb->get_col( "SELECT DISTINCT course_id FROM $table WHERE meta_key IN ($in)" ); // phpcs:ignore
+        $ids = array_filter( array_map( 'intval', (array) $ids ) );
+        if ( empty( $ids ) ) {
+            continue;
+        }
+        $idlist = implode( ',', $ids );
+        $rows   = $wpdb->get_results(
+            "SELECT t.term_id id, t.name name, COUNT(*) c
+             FROM {$wpdb->term_relationships} tr
+             JOIN {$wpdb->term_taxonomy} tt ON tt.term_taxonomy_id = tr.term_taxonomy_id AND tt.taxonomy = 'subject'
+             JOIN {$wpdb->terms} t ON t.term_id = tt.term_id
+             WHERE tr.object_id IN ($idlist)
+             GROUP BY t.term_id ORDER BY c DESC"
+        ); // phpcs:ignore
+        foreach ( (array) $rows as $r ) {
+            if ( count( $data[ $cid ] ) >= $cap ) {
+                break;
+            }
+            if ( (int) $r->c < $min ) {
+                continue;
+            }
+            $name = html_entity_decode( $r->name, ENT_QUOTES );
+            if ( in_array( strtolower( $name ), $skip, true ) ) {
+                continue;
+            }
+            $data[ $cid ][] = array(
+                'label' => isset( $friendly[ $name ] ) ? $friendly[ $name ] : $name,
+                'id'    => (int) $r->id,
+            );
+        }
+    }
+
+    set_transient( 'bhfe_hp_browse_v1', $data, 12 * HOUR_IN_SECONDS );
+    return $data;
+}
+
+/**
+ * Band — browse by category. One column per license: heading links to that
+ * license's catalog; subject links below are pulled LIVE (bhfe_hp_browse_data)
+ * and scoped to the license (credit_type[]+subject), plus a dedicated Ethics link.
  */
 function bhfe_hp_band_browse() {
-    // [ display label, real subject-taxonomy term name, fallback term id ].
-    // The subject term name resolves to an ID at render time; only the 'subject'
-    // taxonomy is catalog-filterable (?subject=ID), so links use credit_type[]+subject.
-    $subj = array(
-        'taxes'      => array( 'Taxes',               'Taxes',                                1348 ),
-        'taxplan'    => array( 'Tax Planning',        'Tax Planning',                         1347 ),
-        'accounting' => array( 'Accounting',          'Accounting',                           1352 ),
-        'auditing'   => array( 'Auditing',            'Auditing',                             1357 ),
-        'finance'    => array( 'Finance',             'Finance',                              1407 ),
-        'estate'     => array( 'Estate Planning',     'Estate Planning',                      1364 ),
-        'retire'     => array( 'Retirement Planning', 'Retirement Savings & Income Planning', 1420 ),
-        'invest'     => array( 'Investments',         'Investment Planning',                  1406 ),
-        'finplan'    => array( 'Financial Planning',  'Financial Planning',                   1401 ),
-        'divorce'    => array( 'Divorce',             'Divorce',                              1418 ),
-        'iarpp'      => array( 'Product & Practice',  'Product & Practice (IAR)',             1590 ),
-    );
-    // Per-credential subject lists, derived from the live subject×credit_type
-    // cross-tab (top categories that actually have courses for each license).
-    $map = array(
-        'cpa'    => array( 'ethics' => true,  'subjects' => array( 'taxes', 'accounting', 'auditing', 'finance', 'estate' ) ),
-        'cfp'    => array( 'ethics' => true,  'subjects' => array( 'taxes', 'finplan', 'retire', 'invest', 'estate' ) ),
-        'eaotrp' => array( 'ethics' => true,  'subjects' => array( 'taxes', 'taxplan', 'estate', 'retire' ) ),
-        'iar'    => array( 'ethics' => true,  'subjects' => array( 'iarpp', 'invest', 'taxes', 'retire' ) ),
-        'cima'   => array( 'ethics' => false, 'subjects' => array( 'invest', 'estate', 'finplan', 'retire' ) ),
-        'cdfa'   => array( 'ethics' => false, 'subjects' => array( 'taxes', 'finplan', 'divorce', 'invest', 'retire' ) ),
-    );
+    $ethics_for = array( 'cpa' => 1, 'cfp' => 1, 'eaotrp' => 1, 'iar' => 1 );
+    $dyn        = bhfe_hp_browse_data();
 
     $cols = '';
     foreach ( bhfe_hp_credentials() as $c ) {
-        $cfg   = isset( $map[ $c['id'] ] ) ? $map[ $c['id'] ] : array( 'ethics' => false, 'subjects' => array() );
         $links = '';
-        if ( ! empty( $cfg['ethics'] ) ) {
+        if ( ! empty( $ethics_for[ $c['id'] ] ) ) {
             $links .= '<li><a href="' . esc_url( bhfe_hp_ethics_url( $c['slug'] ) ) . '">Ethics</a></li>';
         }
-        foreach ( $cfg['subjects'] as $key ) {
-            $s = $subj[ $key ];
-            $links .= '<li><a href="' . esc_url( bhfe_hp_license_subject_url( $c['slug'], $s[1], $s[2] ) ) . '">' . esc_html( $s[0] ) . '</a></li>';
+        $subjects = isset( $dyn[ $c['id'] ] ) ? $dyn[ $c['id'] ] : array();
+        foreach ( $subjects as $s ) {
+            $href = '/courses/?credit_type%5B%5D=' . rawurlencode( $c['slug'] ) . '&subject=' . rawurlencode( $s['id'] );
+            $links .= '<li><a href="' . esc_url( $href ) . '">' . esc_html( $s['label'] ) . '</a></li>';
         }
         $links .= '<li><a class="bhfe-browse__viewall" href="' . esc_url( $c['all']['href'] ) . '">All courses <span aria-hidden="true">&rarr;</span></a></li>';
 
