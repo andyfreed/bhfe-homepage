@@ -173,12 +173,21 @@
    ============================================================ */
 .bhfe-browse{text-align:center;border-top:1px solid #ececec;padding-top:36px}
 .bhfe-browse__title{font-family:"Patua One",Georgia,serif;color:var(--bhfe-navy);font-size:28px;margin:0 0 20px}
-.bhfe-browse__btn{display:inline-flex;align-items:center;gap:10px;text-decoration:none;background:var(--bhfe-amber);color:var(--bhfe-navy);font-family:"Patua One",Georgia,serif;font-size:18px;padding:14px 30px;border-radius:12px;box-shadow:0 14px 30px -12px rgba(255,179,0,.65)}
-.bhfe-browse__btn:hover{filter:brightness(.95)}
+/* Browse button — scoped + !important so the theme's a:hover (which was
+   blanking the label) can't recolor it. Navy text on amber, always visible. */
+.bhfe-browse .bhfe-browse__btn,
+.bhfe-browse .bhfe-browse__btn:hover,
+.bhfe-browse .bhfe-browse__btn:focus,
+.bhfe-browse .bhfe-browse__btn:active{display:inline-flex;align-items:center;gap:10px;text-decoration:none !important;background:var(--bhfe-amber) !important;color:var(--bhfe-navy) !important;font-family:"Patua One",Georgia,serif;font-size:18px;font-weight:400 !important;padding:14px 30px;border-radius:6px !important;border:2px solid var(--bhfe-amber) !important;box-shadow:0 14px 30px -12px rgba(255,179,0,.55);cursor:pointer;transition:filter .2s}
+.bhfe-browse .bhfe-browse__btn::before{content:none !important;display:none !important}
+.bhfe-browse .bhfe-browse__btn:hover{filter:brightness(.94)}
 .bhfe-pills{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:24px auto 0;max-width:760px;padding:0;list-style:none}
 .bhfe-pills li{display:flex}
-.bhfe-pill{text-decoration:none;color:var(--bhfe-navy);border:1.5px solid #cfd6dd;border-radius:24px;padding:9px 18px;font-size:15px}
-.bhfe-pill:hover{background:var(--bhfe-navy);color:#fff;border-color:var(--bhfe-navy)}
+.bhfe-browse .bhfe-pill,
+.bhfe-browse .bhfe-pill:focus{text-decoration:none !important;color:var(--bhfe-navy) !important;background:#fff !important;border:1.5px solid #cfd6dd !important;border-radius:24px;padding:9px 18px;font-size:15px;transition:background .2s,color .2s,border-color .2s}
+.bhfe-browse .bhfe-pill::before{content:none !important;display:none !important}
+.bhfe-browse .bhfe-pill:hover,
+.bhfe-browse .bhfe-pill:active{background:var(--bhfe-navy) !important;color:#fff !important;border-color:var(--bhfe-navy) !important}
 .bhfe-browse__pdf{margin-top:20px;color:var(--bhfe-muted);font-size:15px}
 .bhfe-browse__pdf a{color:var(--bhfe-navy);font-weight:bold}
 
@@ -209,11 +218,19 @@
 @media (max-width:767px){.bhfe-hero__sub{font-size:17px}}
 .bhfe-hero__sub sup{font-size:.6em}
 .bhfe-hero__ctas{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:26px}
-.bhfe-hero__btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:13px 26px;border-radius:11px;font-family:"Patua One",Georgia,serif;font-size:17px;text-decoration:none;border:2px solid var(--bhfe-amber);background:var(--bhfe-amber);color:var(--bhfe-navy);transition:background .2s,color .2s,border-color .2s}
-.bhfe-hero__btn:hover{background:#ffc233;border-color:#ffc233}
-.bhfe-hero__btn--ghost{background:transparent;border-color:#fff;color:#fff}
-.bhfe-hero__btn--ghost:hover{background:#fff;border-color:#fff;color:var(--bhfe-navy)}
-@media (max-width:560px){.bhfe-hero__btn{flex:1 1 100%}}
+/* Hero CTAs — scoped + !important to beat the theme's global a:hover rules
+   (which otherwise blank/recolor the buttons). Two theme-matched styles:
+   primary = amber fill, secondary = white fill -> navy fill on hover. */
+.bhfe-hero .bhfe-hero__btn{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:13px 28px;border-radius:6px !important;font-family:"Patua One",Georgia,serif;font-size:17px;font-weight:400 !important;text-decoration:none !important;cursor:pointer;border:2px solid var(--bhfe-amber) !important;background:var(--bhfe-amber) !important;color:var(--bhfe-navy) !important;transition:background .2s,color .2s,border-color .2s,filter .2s}
+.bhfe-hero .bhfe-hero__btn::before{content:none !important;display:none !important}
+.bhfe-hero .bhfe-hero__btn:hover,
+.bhfe-hero .bhfe-hero__btn:focus,
+.bhfe-hero .bhfe-hero__btn:active{background:var(--bhfe-amber) !important;color:var(--bhfe-navy) !important;border-color:var(--bhfe-amber) !important;filter:brightness(.94)}
+.bhfe-hero .bhfe-hero__btn--ghost{background:#fff !important;border-color:#fff !important;color:var(--bhfe-navy) !important;filter:none}
+.bhfe-hero .bhfe-hero__btn--ghost:hover,
+.bhfe-hero .bhfe-hero__btn--ghost:focus,
+.bhfe-hero .bhfe-hero__btn--ghost:active{background:var(--bhfe-navy) !important;border-color:var(--bhfe-navy) !important;color:#fff !important;filter:none}
+@media (max-width:560px){.bhfe-hero .bhfe-hero__btn{flex:1 1 100%}}
 .bhfe-hero :focus-visible{outline:3px solid #fff;outline-offset:2px;border-radius:8px}
 
 /* close the theme header's 1rem margin-bottom so the hero sits flush under the nav */
