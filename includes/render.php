@@ -151,8 +151,7 @@ function bhfe_hp_band_finder() {
         $tiles = '';
         foreach ( $row as $c ) {
             $tiles .= '<a class="bhfe-cred" href="' . esc_url( $c['all']['href'] ) . '">'
-                . '<span><span class="bhfe-cred__name">' . wp_kses_post( $c['name'] ) . '</span>'
-                . '<span class="bhfe-cred__tag">' . esc_html( $c['all']['label'] ) . '</span></span>'
+                . '<span class="bhfe-cred__name">' . wp_kses_post( $c['name'] ) . '</span>'
                 . '<span class="bhfe-cred__mark bhfe-cred__mark--go" aria-hidden="true">&rarr;</span>'
                 . '</a>';
         }
@@ -162,6 +161,7 @@ function bhfe_hp_band_finder() {
         . '<div class="bhfe-finder__head">'
         .   '<p class="bhfe-finder__kicker">Find your courses</p>'
         .   '<h2 class="bhfe-finder__title" id="bhfe-finder-title">Find courses for your credential</h2>'
+        .   '<p class="bhfe-finder__sub">Pick your license to browse every approved course.</p>'
         . '</div>'
         . '<div class="bhfe-finder__stack">' . $stack . '</div>'
         . '</section>';
