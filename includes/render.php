@@ -309,7 +309,7 @@ function bhfe_hp_band_browse() {
     return '<section class="bhfe-band bhfe-card" aria-labelledby="bhfe-browse-title">'
         . '<div class="bhfe-browse">'
         .   '<h2 class="bhfe-browse__title" id="bhfe-browse-title">Browse the catalog</h2>'
-        .   '<a class="bhfe-browse__btn" href="' . esc_url( '/courses/' ) . '">Browse all 378+ courses <span aria-hidden="true">&rarr;</span></a>'
+        .   '<a class="bhfe-browse__btn" href="' . esc_url( '/courses/' ) . '">Browse all 400+ courses <span aria-hidden="true">&rarr;</span></a>'
         .   '<ul class="bhfe-pills">' . $lis . '</ul>'
         .   '<p class="bhfe-browse__pdf">Prefer a list? <a href="' . esc_url( '/wp-content/uploads/2026/05/CPA-Course-List-2026-5-2-26.pdf' ) . '" target="_blank" rel="noopener">Download the CPA course list (PDF)</a></p>'
         . '</div>'
