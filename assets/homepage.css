@@ -265,7 +265,7 @@
 .bhfe-cf-band{position:relative;overflow:hidden;background:linear-gradient(180deg,#fff 0%,#f4f7fa 100%);border-bottom:1px solid var(--bhfe-line);padding:46px 40px 44px}
 /* soft amber wash for warmth */
 .bhfe-cf-band::before{content:"";position:absolute;left:50%;top:60%;width:560px;height:300px;transform:translate(-50%,-50%);background:radial-gradient(closest-side,rgba(255,179,0,.12),transparent 72%);pointer-events:none}
-.bhfe-cf-band-eyebrow{position:relative;text-align:center;font-family:"Patua One",Georgia,serif;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--bhfe-navy);margin-bottom:26px}
+.bhfe-cf-band-eyebrow{position:relative;text-align:center;font-family:"Patua One",Georgia,serif;font-size:16px;letter-spacing:.14em;text-transform:uppercase;color:var(--bhfe-navy);margin-bottom:26px}
 .bhfe-cf-tiers{position:relative;display:flex;gap:22px;justify-content:center;align-items:stretch;flex-wrap:wrap}
 .bhfe-cf-tier{flex:0 1 280px;max-width:100%;border-radius:18px;padding:30px 24px 26px;text-align:center;position:relative;display:flex;flex-direction:column;justify-content:center}
 .bhfe-cf-tier--std{background:#fff;border:1.5px solid var(--bhfe-line);box-shadow:0 10px 26px -18px rgba(0,33,58,.3)}
