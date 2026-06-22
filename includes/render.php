@@ -29,11 +29,21 @@ function bhfe_hp_ethics_url( $slug ) {
     return '/courses/ethics-courses-for-accountants/?credit_type%5B%5D=' . rawurlencode( $slug );
 }
 
+/** Resolve a subject term ID by name at render time; fallback to known local ID. */
+function bhfe_hp_subject_id( $name, $fallback_id ) {
+    $t = get_term_by( 'name', $name, 'subject' );
+    return ( $t && ! is_wp_error( $t ) ) ? (int) $t->term_id : (int) $fallback_id;
+}
+
 /** Subject filter URL — resolve term ID by name at render time, fallback to known local ID. */
 function bhfe_hp_subject_url( $name, $fallback_id ) {
-    $t  = get_term_by( 'name', $name, 'subject' );
-    $id = ( $t && ! is_wp_error( $t ) ) ? $t->term_id : $fallback_id;
-    return '/courses/?subject=' . rawurlencode( $id );
+    return '/courses/?subject=' . rawurlencode( bhfe_hp_subject_id( $name, $fallback_id ) );
+}
+
+/** Subject filter URL scoped to one credential (credit_type[] + subject). */
+function bhfe_hp_license_subject_url( $slug, $name, $fallback_id ) {
+    return '/courses/?credit_type%5B%5D=' . rawurlencode( $slug )
+        . '&subject=' . rawurlencode( bhfe_hp_subject_id( $name, $fallback_id ) );
 }
 
 /** The six credentials. 'all' -> real category page; 'slug' feeds the multi-license chips. */
@@ -292,25 +302,56 @@ function bhfe_hp_band_benefits() {
         . '</section>';
 }
 
-/** Band — browse row. Subject pills resolve term IDs by name at render time. */
+/**
+ * Band — browse by credential. One column per license: heading links to that
+ * license's catalog; subject links below are scoped to it (credit_type[]+subject).
+ * Subject term IDs resolve by name at render time. NOTE: the per-license subject
+ * lists below are a sensible default mapping — adjust the $map arrays to match
+ * which subjects actually have courses for each credential.
+ */
 function bhfe_hp_band_browse() {
-    $pills = array(
-        array( 'Ethics courses', '/courses/ethics-courses-for-accountants/' ),
-        array( 'Taxes', bhfe_hp_subject_url( 'Taxes', 1348 ) ),
-        array( 'Estate Planning', bhfe_hp_subject_url( 'Estate Planning', 1364 ) ),
-        array( 'Retirement Planning', bhfe_hp_subject_url( 'Retirement Savings & Income Planning', 1420 ) ),
-        array( 'Investments', bhfe_hp_subject_url( 'Investment Planning', 1406 ) ),
-        array( 'Accounting', bhfe_hp_subject_url( 'Accounting', 1352 ) ),
+    // [ display, taxonomy name, fallback term id ]
+    $subj = array(
+        'taxes'  => array( 'Taxes',               'Taxes',                              1348 ),
+        'estate' => array( 'Estate Planning',     'Estate Planning',                    1364 ),
+        'retire' => array( 'Retirement Planning', 'Retirement Savings & Income Planning', 1420 ),
+        'invest' => array( 'Investments',         'Investment Planning',                1406 ),
+        'acct'   => array( 'Accounting',          'Accounting',                         1352 ),
     );
-    $lis = '';
-    foreach ( $pills as $p ) {
-        $lis .= '<li><a class="bhfe-pill" href="' . esc_url( $p[1] ) . '">' . esc_html( $p[0] ) . '</a></li>';
+    // per-credential: whether to show an Ethics link + which subjects
+    $map = array(
+        'cpa'    => array( 'ethics' => true,  'subjects' => array( 'taxes', 'acct', 'estate', 'retire', 'invest' ) ),
+        'cfp'    => array( 'ethics' => true,  'subjects' => array( 'estate', 'retire', 'invest', 'taxes' ) ),
+        'eaotrp' => array( 'ethics' => true,  'subjects' => array( 'taxes', 'retire' ) ),
+        'iar'    => array( 'ethics' => true,  'subjects' => array( 'invest', 'retire', 'estate' ) ),
+        'cima'   => array( 'ethics' => false, 'subjects' => array( 'invest', 'retire', 'estate' ) ),
+        'cdfa'   => array( 'ethics' => false, 'subjects' => array( 'estate', 'retire', 'invest', 'taxes' ) ),
+    );
+
+    $cols = '';
+    foreach ( bhfe_hp_credentials() as $c ) {
+        $cfg   = isset( $map[ $c['id'] ] ) ? $map[ $c['id'] ] : array( 'ethics' => false, 'subjects' => array() );
+        $links = '';
+        if ( ! empty( $cfg['ethics'] ) ) {
+            $links .= '<li><a href="' . esc_url( bhfe_hp_ethics_url( $c['slug'] ) ) . '">Ethics</a></li>';
+        }
+        foreach ( $cfg['subjects'] as $key ) {
+            $s = $subj[ $key ];
+            $links .= '<li><a href="' . esc_url( bhfe_hp_license_subject_url( $c['slug'], $s[1], $s[2] ) ) . '">' . esc_html( $s[0] ) . '</a></li>';
+        }
+        $links .= '<li><a class="bhfe-browse__viewall" href="' . esc_url( $c['all']['href'] ) . '">All courses <span aria-hidden="true">&rarr;</span></a></li>';
+
+        $cols .= '<div class="bhfe-browse__col">'
+            . '<h3 class="bhfe-browse__col-title"><a href="' . esc_url( $c['all']['href'] ) . '">' . wp_kses_post( $c['name'] ) . '</a></h3>'
+            . '<ul class="bhfe-browse__links">' . $links . '</ul>'
+            . '</div>';
     }
+
     return '<section class="bhfe-band bhfe-card" aria-labelledby="bhfe-browse-title">'
         . '<div class="bhfe-browse">'
-        .   '<h2 class="bhfe-browse__title" id="bhfe-browse-title">Browse the catalog</h2>'
+        .   '<h2 class="bhfe-browse__title" id="bhfe-browse-title">Browse by credential</h2>'
         .   '<a class="bhfe-browse__btn" href="' . esc_url( '/courses/' ) . '">Browse all 400+ courses <span aria-hidden="true">&rarr;</span></a>'
-        .   '<ul class="bhfe-pills">' . $lis . '</ul>'
+        .   '<div class="bhfe-browse__grid">' . $cols . '</div>'
         .   '<p class="bhfe-browse__pdf">Prefer a list? <a href="' . esc_url( '/wp-content/uploads/2026/05/CPA-Course-List-2026-5-2-26.pdf' ) . '" target="_blank" rel="noopener">Download the CPA course list (PDF)</a></p>'
         . '</div>'
         . '</section>';
