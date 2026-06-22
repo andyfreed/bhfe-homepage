@@ -15,7 +15,7 @@
   --bhfe-navy:#00213a;
   --bhfe-navy-2:#012f50;
   --bhfe-amber:#ffb300;
-  --bhfe-amber-ink:#7d5700;      /* amber-toned TEXT — AA on white (>5:1) */
+  --bhfe-amber-ink:#ffb300;      /* brand amber for text (matches --bhfe-amber) */
   --bhfe-ink:#191102;
   --bhfe-gray:#f7f7f7;
   --bhfe-muted:#55606b;
