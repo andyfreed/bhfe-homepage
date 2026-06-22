@@ -355,7 +355,9 @@
 .bhfe-accred__logo{display:grid;place-items:center;min-height:108px;padding:18px;background:#fff;border:1px solid var(--bhfe-line);border-radius:14px;transition:box-shadow .2s,transform .2s,border-color .2s}
 .bhfe-accred__logo:hover{box-shadow:0 14px 30px -18px rgba(0,33,58,.4);border-color:#c2ccd5;transform:translateY(-2px)}
 .bhfe-accred__logo img{max-width:100%;max-height:60px;width:auto;height:auto;object-fit:contain;display:block}
-.bhfe-accred__legal{border-top:1px solid var(--bhfe-line);padding-top:24px;column-gap:40px}
+.bhfe-accred__subhead{text-align:center;margin:4px auto 22px;padding-top:28px;border-top:1px solid var(--bhfe-line)}
+.bhfe-accred__subtitle{font-family:"Patua One",Georgia,serif;color:var(--bhfe-navy);font-size:26px;line-height:1.12;margin:6px 0 0;text-wrap:balance}
+.bhfe-accred__legal{padding-top:0;column-gap:40px}
 @media (min-width:860px){.bhfe-accred__legal{columns:2}}
 .bhfe-accred__legal p{font-family:Georgia,serif;font-size:13.5px;line-height:1.6;color:var(--bhfe-muted);margin:0 0 14px;break-inside:avoid}
 .bhfe-accred__legal p sup{font-size:.7em}
