@@ -449,7 +449,7 @@ function bhfe_hp_band_courses() {
         .       '<div class="bhfe-cf-tier bhfe-cf-tier--std">'
         .         '<div class="bhfe-cf-pct">20<sup>%</sup></div>'
         .         '<div class="bhfe-cf-when">off when you</div>'
-        .         '<div class="bhfe-cf-add">buy 3+ courses</div>'
+        .         '<div class="bhfe-cf-add">buy 3&ndash;4 courses</div>'
         .       '</div>'
         .       '<div class="bhfe-cf-tier bhfe-cf-tier--best">'
         .         '<div class="bhfe-cf-badge">Best value</div>'
