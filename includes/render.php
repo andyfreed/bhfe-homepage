@@ -372,10 +372,50 @@ function bhfe_hp_band_courses() {
         . '</section>';
 }
 
+/**
+ * Band — accreditations & required disclosures.
+ * Logo row (CFP, NASBA/QAS, CFP Board, IRS CE, NASAA, IWI) over the CFP-marks
+ * and NASBA-sponsor legal text. Logos load from the active theme's /img/ dir.
+ */
+function bhfe_hp_band_accreditation() {
+    $img = get_template_directory_uri() . '/img/';
+    $logos = array(
+        array( 'Affiliation-CFP.png',                 'CFP® certification marks' ),
+        array( 'RegistryAndQASComboLogo53By73p.jpg',  'NASBA National Registry of CPE Sponsors — QAS Self Study' ),
+        array( 'cfp-board.png',                        'CFP Board — CE Quality Partner' ),
+        array( 'ce-blue.png',                          'IRS — Approved Continuing Education Provider' ),
+        array( 'nasaa_logo_blue.png',                  'NASAA — North American Securities Administrators Association' ),
+        array( 'iwi_logo.png',                         'Investments & Wealth Institute' ),
+    );
+    $tiles = '';
+    foreach ( $logos as $l ) {
+        $tiles .= '<div class="bhfe-accred__logo">'
+            . '<img src="' . esc_url( $img . $l[0] ) . '" alt="' . esc_attr( $l[1] ) . '" loading="lazy" decoding="async">'
+            . '</div>';
+    }
+
+    $p1 = bhfe_hp_sup( 'CFP®, CERTIFIED FINANCIAL PLANNER® are certification marks owned by the Certified Financial Planner Board of Standards, Inc. These marks are awarded to individuals who successfully complete CFP® Board\'s initial and ongoing certification requirements.' );
+    $p2 = bhfe_hp_sup( 'Beacon Hill Financial Educators, Inc. (sponsor I.D. #107615) is registered with the National Association of State Boards of Accountancy (NASBA) as a sponsor of continuing professional education on the National Registry of CPE Sponsors. State boards of accountancy have final authority on the acceptance of individual courses for CPE credit. Complaints regarding registered sponsors may be submitted to the National Registry of CPE Sponsors through its website: ' )
+        . '<a href="' . esc_url( 'https://www.nasbaregistry.org' ) . '" target="_blank" rel="noopener">www.nasbaregistry.org</a>.';
+
+    return '<section class="bhfe-band bhfe-card bhfe-accred" aria-labelledby="bhfe-accred-title">'
+        . '<div class="bhfe-accred__head">'
+        .   '<p class="bhfe-accred__kicker">Accredited &amp; approved</p>'
+        .   '<h2 class="bhfe-accred__title" id="bhfe-accred-title">Recognized by the boards that set the standards</h2>'
+        . '</div>'
+        . '<div class="bhfe-accred__logos">' . $tiles . '</div>'
+        . '<div class="bhfe-accred__legal">'
+        .   '<p>' . $p1 . '</p>'
+        .   '<p>' . $p2 . '</p>'
+        . '</div>'
+        . '</section>';
+}
+
 /** Echo the whole homepage (called by the plugin's front-page template). */
 function bhfe_hp_render() {
     echo bhfe_hp_hero();
     echo bhfe_hp_band_courses();   // replaces the old finder + multi-license bands
+    echo bhfe_hp_band_accreditation();
     // echo bhfe_hp_band_promo();  // disabled: the bundle/discount band now lives inside bhfe_hp_band_courses()
     echo bhfe_hp_band_benefits();
     echo bhfe_hp_band_browse();
