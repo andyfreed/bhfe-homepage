@@ -273,7 +273,7 @@
 .bhfe-cf-pct{font-family:"Patua One",Georgia,serif;font-size:64px;line-height:1;letter-spacing:-.01em}
 .bhfe-cf-pct sup{font-size:.4em;font-weight:inherit;position:relative;top:-.66em;margin-left:3px;vertical-align:baseline}
 .bhfe-cf-tier--std .bhfe-cf-pct{color:var(--bhfe-navy)}
-.bhfe-cf-tier--std .bhfe-cf-pct sup{color:var(--bhfe-amber)}
+.bhfe-cf-tier--std .bhfe-cf-pct sup{color:var(--bhfe-navy)}
 .bhfe-cf-tier--best .bhfe-cf-pct{color:var(--bhfe-navy)}
 .bhfe-cf-when{font-size:14px;margin-top:12px;letter-spacing:.02em}
 .bhfe-cf-tier--std .bhfe-cf-when{color:var(--bhfe-muted)}
