@@ -359,6 +359,7 @@ function bhfe_hp_band_courses() {
         .       '<div class="bhfe-cf-head-eyebrow">Find Your Courses</div>'
         .       '<h2 class="bhfe-cf-h2" id="bhfe-cf-title">Find the course you need now</h2>'
         .       '<p class="bhfe-cf-lead">Select the credential you hold &mdash; or choose several and we&rsquo;ll show only the courses that count for every one.</p>'
+        .       '<div class="bhfe-cf-applyhint">Select all that apply</div>'
         .     '</div>'
         .     '<div class="bhfe-cf-grid">' . $btns . '</div>'
         .     '<div class="bhfe-cf-footer">'

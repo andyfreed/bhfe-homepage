@@ -258,24 +258,63 @@
 .bhfe-cf-head-eyebrow{font-family:"Patua One",Georgia,serif;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--bhfe-amber)}
 .bhfe-cf-h2{font-family:"Patua One",Georgia,serif;font-size:34px;color:var(--bhfe-navy);margin:10px 0 12px;line-height:1.08;text-wrap:balance}
 .bhfe-cf-lead{margin:0 auto;max-width:560px;font-size:18px;color:var(--bhfe-muted);line-height:1.5;text-wrap:pretty}
+/* "Select all that apply" hint — noticeable pill above the grid */
+.bhfe-cf-applyhint{display:flex;align-items:center;gap:8px;width:max-content;max-width:100%;margin:18px auto 0;padding:8px 18px;border-radius:999px;background:var(--bhfe-navy);color:var(--bhfe-amber);font-family:"Patua One",Georgia,serif;font-size:13px;letter-spacing:.06em;text-transform:uppercase}
+.bhfe-cf-applyhint::before{content:"\2713";font-size:12px}
+
 .bhfe-cf-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.bhfe-cf-license{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 22px;border-radius:14px;cursor:pointer;-webkit-user-select:none;user-select:none;background:#fff;border:2px solid #c2ccd5;transition:background .15s,border-color .15s;font-family:"Patua One",Georgia,serif;font-size:19px;color:var(--bhfe-navy);line-height:1.18;text-align:left;width:100%}
-.bhfe-cf-license sup{font-size:.62em}
-.bhfe-cf-license:hover{border-color:var(--bhfe-navy)}
-.bhfe-cf-license[aria-pressed="true"]{background:#f2f7fb;border-color:var(--bhfe-navy)}
-.bhfe-cf-dot{flex:none;width:32px;height:32px;border-radius:999px;display:grid;place-items:center;font-size:16px;background:#fff;color:var(--bhfe-amber);border:2px solid #cdd4dc;transition:background .15s,border-color .15s}
-.bhfe-cf-license[aria-pressed="true"] .bhfe-cf-dot{background:var(--bhfe-navy);border-color:var(--bhfe-navy)}
-.bhfe-cf-license[aria-pressed="true"] .bhfe-cf-dot::after{content:"\2713";color:#fff}
+
+/* License buttons — exactly TWO states (unselected / selected).
+   Scoped under .bhfe-cf-courses + !important to beat the theme's global
+   button rules, which otherwise force navy fill on :hover/:focus/:active
+   (that was the stray fully-navy third state on the just-clicked button). */
+.bhfe-cf-courses .bhfe-cf-license,
+.bhfe-cf-courses .bhfe-cf-license:hover,
+.bhfe-cf-courses .bhfe-cf-license:focus,
+.bhfe-cf-courses .bhfe-cf-license:active{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:20px 22px !important;border-radius:14px !important;cursor:pointer;
+  -webkit-user-select:none;user-select:none;
+  background:#fff !important;color:var(--bhfe-navy) !important;border:2px solid #c2ccd5 !important;
+  transition:background .15s,border-color .15s,box-shadow .15s;
+  font-family:"Patua One",Georgia,serif !important;font-weight:400 !important;font-size:19px !important;
+  line-height:1.18;text-align:left;width:100%}
+.bhfe-cf-courses .bhfe-cf-license sup{font-size:.62em}
+.bhfe-cf-courses .bhfe-cf-license:hover{border-color:var(--bhfe-navy) !important;box-shadow:0 6px 18px -10px rgba(0,33,58,.45)}
+.bhfe-cf-courses .bhfe-cf-license[aria-pressed="true"],
+.bhfe-cf-courses .bhfe-cf-license[aria-pressed="true"]:hover,
+.bhfe-cf-courses .bhfe-cf-license[aria-pressed="true"]:focus,
+.bhfe-cf-courses .bhfe-cf-license[aria-pressed="true"]:active{
+  background:var(--bhfe-navy) !important;color:#fff !important;border-color:var(--bhfe-navy) !important}
+.bhfe-cf-dot{flex:none;width:30px;height:30px;border-radius:999px;display:grid;place-items:center;font-size:15px;background:#fff;border:2px solid #cdd4dc;transition:background .15s,border-color .15s}
+.bhfe-cf-license[aria-pressed="true"] .bhfe-cf-dot{background:var(--bhfe-amber);border-color:var(--bhfe-amber)}
+.bhfe-cf-license[aria-pressed="true"] .bhfe-cf-dot::after{content:"\2713";color:var(--bhfe-navy);font-weight:700}
+
 .bhfe-cf-footer{margin-top:30px;padding-top:24px;border-top:1px solid var(--bhfe-line);display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
 .bhfe-cf-summary{font-size:16px;color:var(--bhfe-muted);line-height:1.4}
 .bhfe-cf-summary strong{color:var(--bhfe-navy);font-family:"Patua One",Georgia,serif}
-.bhfe-cf-cta{display:inline-flex;align-items:center;gap:10px;font-family:"Patua One",Georgia,serif;font-size:16px;padding:14px 26px;border-radius:10px;text-decoration:none;white-space:nowrap;background:var(--bhfe-amber);color:var(--bhfe-navy);transition:filter .15s,background .15s}
-.bhfe-cf-cta:hover{filter:brightness(1.06)}
-.bhfe-cf-cta.is-disabled{background:#e9ebee;color:#9aa3ad;pointer-events:none}
+
+/* CTA — override the theme's a:hover (which blanks bg/text + adds a ::before overlay) */
+.bhfe-cf-courses .bhfe-cf-cta,
+.bhfe-cf-courses .bhfe-cf-cta:hover,
+.bhfe-cf-courses .bhfe-cf-cta:focus,
+.bhfe-cf-courses .bhfe-cf-cta:active{
+  display:inline-flex !important;align-items:center;gap:10px;
+  font-family:"Patua One",Georgia,serif;font-size:16px;padding:14px 26px;border-radius:10px;
+  text-decoration:none !important;white-space:nowrap;border:0;cursor:pointer;
+  background:var(--bhfe-amber) !important;color:var(--bhfe-navy) !important;
+  transition:filter .15s,background .15s,box-shadow .15s}
+.bhfe-cf-courses .bhfe-cf-cta::before{content:none !important;display:none !important}
+.bhfe-cf-courses .bhfe-cf-cta:hover{filter:brightness(1.05);box-shadow:0 8px 22px -10px rgba(255,179,0,.85)}
+.bhfe-cf-courses .bhfe-cf-cta.is-disabled,
+.bhfe-cf-courses .bhfe-cf-cta.is-disabled:hover{
+  background:#e9ebee !important;color:#9aa3ad !important;pointer-events:none;box-shadow:none;filter:none}
+
 .bhfe-cf-note{margin-top:16px;display:none;align-items:center;gap:10px;font-size:15px;color:#9a6a0f;font-style:italic}
 .bhfe-cf-note.is-on{display:flex}
 .bhfe-cf-bullet{flex:none;width:7px;height:7px;border-radius:999px;background:var(--bhfe-amber);display:inline-block}
-.bhfe-cf-license:focus-visible,.bhfe-cf-cta:focus-visible{outline:3px solid var(--bhfe-navy);outline-offset:2px}
+.bhfe-cf-courses .bhfe-cf-license:focus-visible,
+.bhfe-cf-courses .bhfe-cf-cta:focus-visible{outline:3px solid var(--bhfe-amber) !important;outline-offset:2px}
 @media (max-width:760px){
   .bhfe-cf-grid{grid-template-columns:1fr}
   .bhfe-cf-picker{padding:32px 24px 36px}
