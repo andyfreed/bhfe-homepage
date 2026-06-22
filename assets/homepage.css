@@ -250,24 +250,27 @@
 .bhfe-cf-card{background:#fff;border-radius:20px;box-shadow:0 24px 60px -28px rgba(0,33,58,.35);overflow:hidden}
 
 /* ---- discount band ---- */
-.bhfe-cf-band{background:linear-gradient(135deg,var(--bhfe-navy-2) 0%,var(--bhfe-navy) 100%);padding:36px 40px 34px}
-.bhfe-cf-band-eyebrow{text-align:center;font-family:"Patua One",Georgia,serif;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--bhfe-amber);margin-bottom:20px}
-.bhfe-cf-tiers{display:flex;gap:18px;justify-content:center;flex-wrap:wrap}
-.bhfe-cf-tier{width:256px;max-width:100%;border-radius:16px;padding:22px 20px;text-align:center;position:relative}
-.bhfe-cf-tier--std{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.16)}
-.bhfe-cf-tier--best{background:var(--bhfe-amber);box-shadow:0 12px 30px rgba(255,179,0,.4)}
-.bhfe-cf-pct{font-family:"Patua One",Georgia,serif;font-size:44px;line-height:1}
-.bhfe-cf-pct sup{font-size:20px;vertical-align:super}
-.bhfe-cf-tier--std .bhfe-cf-pct{color:#fff}
+.bhfe-cf-band{position:relative;overflow:hidden;background:radial-gradient(120% 150% at 50% -25%,#0c2945 0%,var(--bhfe-navy) 52%,#001324 100%);padding:48px 40px 46px}
+/* soft amber aura behind the tiers */
+.bhfe-cf-band::before{content:"";position:absolute;left:50%;top:54%;width:520px;height:300px;transform:translate(-50%,-50%);background:radial-gradient(closest-side,rgba(255,179,0,.16),transparent 70%);pointer-events:none}
+.bhfe-cf-band-eyebrow{position:relative;text-align:center;font-family:"Patua One",Georgia,serif;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--bhfe-amber);margin-bottom:28px}
+.bhfe-cf-tiers{position:relative;display:flex;gap:22px;justify-content:center;align-items:stretch;flex-wrap:wrap}
+.bhfe-cf-tier{flex:0 1 280px;max-width:100%;border-radius:18px;padding:30px 24px 26px;text-align:center;position:relative;display:flex;flex-direction:column;justify-content:center}
+.bhfe-cf-tier--std{background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.025));border:1px solid rgba(255,255,255,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
+.bhfe-cf-tier--best{background:linear-gradient(180deg,#ffca4d 0%,var(--bhfe-amber) 70%,#f5a800 100%);box-shadow:0 20px 50px -14px rgba(255,179,0,.6),inset 0 1px 0 rgba(255,255,255,.5);padding-top:40px}
+.bhfe-cf-pct{font-family:"Patua One",Georgia,serif;font-size:64px;line-height:1;letter-spacing:-.01em}
+.bhfe-cf-pct sup{font-size:.4em;font-weight:inherit;position:relative;top:-.66em;margin-left:3px;vertical-align:baseline}
+.bhfe-cf-tier--std .bhfe-cf-pct{color:#fff;text-shadow:0 2px 18px rgba(0,0,0,.35)}
 .bhfe-cf-tier--std .bhfe-cf-pct sup{color:var(--bhfe-amber)}
 .bhfe-cf-tier--best .bhfe-cf-pct{color:var(--bhfe-navy)}
-.bhfe-cf-when{font-size:14px;margin-top:8px}
-.bhfe-cf-tier--std .bhfe-cf-when{color:#9fb0c0}
+.bhfe-cf-when{font-size:14px;margin-top:12px;letter-spacing:.02em}
+.bhfe-cf-tier--std .bhfe-cf-when{color:#a7b6c4}
 .bhfe-cf-tier--best .bhfe-cf-when{color:rgba(0,33,58,.72)}
-.bhfe-cf-add{font-family:"Patua One",Georgia,serif;font-size:16px;margin-top:3px}
+.bhfe-cf-add{font-family:"Patua One",Georgia,serif;font-size:18px;margin-top:4px}
 .bhfe-cf-tier--std .bhfe-cf-add{color:#fff}
 .bhfe-cf-tier--best .bhfe-cf-add{color:var(--bhfe-navy)}
-.bhfe-cf-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--bhfe-navy);color:var(--bhfe-amber);font-family:"Patua One",Georgia,serif;font-size:11px;padding:5px 13px;border-radius:999px;white-space:nowrap}
+.bhfe-cf-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);display:inline-flex;align-items:center;gap:6px;background:var(--bhfe-navy);color:var(--bhfe-amber);font-family:"Patua One",Georgia,serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:7px 16px;border-radius:999px;white-space:nowrap;border:1px solid rgba(255,179,0,.55);box-shadow:0 10px 22px -8px rgba(0,0,0,.6);z-index:2}
+.bhfe-cf-badge::before{content:"\2605";font-size:10px;line-height:1}
 
 /* ---- picker ---- */
 .bhfe-cf-picker{padding:40px 52px 44px}
