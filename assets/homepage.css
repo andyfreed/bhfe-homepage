@@ -215,6 +215,9 @@
 @media (max-width:560px){.bhfe-hero__btn{flex:1 1 100%}}
 .bhfe-hero :focus-visible{outline:3px solid #fff;outline-offset:2px;border-radius:8px}
 
+/* close the theme header's 1rem margin-bottom so the hero sits flush under the nav */
+#Main > .bhfe-hero:first-child{margin-top:-1rem}
+
 /* spacing: bands sit below the full-bleed hero, with breathing room before the footer */
 .bhfe-hero + .bhfe-band{margin-top:32px}
 .bhfe-band:last-of-type{margin-bottom:48px}
