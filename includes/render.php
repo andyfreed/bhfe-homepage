@@ -141,6 +141,40 @@ function bhfe_hp_hero() {
 
 /** Band — credential finder (rows of tiles + row-aware drawers). Carries id="find-courses". */
 function bhfe_hp_band_finder() {
+    // SIMPLE MODE: every credential is a static link straight to its full catalog
+    // (same tile style CIMA/CDFA already used). The interactive drawer version
+    // — ethics sub-tiles + CPA state form — is preserved below in
+    // bhfe_hp_band_finder_drawers() so it can be restored later.
+    $rows  = array_chunk( bhfe_hp_credentials(), 3 );
+    $stack = '';
+    foreach ( $rows as $row ) {
+        $tiles = '';
+        foreach ( $row as $c ) {
+            $tiles .= '<a class="bhfe-cred" href="' . esc_url( $c['all']['href'] ) . '">'
+                . '<span><span class="bhfe-cred__name">' . wp_kses_post( $c['name'] ) . '</span>'
+                . '<span class="bhfe-cred__tag">' . esc_html( $c['all']['label'] ) . '</span></span>'
+                . '<span class="bhfe-cred__mark bhfe-cred__mark--go" aria-hidden="true">&rarr;</span>'
+                . '</a>';
+        }
+        $stack .= '<div class="bhfe-credrow">' . $tiles . '</div>';
+    }
+    return '<section class="bhfe-band bhfe-finder bhfe-card" id="find-courses" aria-labelledby="bhfe-finder-title">'
+        . '<div class="bhfe-finder__head">'
+        .   '<p class="bhfe-finder__kicker">Find your courses</p>'
+        .   '<h2 class="bhfe-finder__title" id="bhfe-finder-title">Find courses for your credential</h2>'
+        .   '<p class="bhfe-finder__sub">Pick your license to browse every approved course.</p>'
+        . '</div>'
+        . '<div class="bhfe-finder__stack">' . $stack . '</div>'
+        . '</section>';
+}
+
+/*
+ * INTERACTIVE DRAWER VERSION (disabled for now — keep for later).
+ * To re-enable: rename this to bhfe_hp_band_finder() and rename the static
+ * version above to something else (or delete it). The drawer CSS/JS is still
+ * shipped in assets/, so nothing else needs to change.
+ *
+function bhfe_hp_band_finder_drawers() {
     $rows  = array_chunk( bhfe_hp_credentials(), 3 );
     $stack = '';
     foreach ( $rows as $row ) {
@@ -186,6 +220,7 @@ function bhfe_hp_band_finder() {
         . '<div class="bhfe-finder__stack">' . $stack . '</div>'
         . '</section>';
 }
+*/
 
 /** Band — multi-license finder. Copy assumes the catalog ANDs multiple credit_type[]. */
 function bhfe_hp_band_multilicense() {
