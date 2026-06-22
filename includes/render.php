@@ -310,22 +310,31 @@ function bhfe_hp_band_benefits() {
  * which subjects actually have courses for each credential.
  */
 function bhfe_hp_band_browse() {
-    // [ display, taxonomy name, fallback term id ]
+    // [ display label, real subject-taxonomy term name, fallback term id ].
+    // The subject term name resolves to an ID at render time; only the 'subject'
+    // taxonomy is catalog-filterable (?subject=ID), so links use credit_type[]+subject.
     $subj = array(
-        'taxes'  => array( 'Taxes',               'Taxes',                              1348 ),
-        'estate' => array( 'Estate Planning',     'Estate Planning',                    1364 ),
-        'retire' => array( 'Retirement Planning', 'Retirement Savings & Income Planning', 1420 ),
-        'invest' => array( 'Investments',         'Investment Planning',                1406 ),
-        'acct'   => array( 'Accounting',          'Accounting',                         1352 ),
+        'taxes'      => array( 'Taxes',               'Taxes',                                1348 ),
+        'taxplan'    => array( 'Tax Planning',        'Tax Planning',                         1347 ),
+        'accounting' => array( 'Accounting',          'Accounting',                           1352 ),
+        'auditing'   => array( 'Auditing',            'Auditing',                             1357 ),
+        'finance'    => array( 'Finance',             'Finance',                              1407 ),
+        'estate'     => array( 'Estate Planning',     'Estate Planning',                      1364 ),
+        'retire'     => array( 'Retirement Planning', 'Retirement Savings & Income Planning', 1420 ),
+        'invest'     => array( 'Investments',         'Investment Planning',                  1406 ),
+        'finplan'    => array( 'Financial Planning',  'Financial Planning',                   1401 ),
+        'divorce'    => array( 'Divorce',             'Divorce',                              1418 ),
+        'iarpp'      => array( 'Product & Practice',  'Product & Practice (IAR)',             1590 ),
     );
-    // per-credential: whether to show an Ethics link + which subjects
+    // Per-credential subject lists, derived from the live subject×credit_type
+    // cross-tab (top categories that actually have courses for each license).
     $map = array(
-        'cpa'    => array( 'ethics' => true,  'subjects' => array( 'taxes', 'acct', 'estate', 'retire', 'invest' ) ),
-        'cfp'    => array( 'ethics' => true,  'subjects' => array( 'estate', 'retire', 'invest', 'taxes' ) ),
-        'eaotrp' => array( 'ethics' => true,  'subjects' => array( 'taxes', 'retire' ) ),
-        'iar'    => array( 'ethics' => true,  'subjects' => array( 'invest', 'retire', 'estate' ) ),
-        'cima'   => array( 'ethics' => false, 'subjects' => array( 'invest', 'retire', 'estate' ) ),
-        'cdfa'   => array( 'ethics' => false, 'subjects' => array( 'estate', 'retire', 'invest', 'taxes' ) ),
+        'cpa'    => array( 'ethics' => true,  'subjects' => array( 'taxes', 'accounting', 'auditing', 'finance', 'estate' ) ),
+        'cfp'    => array( 'ethics' => true,  'subjects' => array( 'taxes', 'finplan', 'retire', 'invest', 'estate' ) ),
+        'eaotrp' => array( 'ethics' => true,  'subjects' => array( 'taxes', 'taxplan', 'estate', 'retire' ) ),
+        'iar'    => array( 'ethics' => true,  'subjects' => array( 'iarpp', 'invest', 'taxes', 'retire' ) ),
+        'cima'   => array( 'ethics' => false, 'subjects' => array( 'invest', 'estate', 'finplan', 'retire' ) ),
+        'cdfa'   => array( 'ethics' => false, 'subjects' => array( 'taxes', 'finplan', 'divorce', 'invest', 'retire' ) ),
     );
 
     $cols = '';
@@ -349,7 +358,7 @@ function bhfe_hp_band_browse() {
 
     return '<section class="bhfe-band bhfe-card" aria-labelledby="bhfe-browse-title">'
         . '<div class="bhfe-browse">'
-        .   '<h2 class="bhfe-browse__title" id="bhfe-browse-title">Browse by credential</h2>'
+        .   '<h2 class="bhfe-browse__title" id="bhfe-browse-title">Browse by category</h2>'
         .   '<a class="bhfe-browse__btn" href="' . esc_url( '/courses/' ) . '">Browse all 400+ courses <span aria-hidden="true">&rarr;</span></a>'
         .   '<div class="bhfe-browse__grid">' . $cols . '</div>'
         .   '<p class="bhfe-browse__pdf">Prefer a list? <a href="' . esc_url( '/wp-content/uploads/2026/05/CPA-Course-List-2026-5-2-26.pdf' ) . '" target="_blank" rel="noopener">Download the CPA course list (PDF)</a></p>'
