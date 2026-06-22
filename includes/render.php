@@ -160,7 +160,7 @@ function bhfe_hp_band_finder() {
     return '<section class="bhfe-band bhfe-finder bhfe-card" id="find-courses" aria-labelledby="bhfe-finder-title">'
         . '<div class="bhfe-finder__head">'
         .   '<p class="bhfe-finder__kicker">Find your courses</p>'
-        .   '<h2 class="bhfe-finder__title" id="bhfe-finder-title">Find courses for your credential</h2>'
+        .   '<h2 class="bhfe-finder__title" id="bhfe-finder-title">Select your license to view our approved courses</h2>'
         .   '<p class="bhfe-finder__sub">Pick your license to browse every approved course.</p>'
         . '</div>'
         . '<div class="bhfe-finder__stack">' . $stack . '</div>'
