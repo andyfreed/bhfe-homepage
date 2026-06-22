@@ -286,8 +286,8 @@ function bhfe_hp_band_benefits() {
         .   '<div class="bhfe-benefit"><h3 class="bhfe-benefit__title">Instant online access</h3>'
         .     '<p class="bhfe-benefit__body">Courses and exams open the moment checkout completes. Prefer paper? Printed courses ship by mail.</p></div>'
         .   '<div class="bhfe-benefit"><h3 class="bhfe-benefit__title">A deep catalog</h3>'
-        .     '<div class="bhfe-benefit__stat-group"><div class="bhfe-benefit__stat">378</div><div class="bhfe-benefit__stat-label">CPA courses</div></div>'
-        .     '<div class="bhfe-benefit__stat-group"><div class="bhfe-benefit__stat">2,179</div><div class="bhfe-benefit__stat-label">CPE hours</div></div></div>'
+        .     '<div class="bhfe-benefit__stat-group"><div class="bhfe-benefit__stat">378+</div><div class="bhfe-benefit__stat-label">courses across every credential</div></div>'
+        .     '<div class="bhfe-benefit__stat-group"><div class="bhfe-benefit__stat">2,179</div><div class="bhfe-benefit__stat-label">CPE &amp; CE credit hours</div></div></div>'
         . '</div>'
         . '</section>';
 }
@@ -364,7 +364,7 @@ function bhfe_hp_band_courses() {
         .     '<div class="bhfe-cf-grid">' . $btns . '</div>'
         .     '<div class="bhfe-cf-footer">'
         .       '<div class="bhfe-cf-summary"><strong></strong>Select the credentials you hold to begin.</div>'
-        .       '<a class="bhfe-cf-cta is-disabled" href="#" aria-disabled="true">Select a credential</a>'
+        .       '<a class="bhfe-cf-cta is-disabled" href="#" aria-disabled="true">Select your credential(s)</a>'
         .     '</div>'
         .     '<div class="bhfe-cf-note"><span class="bhfe-cf-bullet" aria-hidden="true"></span>One course, multiple credits &mdash; every course shown counts toward all the credentials you selected.</div>'
         .   '</div>'

@@ -128,7 +128,7 @@
         summary.innerHTML = "<strong>" + strong + "</strong>" + text;
       }
       if (n === 0) {
-        cta.textContent = "Select a credential";
+        cta.textContent = "Select your credential(s)";
         cta.classList.add("is-disabled");
         cta.setAttribute("href", "#");
         cta.setAttribute("aria-disabled", "true");
