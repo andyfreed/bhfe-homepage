@@ -157,6 +157,19 @@
     render();
   }
 
+  // Hero primary CTA: smooth-scroll to the course-finder band instead of a
+  // hard jump. scroll-margin-top on #find-courses clears the sticky header.
+  function initHeroScroll() {
+    var link = document.querySelector(".bhfe-hero__btn--scroll");
+    if (!link) return;
+    link.addEventListener("click", function (e) {
+      var target = document.getElementById("find-courses");
+      if (!target) return; // fall back to native anchor jump
+      e.preventDefault();
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+
   function init() {
     var finder = document.querySelector(".bhfe-finder");
     if (finder) initFinder(finder);
@@ -164,6 +177,7 @@
     if (multi) initMulti(multi);
     var courses = document.querySelector(".bhfe-cf-courses");
     if (courses) initCourses(courses);
+    initHeroScroll();
   }
 
   if (document.readyState !== "loading") init();

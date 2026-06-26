@@ -124,9 +124,13 @@ function bhfe_hp_hero() {
         }
     }
 
-    $btn = function( $link, $ghost = false ) {
+    $btn = function( $link, $ghost = false, $anchor = '' ) {
         if ( empty( $link ) || empty( $link['url'] ) ) { return ''; }
         $cls = 'bhfe-hero__btn' . ( $ghost ? ' bhfe-hero__btn--ghost' : '' );
+        // Primary CTA scrolls to the course-finder band instead of navigating away.
+        if ( $anchor ) {
+            return '<a class="' . $cls . ' bhfe-hero__btn--scroll" href="' . esc_attr( $anchor ) . '">' . bhfe_hp_sup( $link['title'] ) . '</a>';
+        }
         $target = ! empty( $link['target'] ) ? ' target="' . esc_attr( $link['target'] ) . '"' : '';
         return '<a class="' . $cls . '" href="' . esc_url( $link['url'] ) . '"' . $target . '>' . bhfe_hp_sup( $link['title'] ) . '</a>';
     };
@@ -144,7 +148,7 @@ function bhfe_hp_hero() {
         . '<div class="bhfe-hero__inner">'
         .   '<h1 class="bhfe-hero__title">' . bhfe_hp_sup( $heading ) . '</h1>'
         .   '<p class="bhfe-hero__sub">' . bhfe_hp_sup( $sub ) . '</p>'
-        .   '<div class="bhfe-hero__ctas">' . $btn( $cta, false ) . $btn( $cta2, true ) . '</div>'
+        .   '<div class="bhfe-hero__ctas">' . $btn( $cta, false, '#find-courses' ) . $btn( $cta2, true ) . '</div>'
         . '</div>'
         . '</section>';
 }
