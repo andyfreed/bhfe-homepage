@@ -175,8 +175,12 @@
     if (finder) initFinder(finder);
     var multi = document.querySelector(".bhfe-multi-band");
     if (multi) initMulti(multi);
-    var courses = document.querySelector(".bhfe-cf-courses");
-    if (courses) initCourses(courses);
+    // init every picker (the live band + any testing duplicates); initCourses
+    // is fully scoped to its root, so each instance works independently.
+    Array.prototype.forEach.call(
+      document.querySelectorAll(".bhfe-cf-courses"),
+      function (el) { initCourses(el); }
+    );
     initHeroScroll();
   }
 

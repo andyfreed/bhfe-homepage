@@ -483,6 +483,61 @@ function bhfe_hp_band_courses() {
 }
 
 /**
+ * TEMP / TESTING — second copy of the "Find Your Courses" band.
+ * An independent sandbox so design tweaks can be tried on a duplicate without
+ * touching the live band above. Unique IDs (-b) + .bhfe-cf-courses--b modifier
+ * class so it can be targeted/styled separately. Remove this whole function and
+ * its echo in bhfe_hp_render() to delete the duplicate.
+ */
+function bhfe_hp_band_courses_b() {
+    $btns = '';
+    foreach ( bhfe_hp_credentials() as $c ) {
+        $btns .= '<button type="button" class="bhfe-cf-license" aria-pressed="false"'
+            . ' data-id="' . esc_attr( $c['id'] ) . '"'
+            . ' data-slug="' . esc_attr( $c['slug'] ) . '"'
+            . ' data-page="' . esc_url( $c['all']['href'] ) . '"'
+            . ' data-label="' . esc_attr( $c['short'] ) . '">'
+            . '<span>' . wp_kses_post( $c['name'] ) . '</span>'
+            . '<span class="bhfe-cf-dot" aria-hidden="true"></span>'
+            . '</button>';
+    }
+    return '<section class="bhfe-band bhfe-cf-courses bhfe-cf-courses--b" id="find-courses-b" aria-labelledby="bhfe-cf-title-b">'
+        . '<div class="bhfe-cf-card">'
+        .   '<div class="bhfe-cf-band">'
+        .     '<div class="bhfe-cf-band-eyebrow">Bundle &amp; save &middot; discounts applied automatically</div>'
+        .     '<div class="bhfe-cf-tiers">'
+        .       '<div class="bhfe-cf-tier bhfe-cf-tier--std">'
+        .         '<div class="bhfe-cf-pct">20<sup>%</sup></div>'
+        .         '<div class="bhfe-cf-when">off when you</div>'
+        .         '<div class="bhfe-cf-add">buy 3&ndash;4 courses</div>'
+        .       '</div>'
+        .       '<div class="bhfe-cf-tier bhfe-cf-tier--best">'
+        .         '<div class="bhfe-cf-badge">Best value</div>'
+        .         '<div class="bhfe-cf-pct">25<sup>%</sup></div>'
+        .         '<div class="bhfe-cf-when">off when you</div>'
+        .         '<div class="bhfe-cf-add">buy 5+ courses</div>'
+        .       '</div>'
+        .     '</div>'
+        .   '</div>'
+        .   '<div class="bhfe-cf-picker">'
+        .     '<div class="bhfe-cf-head">'
+        .       '<div class="bhfe-cf-head-eyebrow">Find Your Courses</div>'
+        .       '<h2 class="bhfe-cf-h2" id="bhfe-cf-title-b">Find the course you need now</h2>'
+        .       '<p class="bhfe-cf-lead">Select the credential you hold &mdash; or choose several and we&rsquo;ll show only the courses that count for every one.</p>'
+        .       '<div class="bhfe-cf-applyhint">Select all that apply</div>'
+        .     '</div>'
+        .     '<div class="bhfe-cf-grid">' . $btns . '</div>'
+        .     '<div class="bhfe-cf-footer">'
+        .       '<div class="bhfe-cf-summary"><strong></strong>Select the credentials you hold to begin.</div>'
+        .       '<a class="bhfe-cf-cta is-disabled" href="#" aria-disabled="true">Select your credential(s)</a>'
+        .     '</div>'
+        .     '<div class="bhfe-cf-note"><span class="bhfe-cf-bullet" aria-hidden="true"></span>One course, multiple credits &mdash; every course shown counts toward all the credentials you selected.</div>'
+        .   '</div>'
+        . '</div>'
+        . '</section>';
+}
+
+/**
  * Band — accreditations & required disclosures.
  * Logo row (CFP, NASBA/QAS, CFP Board, IRS CE, NASAA, IWI) over the CFP-marks
  * and NASBA-sponsor legal text. Logos load from the active theme's /img/ dir.
@@ -529,6 +584,7 @@ function bhfe_hp_band_accreditation() {
 function bhfe_hp_render() {
     echo bhfe_hp_hero();
     echo bhfe_hp_band_courses();   // replaces the old finder + multi-license bands
+    echo bhfe_hp_band_courses_b(); // TEMP: testing duplicate below the first
     echo bhfe_hp_band_accreditation();
     // echo bhfe_hp_band_promo();  // disabled: the bundle/discount band now lives inside bhfe_hp_band_courses()
     echo bhfe_hp_band_benefits();
