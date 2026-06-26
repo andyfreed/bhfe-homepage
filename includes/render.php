@@ -101,6 +101,19 @@ function bhfe_hp_state_form() {
         . '</form>';
 }
 
+/** Just the <option>s for a state <select> (sentinels excluded). Shared by the pickers. */
+function bhfe_hp_state_options( $placeholder = 'Choose your state&hellip;' ) {
+    $states = get_terms( array( 'taxonomy'=>'state', 'hide_empty'=>false, 'orderby'=>'name' ) );
+    $opts = '<option value="">' . $placeholder . '</option>';
+    if ( ! is_wp_error( $states ) ) {
+        foreach ( $states as $t ) {
+            if ( preg_match( '/^all(\s|-)?(states)?$/i', trim( $t->name ) ) ) { continue; }
+            $opts .= '<option value="' . esc_attr( $t->term_id ) . '">' . esc_html( $t->name ) . '</option>';
+        }
+    }
+    return $opts;
+}
+
 /** HERO — reads the ACF hero band on the front page; falls back to defaults. */
 function bhfe_hp_hero() {
     $pid     = (int) get_option( 'page_on_front' );
@@ -505,18 +518,36 @@ function bhfe_hp_band_courses() {
 function bhfe_hp_band_courses_b() {
     $tiles = '';
     foreach ( bhfe_hp_credentials() as $c ) {
-        // Each tile reveals up to two real links on hover/focus/tap.
-        $opts  = '<a class="bhfe-cf-xopt bhfe-cf-xopt--all" href="' . esc_url( $c['all']['href'] ) . '">'
+        // Every tile fans open an "All Courses" chip. Ethics depends on the credential:
+        //  - CPA  -> native state <select> + Go (ethics rules differ by state; works w/o JS)
+        //  - CFP/EA/IAR -> a direct ethics-page link
+        //  - CIMA/CDFA  -> no ethics courses, so just the All Courses chip (solo)
+        $all = '<a class="bhfe-cf-xopt bhfe-cf-xopt--all" href="' . esc_url( $c['all']['href'] ) . '">'
             . '<span class="bhfe-cf-xopt-lead">Browse</span>All Courses</a>';
-        if ( ! empty( $c['ethics'] ) ) {   // CIMA / CDFA have no ethics courses
-            $opts .= '<a class="bhfe-cf-xopt bhfe-cf-xopt--eth" href="' . esc_url( bhfe_hp_ethics_url( $c['slug'] ) ) . '">'
+
+        $mod = '';
+        $fan = $all;
+        if ( $c['id'] === 'cpa' ) {
+            $mod = ' is-cpa';
+            $fan = $all
+                . '<form class="bhfe-cf-stateform" method="get" action="' . esc_url( '/courses/ethics-courses-for-accountants/' ) . '">'
+                .   '<input type="hidden" name="credit_type[]" value="cpa">'
+                .   '<label class="bhfe-sr-only" for="bhfe-cpa-state-b">Your state for CPA ethics</label>'
+                .   '<select class="bhfe-cf-stateselect" id="bhfe-cpa-state-b" name="state">' . bhfe_hp_state_options( 'Ethics by state&hellip;' ) . '</select>'
+                .   '<button class="bhfe-cf-statego" type="submit" aria-label="View CPA ethics for the selected state">Go <span aria-hidden="true">&rarr;</span></button>'
+                . '</form>';
+        } elseif ( ! empty( $c['ethics'] ) ) {
+            $fan = $all
+                . '<a class="bhfe-cf-xopt bhfe-cf-xopt--eth" href="' . esc_url( bhfe_hp_ethics_url( $c['slug'] ) ) . '">'
                 . '<span class="bhfe-cf-xopt-lead">Just</span>Ethics</a>';
+        } else {
+            $mod = ' is-solo';
         }
-        $solo = empty( $c['ethics'] ) ? ' is-solo' : '';
-        $tiles .= '<div class="bhfe-cf-xtile" role="group" aria-label="' . esc_attr( wp_strip_all_tags( $c['name'] ) ) . ' course options">'
+
+        $tiles .= '<div class="bhfe-cf-xtile' . $mod . '" role="group" aria-label="' . esc_attr( wp_strip_all_tags( $c['name'] ) ) . ' course options">'
             . '<span class="bhfe-cf-xname">' . wp_kses_post( $c['name'] ) . '</span>'
             . '<span class="bhfe-cf-xcue" aria-hidden="true">Pick an option</span>'
-            . '<div class="bhfe-cf-xactions' . $solo . '">' . $opts . '</div>'
+            . '<div class="bhfe-cf-xfan">' . $fan . '</div>'
             . '</div>';
     }
     return '<section class="bhfe-band bhfe-cf-courses bhfe-cf-courses--b" id="find-courses-b" aria-labelledby="bhfe-cf-title-b">'
@@ -526,7 +557,7 @@ function bhfe_hp_band_courses_b() {
         .     '<div class="bhfe-cf-head">'
         .       '<div class="bhfe-cf-head-eyebrow">Find Your Courses</div>'
         .       '<h2 class="bhfe-cf-h2" id="bhfe-cf-title-b">Find the course you need now</h2>'
-        .       '<p class="bhfe-cf-lead">Hover a credential to reveal its options &mdash; jump to the full catalog or go straight to ethics.</p>'
+        .       '<p class="bhfe-cf-lead">Hover a credential to fan out its options &mdash; jump to the full catalog or go straight to ethics.</p>'
         .     '</div>'
         .     '<div class="bhfe-cf-grid bhfe-cf-xgrid">' . $tiles . '</div>'
         .   '</div>'

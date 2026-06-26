@@ -164,7 +164,8 @@
     var tiles = Array.prototype.slice.call(root.querySelectorAll(".bhfe-cf-xtile"));
     if (!tiles.length) return;
     root.addEventListener("click", function (e) {
-      if (e.target.closest(".bhfe-cf-xopt")) return; // let the link navigate
+      // let links + the CPA state form (select/Go/label) work without toggling
+      if (e.target.closest("a, select, button, label, option")) return;
       var tile = e.target.closest(".bhfe-cf-xtile");
       if (!tile) return;
       var open = tile.classList.contains("is-open");
