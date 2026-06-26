@@ -148,7 +148,8 @@ function bhfe_hp_hero() {
         . '<div class="bhfe-hero__inner">'
         .   '<h1 class="bhfe-hero__title">' . bhfe_hp_sup( $heading ) . '</h1>'
         .   '<p class="bhfe-hero__sub">' . bhfe_hp_sup( $sub ) . '</p>'
-        .   '<div class="bhfe-hero__ctas">' . $btn( $cta, false, '#find-courses' ) . $btn( $cta2, true ) . '</div>'
+        // Hero CTA buttons hidden for now (preview). Restore by removing the '0 &&' guard.
+        .   ( 0 && true ? '<div class="bhfe-hero__ctas">' . $btn( $cta, false, '#find-courses' ) . $btn( $cta2, true ) . '</div>' : '' )
         . '</div>'
         . '</section>';
 }
