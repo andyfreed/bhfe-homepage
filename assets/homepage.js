@@ -157,6 +157,22 @@
     render();
   }
 
+  // Version B picker (testing): hover/focus reveal is pure CSS. This adds
+  // tap-to-toggle for touch devices (no hover) — first tap opens a tile's tray,
+  // a tap on an option link still navigates. Only one tile open at a time.
+  function initCoursesExpand(root) {
+    var tiles = Array.prototype.slice.call(root.querySelectorAll(".bhfe-cf-xtile"));
+    if (!tiles.length) return;
+    root.addEventListener("click", function (e) {
+      if (e.target.closest(".bhfe-cf-xopt")) return; // let the link navigate
+      var tile = e.target.closest(".bhfe-cf-xtile");
+      if (!tile) return;
+      var open = tile.classList.contains("is-open");
+      tiles.forEach(function (t) { t.classList.remove("is-open"); });
+      if (!open) tile.classList.add("is-open");
+    });
+  }
+
   // Hero primary CTA: smooth-scroll to the course-finder band instead of a
   // hard jump. scroll-margin-top on #find-courses clears the sticky header.
   function initHeroScroll() {
@@ -180,6 +196,10 @@
     Array.prototype.forEach.call(
       document.querySelectorAll(".bhfe-cf-courses"),
       function (el) { initCourses(el); }
+    );
+    Array.prototype.forEach.call(
+      document.querySelectorAll(".bhfe-cf-courses--b"),
+      function (el) { initCoursesExpand(el); }
     );
     initHeroScroll();
   }

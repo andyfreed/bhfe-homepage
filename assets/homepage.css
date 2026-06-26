@@ -358,6 +358,64 @@
 @media (prefers-reduced-motion:reduce){.bhfe-cf-license,.bhfe-cf-dot,.bhfe-cf-cta{transition:none}}
 
 /* ============================================================
+   A/B on-screen labels (flags) · split discount box · Version B
+   hover-to-expand credential tiles (TESTING sandbox).
+   ============================================================ */
+.bhfe-cf-flag{display:flex;align-items:center;gap:8px;width:max-content;max-width:calc(100% - 32px);margin:0 auto 16px;padding:7px 18px;border-radius:999px;font-family:"Patua One",Georgia,serif;font-size:13px;letter-spacing:.1em;text-transform:uppercase;line-height:1}
+.bhfe-cf-flag::before{content:"";width:8px;height:8px;border-radius:999px;background:currentColor;opacity:.65}
+.bhfe-cf-flag--a{background:#eef1f4;color:var(--bhfe-navy);border:1px solid var(--bhfe-line)}
+.bhfe-cf-flag--b{background:var(--bhfe-amber);color:var(--bhfe-navy);box-shadow:0 10px 26px -12px rgba(255,179,0,.85)}
+
+/* Standalone discount box: drop the divider that separated it from the picker. */
+.bhfe-cf-discount .bhfe-cf-band{border-bottom:0}
+
+/* Version B tiles — calm by default; hover/focus/tap lifts the tile and slides
+   up a navy tray with "All Courses" + "Ethics". The tray is absolutely
+   positioned, so an expanding tile never reflows the rest of the row. */
+.bhfe-cf-courses--b .bhfe-cf-xtile{position:relative;overflow:hidden;min-height:132px;border-radius:14px;border:2px solid #c2ccd5;background:#fff;transition:border-color .2s,box-shadow .2s,transform .2s}
+.bhfe-cf-courses--b .bhfe-cf-xname{position:absolute;left:14px;right:14px;top:50%;transform:translateY(-50%);margin:0;text-align:center;font-family:"Patua One",Georgia,serif;font-size:20px;color:var(--bhfe-navy);line-height:1.12;transition:top .26s cubic-bezier(.2,.7,.2,1),transform .26s,font-size .26s}
+.bhfe-cf-courses--b .bhfe-cf-xname sup{font-size:.6em}
+.bhfe-cf-courses--b .bhfe-cf-xcue{position:absolute;left:0;right:0;bottom:13px;text-align:center;font-family:"Patua One",Georgia,serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--bhfe-tag);transition:opacity .18s}
+.bhfe-cf-courses--b .bhfe-cf-xactions{position:absolute;left:0;right:0;bottom:0;height:60%;display:flex;gap:10px;padding:12px;background:var(--bhfe-navy);border-top:2px solid var(--bhfe-amber);transform:translateY(100%);transition:transform .28s cubic-bezier(.2,.7,.2,1)}
+.bhfe-cf-courses--b .bhfe-cf-xtile:hover,
+.bhfe-cf-courses--b .bhfe-cf-xtile:focus-within,
+.bhfe-cf-courses--b .bhfe-cf-xtile.is-open{border-color:var(--bhfe-amber);box-shadow:0 16px 36px -16px rgba(0,33,58,.5);transform:translateY(-3px)}
+.bhfe-cf-courses--b .bhfe-cf-xtile:hover .bhfe-cf-xname,
+.bhfe-cf-courses--b .bhfe-cf-xtile:focus-within .bhfe-cf-xname,
+.bhfe-cf-courses--b .bhfe-cf-xtile.is-open .bhfe-cf-xname{top:14px;transform:translateY(0);font-size:16px}
+.bhfe-cf-courses--b .bhfe-cf-xtile:hover .bhfe-cf-xcue,
+.bhfe-cf-courses--b .bhfe-cf-xtile:focus-within .bhfe-cf-xcue,
+.bhfe-cf-courses--b .bhfe-cf-xtile.is-open .bhfe-cf-xcue{opacity:0}
+.bhfe-cf-courses--b .bhfe-cf-xtile:hover .bhfe-cf-xactions,
+.bhfe-cf-courses--b .bhfe-cf-xtile:focus-within .bhfe-cf-xactions,
+.bhfe-cf-courses--b .bhfe-cf-xtile.is-open .bhfe-cf-xactions{transform:translateY(0)}
+/* tray option links — scoped !important beats the theme's a:hover (blanks bg/text + ::before overlay) */
+.bhfe-cf-courses--b .bhfe-cf-xopt,
+.bhfe-cf-courses--b .bhfe-cf-xopt:hover,
+.bhfe-cf-courses--b .bhfe-cf-xopt:focus,
+.bhfe-cf-courses--b .bhfe-cf-xopt:active{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+  text-decoration:none !important;border-radius:10px;padding:6px;line-height:1.1;text-align:center;
+  font-family:"Patua One",Georgia,serif !important;font-weight:400 !important;font-size:15px !important;
+  opacity:0;transform:translateY(8px);transition:opacity .2s,transform .2s,filter .15s,background .15s,color .15s}
+.bhfe-cf-courses--b .bhfe-cf-xopt::before{content:none !important;display:none !important}
+.bhfe-cf-courses--b .bhfe-cf-xopt--all{background:var(--bhfe-amber) !important;color:var(--bhfe-navy) !important}
+.bhfe-cf-courses--b .bhfe-cf-xopt--eth{background:transparent !important;color:var(--bhfe-amber) !important;border:1.5px solid rgba(255,179,0,.55) !important}
+.bhfe-cf-courses--b .bhfe-cf-xopt-lead{font-size:10px;letter-spacing:.12em;text-transform:uppercase;opacity:.72}
+.bhfe-cf-courses--b .bhfe-cf-xtile:hover .bhfe-cf-xopt,
+.bhfe-cf-courses--b .bhfe-cf-xtile:focus-within .bhfe-cf-xopt,
+.bhfe-cf-courses--b .bhfe-cf-xtile.is-open .bhfe-cf-xopt{opacity:1;transform:translateY(0)}
+.bhfe-cf-courses--b .bhfe-cf-xopt--all{transition-delay:.04s}
+.bhfe-cf-courses--b .bhfe-cf-xopt--eth{transition-delay:.1s}
+.bhfe-cf-courses--b .bhfe-cf-xopt--all:hover{filter:brightness(1.06) !important}
+.bhfe-cf-courses--b .bhfe-cf-xopt--eth:hover{background:var(--bhfe-amber) !important;color:var(--bhfe-navy) !important}
+.bhfe-cf-courses--b .bhfe-cf-xopt:focus-visible{outline:3px solid var(--bhfe-amber) !important;outline-offset:2px}
+@media (prefers-reduced-motion:reduce){
+  .bhfe-cf-courses--b .bhfe-cf-xtile,.bhfe-cf-courses--b .bhfe-cf-xname,
+  .bhfe-cf-courses--b .bhfe-cf-xactions,.bhfe-cf-courses--b .bhfe-cf-xopt{transition:none}
+}
+
+/* ============================================================
    Accreditations & required disclosures card (below the picker)
    ============================================================ */
 .bhfe-accred__head{text-align:center;max-width:680px;margin:0 auto 28px}

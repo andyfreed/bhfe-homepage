@@ -434,19 +434,13 @@ function bhfe_hp_band_browse() {
  * AND-filtered /courses/?credit_type[]=… link (built in JS from data attrs).
  * (Design from Claude Design, mapped to brand tokens/fonts; JS in homepage.js.)
  */
-function bhfe_hp_band_courses() {
-    $btns = '';
-    foreach ( bhfe_hp_credentials() as $c ) {
-        $btns .= '<button type="button" class="bhfe-cf-license" aria-pressed="false"'
-            . ' data-id="' . esc_attr( $c['id'] ) . '"'
-            . ' data-slug="' . esc_attr( $c['slug'] ) . '"'
-            . ' data-page="' . esc_url( $c['all']['href'] ) . '"'
-            . ' data-label="' . esc_attr( $c['short'] ) . '">'
-            . '<span>' . wp_kses_post( $c['name'] ) . '</span>'
-            . '<span class="bhfe-cf-dot" aria-hidden="true"></span>'
-            . '</button>';
-    }
-    return '<section class="bhfe-band bhfe-cf-courses" id="find-courses" aria-labelledby="bhfe-cf-title">'
+/**
+ * Band — standalone bundle-discount tiers (20% / 25%). Rendered ONCE, right
+ * below the hero. Split out of the course-finder card so the discount messaging
+ * and the credential picker read as two separate boxes.
+ */
+function bhfe_hp_band_discount() {
+    return '<section class="bhfe-band bhfe-cf-discount" aria-label="Bundle discounts">'
         . '<div class="bhfe-cf-card">'
         .   '<div class="bhfe-cf-band">'
         .     '<div class="bhfe-cf-band-eyebrow">Bundle &amp; save &middot; discounts applied automatically</div>'
@@ -464,6 +458,25 @@ function bhfe_hp_band_courses() {
         .       '</div>'
         .     '</div>'
         .   '</div>'
+        . '</div>'
+        . '</section>';
+}
+
+function bhfe_hp_band_courses() {
+    $btns = '';
+    foreach ( bhfe_hp_credentials() as $c ) {
+        $btns .= '<button type="button" class="bhfe-cf-license" aria-pressed="false"'
+            . ' data-id="' . esc_attr( $c['id'] ) . '"'
+            . ' data-slug="' . esc_attr( $c['slug'] ) . '"'
+            . ' data-page="' . esc_url( $c['all']['href'] ) . '"'
+            . ' data-label="' . esc_attr( $c['short'] ) . '">'
+            . '<span>' . wp_kses_post( $c['name'] ) . '</span>'
+            . '<span class="bhfe-cf-dot" aria-hidden="true"></span>'
+            . '</button>';
+    }
+    return '<section class="bhfe-band bhfe-cf-courses" id="find-courses" aria-labelledby="bhfe-cf-title">'
+        . '<div class="bhfe-cf-flag bhfe-cf-flag--a">Version A &middot; current</div>'
+        . '<div class="bhfe-cf-card">'
         .   '<div class="bhfe-cf-picker">'
         .     '<div class="bhfe-cf-head">'
         .       '<div class="bhfe-cf-head-eyebrow">Find Your Courses</div>'
@@ -490,48 +503,32 @@ function bhfe_hp_band_courses() {
  * its echo in bhfe_hp_render() to delete the duplicate.
  */
 function bhfe_hp_band_courses_b() {
-    $btns = '';
+    $tiles = '';
     foreach ( bhfe_hp_credentials() as $c ) {
-        $btns .= '<button type="button" class="bhfe-cf-license" aria-pressed="false"'
-            . ' data-id="' . esc_attr( $c['id'] ) . '"'
-            . ' data-slug="' . esc_attr( $c['slug'] ) . '"'
-            . ' data-page="' . esc_url( $c['all']['href'] ) . '"'
-            . ' data-label="' . esc_attr( $c['short'] ) . '">'
-            . '<span>' . wp_kses_post( $c['name'] ) . '</span>'
-            . '<span class="bhfe-cf-dot" aria-hidden="true"></span>'
-            . '</button>';
+        // Each tile reveals up to two real links on hover/focus/tap.
+        $opts  = '<a class="bhfe-cf-xopt bhfe-cf-xopt--all" href="' . esc_url( $c['all']['href'] ) . '">'
+            . '<span class="bhfe-cf-xopt-lead">Browse</span>All Courses</a>';
+        if ( ! empty( $c['ethics'] ) ) {   // CIMA / CDFA have no ethics courses
+            $opts .= '<a class="bhfe-cf-xopt bhfe-cf-xopt--eth" href="' . esc_url( bhfe_hp_ethics_url( $c['slug'] ) ) . '">'
+                . '<span class="bhfe-cf-xopt-lead">Just</span>Ethics</a>';
+        }
+        $solo = empty( $c['ethics'] ) ? ' is-solo' : '';
+        $tiles .= '<div class="bhfe-cf-xtile" role="group" aria-label="' . esc_attr( wp_strip_all_tags( $c['name'] ) ) . ' course options">'
+            . '<span class="bhfe-cf-xname">' . wp_kses_post( $c['name'] ) . '</span>'
+            . '<span class="bhfe-cf-xcue" aria-hidden="true">Pick an option</span>'
+            . '<div class="bhfe-cf-xactions' . $solo . '">' . $opts . '</div>'
+            . '</div>';
     }
     return '<section class="bhfe-band bhfe-cf-courses bhfe-cf-courses--b" id="find-courses-b" aria-labelledby="bhfe-cf-title-b">'
+        . '<div class="bhfe-cf-flag bhfe-cf-flag--b">Version B &middot; testing</div>'
         . '<div class="bhfe-cf-card">'
-        .   '<div class="bhfe-cf-band">'
-        .     '<div class="bhfe-cf-band-eyebrow">Bundle &amp; save &middot; discounts applied automatically</div>'
-        .     '<div class="bhfe-cf-tiers">'
-        .       '<div class="bhfe-cf-tier bhfe-cf-tier--std">'
-        .         '<div class="bhfe-cf-pct">20<sup>%</sup></div>'
-        .         '<div class="bhfe-cf-when">off when you</div>'
-        .         '<div class="bhfe-cf-add">buy 3&ndash;4 courses</div>'
-        .       '</div>'
-        .       '<div class="bhfe-cf-tier bhfe-cf-tier--best">'
-        .         '<div class="bhfe-cf-badge">Best value</div>'
-        .         '<div class="bhfe-cf-pct">25<sup>%</sup></div>'
-        .         '<div class="bhfe-cf-when">off when you</div>'
-        .         '<div class="bhfe-cf-add">buy 5+ courses</div>'
-        .       '</div>'
-        .     '</div>'
-        .   '</div>'
         .   '<div class="bhfe-cf-picker">'
         .     '<div class="bhfe-cf-head">'
         .       '<div class="bhfe-cf-head-eyebrow">Find Your Courses</div>'
         .       '<h2 class="bhfe-cf-h2" id="bhfe-cf-title-b">Find the course you need now</h2>'
-        .       '<p class="bhfe-cf-lead">Select the credential you hold &mdash; or choose several and we&rsquo;ll show only the courses that count for every one.</p>'
-        .       '<div class="bhfe-cf-applyhint">Select all that apply</div>'
+        .       '<p class="bhfe-cf-lead">Hover a credential to reveal its options &mdash; jump to the full catalog or go straight to ethics.</p>'
         .     '</div>'
-        .     '<div class="bhfe-cf-grid">' . $btns . '</div>'
-        .     '<div class="bhfe-cf-footer">'
-        .       '<div class="bhfe-cf-summary"><strong></strong>Select the credentials you hold to begin.</div>'
-        .       '<a class="bhfe-cf-cta is-disabled" href="#" aria-disabled="true">Select your credential(s)</a>'
-        .     '</div>'
-        .     '<div class="bhfe-cf-note"><span class="bhfe-cf-bullet" aria-hidden="true"></span>One course, multiple credits &mdash; every course shown counts toward all the credentials you selected.</div>'
+        .     '<div class="bhfe-cf-grid bhfe-cf-xgrid">' . $tiles . '</div>'
         .   '</div>'
         . '</div>'
         . '</section>';
@@ -583,8 +580,9 @@ function bhfe_hp_band_accreditation() {
 /** Echo the whole homepage (called by the plugin's front-page template). */
 function bhfe_hp_render() {
     echo bhfe_hp_hero();
-    echo bhfe_hp_band_courses();   // replaces the old finder + multi-license bands
-    echo bhfe_hp_band_courses_b(); // TEMP: testing duplicate below the first
+    echo bhfe_hp_band_discount();  // standalone bundle-discount band — once, right below the hero
+    echo bhfe_hp_band_courses();   // course finder, picker only (Version A)
+    echo bhfe_hp_band_courses_b(); // TEMP: testing duplicate, hover-expand tiles (Version B)
     echo bhfe_hp_band_accreditation();
     // echo bhfe_hp_band_promo();  // disabled: the bundle/discount band now lives inside bhfe_hp_band_courses()
     echo bhfe_hp_band_benefits();
