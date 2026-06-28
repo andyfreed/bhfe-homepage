@@ -369,31 +369,32 @@
 /* Standalone discount box: drop the divider that separated it from the picker. */
 .bhfe-cf-discount .bhfe-cf-band{border-bottom:0}
 
-/* Version B (FAN-OUT variant) — calm by default; hover/focus/tap lifts the
-   tile, raises the name, and the option chips FAN OPEN from a tilted, lowered
-   origin (a hand of cards swinging up). CPA reveals a native state <select>
-   for ethics (requirements differ by state). The fan is absolutely positioned
-   so an opening tile never reflows the rest of the row. */
-.bhfe-cf-courses--b .bhfe-cf-xtile{position:relative;overflow:hidden;min-height:158px;border-radius:14px;border:2px solid #c2ccd5;background:#fff;transition:border-color .2s,box-shadow .2s,transform .2s,background .2s}
-.bhfe-cf-courses--b .bhfe-cf-xname{position:absolute;left:14px;right:14px;top:50%;transform:translateY(-50%);margin:0;text-align:center;font-family:"Patua One",Georgia,serif;font-size:20px;color:var(--bhfe-navy);line-height:1.12;transition:top .24s cubic-bezier(.2,.7,.2,1),transform .24s,font-size .24s}
+/* Version B (FAN-OUT variant) — the tile is a flex column centered vertically:
+   idle shows the name (+cue) centered; on hover/focus/tap the cue collapses and
+   the option chips FAN OPEN right below the name, the whole name+fan cluster
+   staying centered (so the space fills evenly — no empty middle). Reserved
+   min-height fits the expanded state, so opening doesn't reflow the row.
+   CPA reveals a native state <select> for ethics (requirements differ by state). */
+.bhfe-cf-courses--b .bhfe-cf-xtile{position:relative;overflow:hidden;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px 16px;border-radius:14px;border:2px solid #c2ccd5;background:#fff;transition:border-color .2s,box-shadow .2s,transform .2s,background .2s}
+.bhfe-cf-courses--b .bhfe-cf-xname{margin:0;text-align:center;font-family:"Patua One",Georgia,serif;font-size:21px;color:var(--bhfe-navy);line-height:1.12;transition:font-size .2s}
 .bhfe-cf-courses--b .bhfe-cf-xname sup{font-size:.6em}
-.bhfe-cf-courses--b .bhfe-cf-xcue{position:absolute;left:0;right:0;bottom:16px;text-align:center;font-family:"Patua One",Georgia,serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--bhfe-tag);transition:opacity .18s}
+.bhfe-cf-courses--b .bhfe-cf-xcue{margin-top:12px;font-family:"Patua One",Georgia,serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--bhfe-tag);max-height:24px;overflow:hidden;transition:opacity .16s,max-height .2s,margin-top .2s}
 .bhfe-cf-courses--b .bhfe-cf-xcue::after{content:" +";color:var(--bhfe-amber)}
-.bhfe-cf-courses--b .bhfe-cf-xfan{position:absolute;left:12px;right:12px;bottom:14px;display:flex;gap:10px;justify-content:center;align-items:stretch;pointer-events:none}
+.bhfe-cf-courses--b .bhfe-cf-xfan{width:100%;display:flex;gap:10px;justify-content:center;align-items:stretch;max-height:0;opacity:0;margin-top:0;overflow:hidden;pointer-events:none;transition:max-height .28s cubic-bezier(.2,.7,.2,1),opacity .2s,margin-top .28s}
 .bhfe-cf-courses--b .is-cpa .bhfe-cf-xfan{flex-direction:column;gap:8px}
-/* active: lift the tile, raise the name, hide the cue, arm the fan */
+/* active: lift the tile, keep the name big, collapse the cue, open the fan */
 .bhfe-cf-courses--b .bhfe-cf-xtile:hover,
 .bhfe-cf-courses--b .bhfe-cf-xtile:focus-within,
 .bhfe-cf-courses--b .bhfe-cf-xtile.is-open{border-color:var(--bhfe-amber);box-shadow:0 16px 36px -16px rgba(0,33,58,.5);transform:translateY(-3px);background:#fffaf0}
 .bhfe-cf-courses--b .bhfe-cf-xtile:hover .bhfe-cf-xname,
 .bhfe-cf-courses--b .bhfe-cf-xtile:focus-within .bhfe-cf-xname,
-.bhfe-cf-courses--b .bhfe-cf-xtile.is-open .bhfe-cf-xname{top:16px;transform:translateY(0);font-size:16px}
+.bhfe-cf-courses--b .bhfe-cf-xtile.is-open .bhfe-cf-xname{font-size:19px}
 .bhfe-cf-courses--b .bhfe-cf-xtile:hover .bhfe-cf-xcue,
 .bhfe-cf-courses--b .bhfe-cf-xtile:focus-within .bhfe-cf-xcue,
-.bhfe-cf-courses--b .bhfe-cf-xtile.is-open .bhfe-cf-xcue{opacity:0}
+.bhfe-cf-courses--b .bhfe-cf-xtile.is-open .bhfe-cf-xcue{opacity:0;max-height:0;margin-top:0}
 .bhfe-cf-courses--b .bhfe-cf-xtile:hover .bhfe-cf-xfan,
 .bhfe-cf-courses--b .bhfe-cf-xtile:focus-within .bhfe-cf-xfan,
-.bhfe-cf-courses--b .bhfe-cf-xtile.is-open .bhfe-cf-xfan{pointer-events:auto}
+.bhfe-cf-courses--b .bhfe-cf-xtile.is-open .bhfe-cf-xfan{max-height:120px;opacity:1;margin-top:16px;pointer-events:auto}
 /* fan chips — scoped !important beats the theme's a:hover (blanks bg/text + ::before overlay) */
 .bhfe-cf-courses--b .bhfe-cf-xopt,
 .bhfe-cf-courses--b .bhfe-cf-xopt:hover,
@@ -403,28 +404,23 @@
   text-decoration:none !important;border-radius:11px;padding:9px 8px;line-height:1.08;text-align:center;
   font-family:"Patua One",Georgia,serif !important;font-weight:400 !important;font-size:15px !important;
   box-shadow:0 8px 18px -10px rgba(0,33,58,.5);transform-origin:bottom center;
-  opacity:0;transform:translateY(14px) rotate(var(--fan,0deg)) scale(.9);
-  transition:opacity .24s,transform .26s cubic-bezier(.2,.8,.25,1),filter .15s,background .15s,color .15s}
+  transform:rotate(var(--fan,0deg)) scale(.96);
+  transition:transform .26s cubic-bezier(.2,.8,.25,1),filter .15s,background .15s,color .15s}
 .bhfe-cf-courses--b .bhfe-cf-xopt::before{content:none !important;display:none !important}
-.bhfe-cf-courses--b .bhfe-cf-xopt--all{--fan:-9deg;background:var(--bhfe-amber) !important;color:var(--bhfe-navy) !important}
-.bhfe-cf-courses--b .bhfe-cf-xopt--eth{--fan:9deg;background:var(--bhfe-navy) !important;color:#fff !important}
+.bhfe-cf-courses--b .bhfe-cf-xopt--all{--fan:-6deg;background:var(--bhfe-amber) !important;color:var(--bhfe-navy) !important}
+.bhfe-cf-courses--b .bhfe-cf-xopt--eth{--fan:6deg;background:var(--bhfe-navy) !important;color:#fff !important}
 .bhfe-cf-courses--b .is-solo .bhfe-cf-xopt--all,
 .bhfe-cf-courses--b .is-cpa .bhfe-cf-xopt--all{--fan:0deg;flex:none}
 .bhfe-cf-courses--b .bhfe-cf-xopt-lead{font-size:10px;letter-spacing:.12em;text-transform:uppercase;opacity:.72}
-/* reveal: chips swing upright with a stagger */
+/* reveal: chips settle upright as the fan opens */
 .bhfe-cf-courses--b .bhfe-cf-xtile:hover .bhfe-cf-xopt,
 .bhfe-cf-courses--b .bhfe-cf-xtile:focus-within .bhfe-cf-xopt,
-.bhfe-cf-courses--b .bhfe-cf-xtile.is-open .bhfe-cf-xopt{opacity:1;transform:translateY(0) rotate(0) scale(1)}
-.bhfe-cf-courses--b .bhfe-cf-xopt--all{transition-delay:.03s}
-.bhfe-cf-courses--b .bhfe-cf-xopt--eth{transition-delay:.1s}
+.bhfe-cf-courses--b .bhfe-cf-xtile.is-open .bhfe-cf-xopt{transform:rotate(0) scale(1)}
 .bhfe-cf-courses--b .bhfe-cf-xopt--all:hover{filter:brightness(1.06) !important}
 .bhfe-cf-courses--b .bhfe-cf-xopt--eth:hover{filter:brightness(1.18) !important}
 .bhfe-cf-courses--b .bhfe-cf-xopt:focus-visible{outline:3px solid var(--bhfe-amber) !important;outline-offset:2px}
-/* CPA ethics — native state select + Go (works without JS; same staggered reveal) */
-.bhfe-cf-courses--b .bhfe-cf-stateform{display:flex;gap:6px;align-items:stretch;width:100%;opacity:0;transform:translateY(14px);transition:opacity .24s,transform .26s cubic-bezier(.2,.8,.25,1);transition-delay:.1s}
-.bhfe-cf-courses--b .bhfe-cf-xtile:hover .bhfe-cf-stateform,
-.bhfe-cf-courses--b .bhfe-cf-xtile:focus-within .bhfe-cf-stateform,
-.bhfe-cf-courses--b .bhfe-cf-xtile.is-open .bhfe-cf-stateform{opacity:1;transform:translateY(0)}
+/* CPA ethics — native state select + Go (works without JS) */
+.bhfe-cf-courses--b .bhfe-cf-stateform{display:flex;gap:6px;align-items:stretch;width:100%}
 .bhfe-cf-courses--b .bhfe-cf-stateselect{flex:1;min-width:0;border:1.5px solid var(--bhfe-navy);border-radius:10px;padding:8px 10px;font-family:Georgia,serif;font-size:13px;color:var(--bhfe-navy);background:#fff}
 .bhfe-cf-courses--b .bhfe-cf-statego,
 .bhfe-cf-courses--b .bhfe-cf-statego:hover,
