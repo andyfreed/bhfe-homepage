@@ -523,7 +523,7 @@ function bhfe_hp_band_courses_b() {
         //  - CFP/EA/IAR -> a direct ethics-page link
         //  - CIMA/CDFA  -> no ethics courses, so just the All Courses chip (solo)
         $all = '<a class="bhfe-cf-xopt bhfe-cf-xopt--all" href="' . esc_url( $c['all']['href'] ) . '">'
-            . '<span class="bhfe-cf-xopt-lead">Browse</span>All Courses</a>';
+            . 'All Courses</a>';
 
         $mod = '';
         $fan = $all;
@@ -539,7 +539,7 @@ function bhfe_hp_band_courses_b() {
         } elseif ( ! empty( $c['ethics'] ) ) {
             $fan = $all
                 . '<a class="bhfe-cf-xopt bhfe-cf-xopt--eth" href="' . esc_url( bhfe_hp_ethics_url( $c['slug'] ) ) . '">'
-                . '<span class="bhfe-cf-xopt-lead">Just</span>Ethics</a>';
+                . 'Ethics</a>';
         } else {
             $mod = ' is-solo';
         }
