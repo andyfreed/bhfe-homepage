@@ -375,10 +375,12 @@
    staying centered (so the space fills evenly — no empty middle). Reserved
    min-height fits the expanded state, so opening doesn't reflow the row.
    CPA reveals a native state <select> for ethics (requirements differ by state). */
-.bhfe-cf-courses--b .bhfe-cf-xtile{position:relative;overflow:hidden;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px 16px;border-radius:14px;border:2px solid #c2ccd5;background:#fff;transition:border-color .2s,box-shadow .2s,transform .2s,background .2s}
+.bhfe-cf-courses--b .bhfe-cf-xtile{position:relative;overflow:hidden;min-height:168px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px 16px;border-radius:14px;border:2px solid #c2ccd5;background:#fff;transition:border-color .2s,box-shadow .2s,transform .2s,background .2s}
 .bhfe-cf-courses--b .bhfe-cf-xname{margin:0;text-align:center;font-family:"Patua One",Georgia,serif;font-size:21px;color:var(--bhfe-navy);line-height:1.12;transition:font-size .2s}
 .bhfe-cf-courses--b .bhfe-cf-xname sup{font-size:.6em}
-.bhfe-cf-courses--b .bhfe-cf-xcue{margin-top:12px;font-family:"Patua One",Georgia,serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--bhfe-tag);max-height:24px;overflow:hidden;transition:opacity .16s,max-height .2s,margin-top .2s}
+/* cue is absolutely positioned (out of flow) so its collapse never adds height
+   during the fan-open animation -> no transient reflow/twitch on the tall CPA tile */
+.bhfe-cf-courses--b .bhfe-cf-xcue{position:absolute;left:0;right:0;bottom:18px;text-align:center;font-family:"Patua One",Georgia,serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--bhfe-tag);transition:opacity .16s}
 .bhfe-cf-courses--b .bhfe-cf-xcue::after{content:" +";color:var(--bhfe-amber)}
 .bhfe-cf-courses--b .bhfe-cf-xfan{width:100%;display:flex;gap:10px;justify-content:center;align-items:stretch;max-height:0;opacity:0;margin-top:0;overflow:hidden;pointer-events:none;transition:max-height .28s cubic-bezier(.2,.7,.2,1),opacity .2s,margin-top .28s}
 .bhfe-cf-courses--b .is-cpa .bhfe-cf-xfan{flex-direction:column;gap:8px}
@@ -391,7 +393,7 @@
 .bhfe-cf-courses--b .bhfe-cf-xtile.is-open .bhfe-cf-xname{font-size:19px}
 .bhfe-cf-courses--b .bhfe-cf-xtile:hover .bhfe-cf-xcue,
 .bhfe-cf-courses--b .bhfe-cf-xtile:focus-within .bhfe-cf-xcue,
-.bhfe-cf-courses--b .bhfe-cf-xtile.is-open .bhfe-cf-xcue{opacity:0;max-height:0;margin-top:0}
+.bhfe-cf-courses--b .bhfe-cf-xtile.is-open .bhfe-cf-xcue{opacity:0}
 .bhfe-cf-courses--b .bhfe-cf-xtile:hover .bhfe-cf-xfan,
 .bhfe-cf-courses--b .bhfe-cf-xtile:focus-within .bhfe-cf-xfan,
 .bhfe-cf-courses--b .bhfe-cf-xtile.is-open .bhfe-cf-xfan{max-height:120px;opacity:1;margin-top:16px;pointer-events:auto}
