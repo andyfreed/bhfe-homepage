@@ -488,7 +488,6 @@ function bhfe_hp_band_courses() {
             . '</button>';
     }
     return '<section class="bhfe-band bhfe-cf-courses" id="find-courses" aria-labelledby="bhfe-cf-title">'
-        . '<div class="bhfe-cf-flag bhfe-cf-flag--a">Version A &middot; current</div>'
         . '<div class="bhfe-cf-card">'
         .   '<div class="bhfe-cf-picker">'
         .     '<div class="bhfe-cf-head">'
@@ -551,7 +550,6 @@ function bhfe_hp_band_courses_b() {
             . '</div>';
     }
     return '<section class="bhfe-band bhfe-cf-courses bhfe-cf-courses--b" id="find-courses-b" aria-labelledby="bhfe-cf-title-b">'
-        . '<div class="bhfe-cf-flag bhfe-cf-flag--b">Version B &middot; testing</div>'
         . '<div class="bhfe-cf-card">'
         .   '<div class="bhfe-cf-picker">'
         .     '<div class="bhfe-cf-head">'

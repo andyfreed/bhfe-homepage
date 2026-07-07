@@ -363,10 +363,6 @@
    A/B on-screen labels (flags) · split discount box · Version B
    hover-to-expand credential tiles (TESTING sandbox).
    ============================================================ */
-.bhfe-cf-flag{display:flex;align-items:center;gap:8px;width:max-content;max-width:calc(100% - 32px);margin:0 auto 16px;padding:7px 18px;border-radius:999px;font-family:"Patua One",Georgia,serif;font-size:13px;letter-spacing:.1em;text-transform:uppercase;line-height:1}
-.bhfe-cf-flag::before{content:"";width:8px;height:8px;border-radius:999px;background:currentColor;opacity:.65}
-.bhfe-cf-flag--a{background:#eef1f4;color:var(--bhfe-navy);border:1px solid var(--bhfe-line)}
-.bhfe-cf-flag--b{background:var(--bhfe-amber);color:var(--bhfe-navy);box-shadow:0 10px 26px -12px rgba(255,179,0,.85)}
 
 /* Standalone discount box: drop the divider that separated it from the picker. */
 .bhfe-cf-discount .bhfe-cf-band{border-bottom:0}
