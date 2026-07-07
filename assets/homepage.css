@@ -193,13 +193,13 @@
 .bhfe-browse .bhfe-browse__col-title a:focus{color:var(--bhfe-navy) !important;text-decoration:none !important}
 .bhfe-browse__links{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:1px}
 .bhfe-browse .bhfe-browse__links a,
-.bhfe-browse .bhfe-browse__links a:focus{display:block;color:var(--bhfe-muted) !important;text-decoration:none !important;font-family:Georgia,serif;font-size:15px;padding:6px 9px;border-radius:7px;transition:background .15s,color .15s}
+.bhfe-browse .bhfe-browse__links a:focus{display:block;color:var(--bhfe-muted) !important;text-decoration:none !important;font-family:Georgia,serif;font-size:18px;padding:8px 10px;border-radius:7px;transition:background .15s,color .15s}
 .bhfe-browse .bhfe-browse__links a:hover{background:#fff !important;color:var(--bhfe-navy) !important}
 .bhfe-browse .bhfe-browse__links a::before,
 .bhfe-browse .bhfe-browse__links a:hover::before,
 .bhfe-browse .bhfe-browse__col-title a::before,
 .bhfe-browse .bhfe-browse__col-title a:hover::before{content:none !important;display:none !important}
-.bhfe-browse .bhfe-browse__links a.bhfe-browse__viewall{margin-top:5px;font-family:"Patua One",Georgia,serif;color:var(--bhfe-navy) !important;font-size:14px}
+.bhfe-browse .bhfe-browse__links a.bhfe-browse__viewall{margin-top:5px;font-family:"Patua One",Georgia,serif;color:var(--bhfe-navy) !important;font-size:16px}
 .bhfe-browse__pdf{margin-top:26px;color:var(--bhfe-muted);font-size:15px}
 .bhfe-browse__pdf a{color:var(--bhfe-navy);font-weight:bold}
 
@@ -262,21 +262,23 @@
 .bhfe-cf-card{background:#fff;border-radius:20px;box-shadow:0 24px 60px -28px rgba(0,33,58,.35);overflow:hidden}
 
 /* ---- discount band (light) ---- */
-.bhfe-cf-band{position:relative;overflow:hidden;background:linear-gradient(180deg,#fff 0%,#f4f7fa 100%);border-bottom:1px solid var(--bhfe-line);padding:46px 40px 44px}
+.bhfe-cf-band{position:relative;overflow:hidden;background:linear-gradient(180deg,#fff 0%,#f4f7fa 100%);border-bottom:1px solid var(--bhfe-line);padding:24px 40px 24px}
 /* soft amber wash for warmth */
 .bhfe-cf-band::before{content:"";position:absolute;left:50%;top:60%;width:560px;height:300px;transform:translate(-50%,-50%);background:radial-gradient(closest-side,rgba(255,179,0,.12),transparent 72%);pointer-events:none}
-.bhfe-cf-band-eyebrow{position:relative;text-align:center;font-family:"Patua One",Georgia,serif;font-size:16px;letter-spacing:.14em;text-transform:uppercase;color:var(--bhfe-navy);margin-bottom:26px}
+.bhfe-cf-band-eyebrow{position:relative;text-align:center;font-family:"Patua One",Georgia,serif;font-size:16px;letter-spacing:.14em;text-transform:uppercase;color:var(--bhfe-navy);margin-bottom:16px}
 .bhfe-cf-tiers{position:relative;display:flex;gap:22px;justify-content:center;align-items:stretch;flex-wrap:wrap}
-.bhfe-cf-tier{flex:0 1 280px;max-width:100%;border-radius:18px;padding:30px 24px 26px;text-align:center;position:relative;display:flex;flex-direction:column;justify-content:center}
-.bhfe-cf-tier--std{background:#fff;border:1.5px solid var(--bhfe-line);box-shadow:0 10px 26px -18px rgba(0,33,58,.3)}
-.bhfe-cf-tier--best{background:linear-gradient(180deg,#ffca4d 0%,var(--bhfe-amber) 70%,#f5a800 100%);box-shadow:0 20px 46px -16px rgba(255,179,0,.7),inset 0 1px 0 rgba(255,255,255,.5);padding-top:40px}
-.bhfe-cf-pct{font-family:"Patua One",Georgia,serif;font-size:64px;line-height:1;letter-spacing:-.01em}
+.bhfe-cf-tier{flex:0 1 280px;max-width:100%;border-radius:18px;padding:16px 24px 14px;text-align:center;position:relative;display:flex;flex-direction:column;justify-content:center}
+/* both tiers share the same amber background now */
+.bhfe-cf-tier--std,
+.bhfe-cf-tier--best{background:linear-gradient(180deg,#ffca4d 0%,var(--bhfe-amber) 70%,#f5a800 100%);box-shadow:0 14px 34px -18px rgba(255,179,0,.65),inset 0 1px 0 rgba(255,255,255,.5)}
+.bhfe-cf-tier--best{padding-top:28px}
+.bhfe-cf-pct{font-family:"Patua One",Georgia,serif;font-size:44px;line-height:1;letter-spacing:-.01em}
 .bhfe-cf-pct sup{font-size:.4em;font-weight:inherit;position:relative;top:-.66em;margin-left:3px;vertical-align:baseline}
 .bhfe-cf-tier--std .bhfe-cf-pct{color:var(--bhfe-navy)}
 .bhfe-cf-tier--std .bhfe-cf-pct sup{color:var(--bhfe-navy)}
 .bhfe-cf-tier--best .bhfe-cf-pct{color:var(--bhfe-navy)}
-.bhfe-cf-when{font-size:14px;margin-top:12px;letter-spacing:.02em}
-.bhfe-cf-tier--std .bhfe-cf-when{color:var(--bhfe-muted)}
+.bhfe-cf-when{font-size:14px;margin-top:6px;letter-spacing:.02em}
+.bhfe-cf-tier--std .bhfe-cf-when,
 .bhfe-cf-tier--best .bhfe-cf-when{color:rgba(0,33,58,.72)}
 .bhfe-cf-add{font-family:"Patua One",Georgia,serif;font-size:18px;margin-top:4px}
 .bhfe-cf-tier--std .bhfe-cf-add{color:var(--bhfe-navy)}
@@ -449,10 +451,9 @@
 @media (min-width:1000px){.bhfe-accred__title{font-size:34px}}
 .bhfe-accred__logos{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:0 0 30px}
 @media (min-width:560px){.bhfe-accred__logos{grid-template-columns:repeat(3,1fr)}}
-@media (min-width:900px){.bhfe-accred__logos{grid-template-columns:repeat(6,1fr)}}
-.bhfe-accred__logo{display:grid;place-items:center;min-height:108px;padding:18px;background:#fff;border:1px solid var(--bhfe-line);border-radius:14px;transition:box-shadow .2s,transform .2s,border-color .2s}
+.bhfe-accred__logo{display:grid;place-items:center;min-height:150px;padding:26px;background:#fff;border:1px solid var(--bhfe-line);border-radius:14px;transition:box-shadow .2s,transform .2s,border-color .2s}
 .bhfe-accred__logo:hover{box-shadow:0 14px 30px -18px rgba(0,33,58,.4);border-color:#c2ccd5;transform:translateY(-2px)}
-.bhfe-accred__logo img{max-width:100%;max-height:60px;width:auto;height:auto;object-fit:contain;display:block}
+.bhfe-accred__logo img{max-width:100%;max-height:84px;width:auto;height:auto;object-fit:contain;display:block}
 .bhfe-accred__subhead{text-align:center;margin:4px auto 22px;padding-top:28px;border-top:1px solid var(--bhfe-line)}
 .bhfe-accred__subtitle{font-family:"Patua One",Georgia,serif;color:var(--bhfe-navy);font-size:26px;line-height:1.12;margin:6px 0 0;text-wrap:balance}
 .bhfe-accred__legal{padding-top:0;column-gap:40px}
