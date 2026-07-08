@@ -308,7 +308,7 @@ function bhfe_hp_band_benefits() {
     return '<section class="bhfe-band bhfe-card" aria-label="Why Beacon Hill">'
         . '<div class="bhfe-benefits">'
         .   '<div class="bhfe-benefit"><h3 class="bhfe-benefit__title">Approved sponsor</h3>'
-        .     '<p class="bhfe-benefit__body">Registered with NASBA (#107615), CFP Board, the IRS, IDFA, the Investments &amp; Wealth Institute, and NASAA.</p></div>'
+        .     '<p class="bhfe-benefit__body">Registered with NASBA, CFP Board, the IRS, IDFA, the Investments &amp; Wealth Institute, and NASAA.</p></div>'
         .   '<div class="bhfe-benefit"><h3 class="bhfe-benefit__title">Trusted since 1995</h3>'
         .     '<p class="bhfe-benefit__body">Independent, family-run provider serving CPAs, CFPs and other financial professionals for over three decades.</p></div>'
         .   '<div class="bhfe-benefit"><h3 class="bhfe-benefit__title">Instant online access</h3>'
