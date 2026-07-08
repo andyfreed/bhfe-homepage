@@ -38,6 +38,26 @@ function bhfe_hp_template_include( $template ) {
 }
 
 /**
+ * Purge WP Engine's page cache after every WP Pusher deploy (webhook or manual
+ * "Update plugin"). Without this, anonymous visitors keep getting the cached
+ * pre-deploy HTML even though the files on disk are already current — WPE only
+ * purges on content edits, not file deploys. No-ops outside WPE (e.g. Local).
+ */
+add_action( 'wppusher_plugin_was_updated', 'bhfe_hp_purge_wpe_cache' );
+add_action( 'wppusher_theme_was_updated', 'bhfe_hp_purge_wpe_cache' );
+function bhfe_hp_purge_wpe_cache() {
+    if ( ! class_exists( 'WpeCommon' ) ) {
+        return;
+    }
+    if ( method_exists( 'WpeCommon', 'purge_memcached' ) ) {
+        WpeCommon::purge_memcached();
+    }
+    if ( method_exists( 'WpeCommon', 'purge_varnish_cache' ) ) {
+        WpeCommon::purge_varnish_cache();
+    }
+}
+
+/**
  * Front-page-only assets (filemtime-versioned for cache-busting; Autoptimize aggregates them).
  */
 add_action( 'wp_enqueue_scripts', 'bhfe_hp_assets' );
