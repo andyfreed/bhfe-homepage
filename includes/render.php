@@ -615,5 +615,5 @@ function bhfe_hp_render() {
     echo bhfe_hp_band_accreditation();
     // echo bhfe_hp_band_promo();  // disabled: the bundle/discount band now lives inside bhfe_hp_band_courses()
     echo bhfe_hp_band_benefits();
-    echo bhfe_hp_band_browse();
+    // echo bhfe_hp_band_browse(); // "Browse by subject" hidden for now (kept in code)
 }
