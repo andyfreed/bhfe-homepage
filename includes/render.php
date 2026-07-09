@@ -565,23 +565,25 @@ function bhfe_hp_band_courses_b() {
 
 /**
  * Band — accreditations & required disclosures.
- * Logo row (CFP, NASBA/QAS, CFP Board, IRS CE, NASAA, IWI) over the CFP-marks
- * and NASBA-sponsor legal text. Logos load from the active theme's /img/ dir.
+ * Logo grid (CFP, NASBA/QAS, IDFA, IRS CE, NASAA, IWI) over the CFP-marks
+ * and NASBA-sponsor legal text. Logos load from the theme's /img/ dir or,
+ * for the high-res replacements, this plugin's assets/img/.
  */
 function bhfe_hp_band_accreditation() {
-    $img = get_template_directory_uri() . '/img/';
+    $img  = get_template_directory_uri() . '/img/'; // legacy theme images
+    $pimg = BHFE_HP_URL . 'assets/img/';            // high-res copies bundled with this plugin
     $logos = array(
-        array( 'Affiliation-CFP.png',                 'CFP® certification marks' ),
-        array( 'RegistryAndQASComboLogo53By73p.jpg',  'NASBA National Registry of CPE Sponsors — QAS Self Study' ),
-        array( 'cfp-board.png',                        'CFP Board — CE Quality Partner' ),
-        array( 'ce-blue.png',                          'IRS — Approved Continuing Education Provider' ),
-        array( 'nasaa_logo_blue.png',                  'NASAA — North American Securities Administrators Association' ),
-        array( 'iwi_logo.png',                         'Investments & Wealth Institute' ),
+        array( $img . 'Affiliation-CFP.png',   'CFP® certification marks', '' ),
+        array( $pimg . 'nasba.png',            'NASBA National Registry of CPE Sponsors — QAS Self Study', ' bhfe-accred__logo--tall' ),
+        array( $pimg . 'idfa-logo.png',        'IDFA — Institute for Divorce Financial Analysts', '' ),
+        array( $pimg . 'ce.png',               'IRS — Approved Continuing Education Provider', '' ),
+        array( $img . 'nasaa_logo_blue.png',   'NASAA — North American Securities Administrators Association', '' ),
+        array( $img . 'iwi_logo.png',          'Investments & Wealth Institute', '' ),
     );
     $tiles = '';
     foreach ( $logos as $l ) {
-        $tiles .= '<div class="bhfe-accred__logo">'
-            . '<img src="' . esc_url( $img . $l[0] ) . '" alt="' . esc_attr( $l[1] ) . '" loading="lazy" decoding="async">'
+        $tiles .= '<div class="bhfe-accred__logo' . $l[2] . '">'
+            . '<img src="' . esc_url( $l[0] ) . '" alt="' . esc_attr( $l[1] ) . '" loading="lazy" decoding="async">'
             . '</div>';
     }
 

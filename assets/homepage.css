@@ -265,7 +265,7 @@
 .bhfe-cf-band{position:relative;overflow:hidden;background:linear-gradient(180deg,#fff 0%,#f4f7fa 100%);border-bottom:1px solid var(--bhfe-line);padding:24px 40px 24px}
 /* soft amber wash for warmth */
 .bhfe-cf-band::before{content:"";position:absolute;left:50%;top:60%;width:560px;height:300px;transform:translate(-50%,-50%);background:radial-gradient(closest-side,rgba(255,179,0,.12),transparent 72%);pointer-events:none}
-.bhfe-cf-band-eyebrow{position:relative;text-align:center;font-family:"Patua One",Georgia,serif;font-size:16px;letter-spacing:.14em;text-transform:uppercase;color:var(--bhfe-navy);margin-bottom:16px}
+.bhfe-cf-band-eyebrow{position:relative;text-align:center;font-family:"Patua One",Georgia,serif;font-size:18px;letter-spacing:.14em;text-transform:uppercase;color:var(--bhfe-navy);margin-bottom:16px}
 .bhfe-cf-tiers{position:relative;display:flex;gap:22px;justify-content:center;align-items:stretch;flex-wrap:wrap}
 .bhfe-cf-tier{flex:0 1 280px;max-width:100%;border-radius:18px;padding:16px 24px 14px;text-align:center;position:relative;display:flex;flex-direction:column;justify-content:center}
 /* both tiers share the same amber background now */
@@ -289,7 +289,7 @@
 /* ---- picker ---- */
 .bhfe-cf-picker{padding:40px 52px 44px}
 .bhfe-cf-head{text-align:center;margin-bottom:30px}
-.bhfe-cf-head-eyebrow{font-family:"Patua One",Georgia,serif;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--bhfe-amber)}
+.bhfe-cf-head-eyebrow{font-family:"Patua One",Georgia,serif;font-size:18px;letter-spacing:.14em;text-transform:uppercase;color:var(--bhfe-navy)}
 .bhfe-cf-h2{font-family:"Patua One",Georgia,serif;font-size:34px;color:var(--bhfe-navy);margin:10px 0 12px;line-height:1.08;text-wrap:balance}
 .bhfe-cf-lead{margin:0 auto;max-width:560px;font-size:18px;color:var(--bhfe-muted);line-height:1.5;text-wrap:pretty}
 /* "Select all that apply" hint — noticeable pill above the grid */
@@ -365,7 +365,9 @@
    ============================================================ */
 
 /* Standalone discount box: drop the divider that separated it from the picker. */
-.bhfe-cf-discount .bhfe-cf-band{border-bottom:0}
+/* standalone discount band: no white card — tiers sit directly on the page */
+.bhfe-cf-discount .bhfe-cf-card{background:transparent;border-radius:0;box-shadow:none;overflow:visible}
+.bhfe-cf-discount .bhfe-cf-band{background:transparent;border-bottom:0;padding:12px 0 4px}
 
 /* Version B (FAN-OUT variant) — the tile is a flex column centered vertically:
    idle shows the name (+cue) centered; on hover/focus/tap the cue collapses and
@@ -442,14 +444,16 @@
    Accreditations & required disclosures card (below the picker)
    ============================================================ */
 .bhfe-accred__head{text-align:center;max-width:680px;margin:0 auto 28px}
-.bhfe-accred__kicker{font-family:"Patua One",Georgia,serif;color:var(--bhfe-amber-ink);letter-spacing:.18em;font-size:13px;text-transform:uppercase;margin:0}
+.bhfe-accred__kicker{font-family:"Patua One",Georgia,serif;color:var(--bhfe-navy);letter-spacing:.14em;font-size:18px;text-transform:uppercase;margin:0}
 .bhfe-accred__title{font-family:"Patua One",Georgia,serif;color:var(--bhfe-navy);font-size:28px;line-height:1.12;margin:8px 0 0;text-wrap:balance}
 @media (min-width:1000px){.bhfe-accred__title{font-size:34px}}
 .bhfe-accred__logos{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:0 0 30px}
 @media (min-width:560px){.bhfe-accred__logos{grid-template-columns:repeat(3,1fr)}}
-.bhfe-accred__logo{display:grid;place-items:center;min-height:150px;padding:26px;background:#fff;border:1px solid var(--bhfe-line);border-radius:14px;transition:box-shadow .2s,transform .2s,border-color .2s}
-.bhfe-accred__logo:hover{box-shadow:0 14px 30px -18px rgba(0,33,58,.4);border-color:#c2ccd5;transform:translateY(-2px)}
+.bhfe-accred__logo{display:grid;place-items:center;min-height:150px;padding:26px;background:#fff;border:1px solid var(--bhfe-line);border-radius:14px}
 .bhfe-accred__logo img{max-width:100%;max-height:84px;width:auto;height:auto;object-fit:contain;display:block}
+/* portrait logos (NASBA registry/QAS combo) get more vertical room */
+.bhfe-accred__logo--tall{padding:14px 26px}
+.bhfe-accred__logo--tall img{max-height:122px}
 .bhfe-accred__subhead{text-align:center;margin:4px auto 22px;padding-top:28px;border-top:1px solid var(--bhfe-line)}
 .bhfe-accred__subtitle{font-family:"Patua One",Georgia,serif;color:var(--bhfe-navy);font-size:26px;line-height:1.12;margin:6px 0 0;text-wrap:balance}
 .bhfe-accred__legal{padding-top:0;column-gap:40px}
@@ -457,4 +461,3 @@
 .bhfe-accred__legal p{font-family:Georgia,serif;font-size:13.5px;line-height:1.6;color:var(--bhfe-muted);margin:0 0 14px;break-inside:avoid}
 .bhfe-accred__legal p sup{font-size:.7em}
 .bhfe-accred__legal a{color:var(--bhfe-navy);text-decoration:underline}
-@media (prefers-reduced-motion:reduce){.bhfe-accred__logo{transition:none}}
