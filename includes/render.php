@@ -653,15 +653,22 @@ function bhfe_hp_band_accreditation() {
     $p2 = bhfe_hp_sup( 'Beacon Hill Financial Educators, Inc. (sponsor I.D. #107615) is registered with the National Association of State Boards of Accountancy (NASBA) as a sponsor of continuing professional education on the National Registry of CPE Sponsors. State boards of accountancy have final authority on the acceptance of individual courses for CPE credit. Complaints regarding registered sponsors may be submitted to the National Registry of CPE Sponsors through its website: ' )
         . '<a href="' . esc_url( 'https://www.nasbaregistry.org' ) . '" target="_blank" rel="noopener">www.nasbaregistry.org</a>.';
 
-    // 4th element = disclosure popover shown on hover / focus / tap of the tile.
-    // CFP + NASBA use the required legal text; the rest are PLACEHOLDERS awaiting final copy.
+    $p_idfa  = 'IDFA-Registered CE Sponsor #105392';
+    // two paragraphs — the '</p><p>' break is intentional (note body allows markup)
+    $p_irs   = 'Beacon Hill Financial Educators is a qualified sponsor of continuing professional education required for individuals enrolled to practice before the Internal Revenue Service (enrolled agents) and are in compliance with the requirements of Treasury Department Circular No 230, section 10.6(g). Sponsor ID: FKKO.'
+        . '</p><p>We have entered into an agreement with the Office of Director of Practice, Internal Revenue Service, to meet the requirements of 31 Code of Federal Regulations, section 10.6(g), covering maintenance of attendance records, retention of program outlines, qualifications of instructors and length of class hours. This agreement does not constitute an endorsement by the Director of Practice as to the quality of the program or its contribution to the professional competence of the enrolled individual.';
+    $p_nasaa = 'Provider ID 222740';
+
+    // 4th element = disclosure popover shown on hover / focus / tap of the tile
+    // (empty = no popover); optional 5th = extra note class (e.g. wide for long text).
+    // IWI popover intentionally absent — copy TBD.
     $logos = array(
         array( $img . 'Affiliation-CFP.png',   'CFP® certification marks', '', $p1 ),
         array( $pimg . 'nasba.png',            'NASBA National Registry of CPE Sponsors — QAS Self Study', ' bhfe-accred__logo--tall', $p2 ),
-        array( $pimg . 'idfa-logo.png',        'IDFA — Institute for Divorce Financial Analysts', '', '[Placeholder] IDFA — Institute for Divorce Financial Analysts disclosure text goes here.' ),
-        array( $pimg . 'ce.png',               'IRS — Approved Continuing Education Provider', '', '[Placeholder] IRS Approved Continuing Education Provider disclosure text goes here.' ),
-        array( $img . 'nasaa_logo_blue.png',   'NASAA — North American Securities Administrators Association', '', '[Placeholder] NASAA disclosure text goes here.' ),
-        array( $img . 'iwi_logo.png',          'Investments & Wealth Institute', '', '[Placeholder] Investments &amp; Wealth Institute disclosure text goes here.' ),
+        array( $pimg . 'idfa-logo.png',        'IDFA — Institute for Divorce Financial Analysts', '', $p_idfa ),
+        array( $pimg . 'ce.png',               'IRS — Approved Continuing Education Provider', '', $p_irs, ' bhfe-accred__note--wide' ),
+        array( $img . 'nasaa_logo_blue.png',   'NASAA — North American Securities Administrators Association', '', $p_nasaa ),
+        array( $img . 'iwi_logo.png',          'Investments & Wealth Institute', '', '' ),
     );
     $tiles = '';
     $n = 0;
@@ -670,7 +677,8 @@ function bhfe_hp_band_accreditation() {
         $note  = '';
         $attrs = '';
         if ( ! empty( $l[3] ) ) {
-            $note  = '<div class="bhfe-accred__note" id="bhfe-accred-note-' . $n . '" role="note"><p>' . $l[3] . '</p></div>';
+            $mod   = ! empty( $l[4] ) ? $l[4] : '';
+            $note  = '<div class="bhfe-accred__note' . $mod . '" id="bhfe-accred-note-' . $n . '" role="note"><p>' . $l[3] . '</p></div>';
             $attrs = ' tabindex="0" aria-describedby="bhfe-accred-note-' . $n . '"';
         }
         $tiles .= '<div class="bhfe-accred__logo' . $l[2] . '"' . $attrs . '>'

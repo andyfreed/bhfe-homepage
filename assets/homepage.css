@@ -636,6 +636,7 @@
 .bhfe-accred__logo[tabindex]{cursor:pointer}
 .bhfe-accred__note{position:absolute;left:50%;bottom:100%;transform:translate(-50%,6px);width:min(380px,88vw);background:var(--bhfe-navy);border-radius:12px;padding:14px 16px;border-bottom:10px solid transparent;background-clip:padding-box;box-shadow:0 18px 40px -16px rgba(0,33,58,.6);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .18s,transform .22s;z-index:6;text-align:left}
 .bhfe-accred__note p{margin:0;font-family:Georgia,serif;font-size:13.5px;line-height:1.55;color:#fff}
+.bhfe-accred__note p + p{margin-top:10px}
 .bhfe-accred__note p sup{font-size:.7em}
 /* scoped !important beats the theme's global a:hover blanking */
 .bhfe-accred__note a,
@@ -646,6 +647,12 @@
 .bhfe-accred__logo:focus .bhfe-accred__note,
 .bhfe-accred__logo:focus-within .bhfe-accred__note,
 .bhfe-accred__logo.is-open .bhfe-accred__note{opacity:1;visibility:visible;pointer-events:auto;transform:translate(-50%,0)}
+/* long disclosures (IRS): wider card, anchored to the tile's left edge so it stays in the band */
+.bhfe-accred__note--wide{width:min(560px,92vw);left:0;transform:translate(0,6px)}
+.bhfe-accred__logo:hover .bhfe-accred__note--wide,
+.bhfe-accred__logo:focus .bhfe-accred__note--wide,
+.bhfe-accred__logo:focus-within .bhfe-accred__note--wide,
+.bhfe-accred__logo.is-open .bhfe-accred__note--wide{transform:translate(0,0)}
 .bhfe-accred__logo:focus-visible{outline:3px solid var(--bhfe-amber);outline-offset:2px}
 /* narrow screens (2-col grid): anchor the popover to the tile's outer edge so a
    centered card can't run off-viewport — odd tiles = left column, even = right */
