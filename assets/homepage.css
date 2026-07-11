@@ -277,7 +277,7 @@
 .bhfe-cf-tier--std .bhfe-cf-pct{color:var(--bhfe-navy)}
 .bhfe-cf-tier--std .bhfe-cf-pct sup{color:var(--bhfe-navy)}
 .bhfe-cf-tier--best .bhfe-cf-pct{color:var(--bhfe-navy)}
-.bhfe-cf-when{font-size:14px;margin-top:6px;letter-spacing:.02em}
+.bhfe-cf-when{font-size:17px;margin-top:6px;letter-spacing:.02em}
 .bhfe-cf-tier--std .bhfe-cf-when,
 .bhfe-cf-tier--best .bhfe-cf-when{color:rgba(0,33,58,.72)}
 .bhfe-cf-add{font-family:"Patua One",Georgia,serif;font-size:18px;margin-top:4px}
