@@ -673,14 +673,15 @@ function bhfe_hp_band_accreditation() {
         .   '<h2 class="bhfe-accred__title" id="bhfe-accred-title">Recognized by the boards that set the standards</h2>'
         . '</div>'
         . '<div class="bhfe-accred__logos">' . $tiles . '</div>'
-        . '<div class="bhfe-accred__subhead">'
-        .   '<p class="bhfe-accred__kicker">Registered &amp; in good standing</p>'
-        .   '<h3 class="bhfe-accred__subtitle">Trusted CPE / CE provider</h3>'
-        . '</div>'
-        . '<div class="bhfe-accred__legal">'
-        .   '<p>' . $p1 . '</p>'
-        .   '<p>' . $p2 . '</p>'
-        . '</div>'
+        // "Registered & in good standing" subhead + CFP/NASBA legal text hidden for now (kept in code)
+        // . '<div class="bhfe-accred__subhead">'
+        // .   '<p class="bhfe-accred__kicker">Registered &amp; in good standing</p>'
+        // .   '<h3 class="bhfe-accred__subtitle">Trusted CPE / CE provider</h3>'
+        // . '</div>'
+        // . '<div class="bhfe-accred__legal">'
+        // .   '<p>' . $p1 . '</p>'
+        // .   '<p>' . $p2 . '</p>'
+        // . '</div>'
         . '</section>';
 }
 
