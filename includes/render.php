@@ -669,7 +669,7 @@ function bhfe_hp_band_accreditation() {
 
     return '<section class="bhfe-band bhfe-card bhfe-accred" aria-labelledby="bhfe-accred-title">'
         . '<div class="bhfe-accred__head">'
-        .   '<p class="bhfe-accred__kicker">Accredited &amp; approved</p>'
+        .   '<p class="bhfe-accred__kicker">Registered &amp; approved</p>'
         .   '<h2 class="bhfe-accred__title" id="bhfe-accred-title">Recognized by the boards that set the standards</h2>'
         . '</div>'
         . '<div class="bhfe-accred__logos">' . $tiles . '</div>'
