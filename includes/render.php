@@ -648,24 +648,36 @@ function bhfe_hp_band_courses_mono( $v, $label ) {
 function bhfe_hp_band_accreditation() {
     $img  = get_template_directory_uri() . '/img/'; // legacy theme images
     $pimg = BHFE_HP_URL . 'assets/img/';            // high-res copies bundled with this plugin
-    $logos = array(
-        array( $img . 'Affiliation-CFP.png',   'CFP® certification marks', '' ),
-        array( $pimg . 'nasba.png',            'NASBA National Registry of CPE Sponsors — QAS Self Study', ' bhfe-accred__logo--tall' ),
-        array( $pimg . 'idfa-logo.png',        'IDFA — Institute for Divorce Financial Analysts', '' ),
-        array( $pimg . 'ce.png',               'IRS — Approved Continuing Education Provider', '' ),
-        array( $img . 'nasaa_logo_blue.png',   'NASAA — North American Securities Administrators Association', '' ),
-        array( $img . 'iwi_logo.png',          'Investments & Wealth Institute', '' ),
-    );
-    $tiles = '';
-    foreach ( $logos as $l ) {
-        $tiles .= '<div class="bhfe-accred__logo' . $l[2] . '">'
-            . '<img src="' . esc_url( $l[0] ) . '" alt="' . esc_attr( $l[1] ) . '" loading="lazy" decoding="async">'
-            . '</div>';
-    }
 
     $p1 = bhfe_hp_sup( 'CFP®, CERTIFIED FINANCIAL PLANNER® are certification marks owned by the Certified Financial Planner Board of Standards, Inc. These marks are awarded to individuals who successfully complete CFP® Board\'s initial and ongoing certification requirements.' );
     $p2 = bhfe_hp_sup( 'Beacon Hill Financial Educators, Inc. (sponsor I.D. #107615) is registered with the National Association of State Boards of Accountancy (NASBA) as a sponsor of continuing professional education on the National Registry of CPE Sponsors. State boards of accountancy have final authority on the acceptance of individual courses for CPE credit. Complaints regarding registered sponsors may be submitted to the National Registry of CPE Sponsors through its website: ' )
         . '<a href="' . esc_url( 'https://www.nasbaregistry.org' ) . '" target="_blank" rel="noopener">www.nasbaregistry.org</a>.';
+
+    // 4th element = disclosure popover shown on hover / focus / tap of the tile.
+    // CFP + NASBA use the required legal text; the rest are PLACEHOLDERS awaiting final copy.
+    $logos = array(
+        array( $img . 'Affiliation-CFP.png',   'CFP® certification marks', '', $p1 ),
+        array( $pimg . 'nasba.png',            'NASBA National Registry of CPE Sponsors — QAS Self Study', ' bhfe-accred__logo--tall', $p2 ),
+        array( $pimg . 'idfa-logo.png',        'IDFA — Institute for Divorce Financial Analysts', '', '[Placeholder] IDFA — Institute for Divorce Financial Analysts disclosure text goes here.' ),
+        array( $pimg . 'ce.png',               'IRS — Approved Continuing Education Provider', '', '[Placeholder] IRS Approved Continuing Education Provider disclosure text goes here.' ),
+        array( $img . 'nasaa_logo_blue.png',   'NASAA — North American Securities Administrators Association', '', '[Placeholder] NASAA disclosure text goes here.' ),
+        array( $img . 'iwi_logo.png',          'Investments & Wealth Institute', '', '[Placeholder] Investments &amp; Wealth Institute disclosure text goes here.' ),
+    );
+    $tiles = '';
+    $n = 0;
+    foreach ( $logos as $l ) {
+        $n++;
+        $note  = '';
+        $attrs = '';
+        if ( ! empty( $l[3] ) ) {
+            $note  = '<div class="bhfe-accred__note" id="bhfe-accred-note-' . $n . '" role="note"><p>' . $l[3] . '</p></div>';
+            $attrs = ' tabindex="0" aria-describedby="bhfe-accred-note-' . $n . '"';
+        }
+        $tiles .= '<div class="bhfe-accred__logo' . $l[2] . '"' . $attrs . '>'
+            . '<img src="' . esc_url( $l[0] ) . '" alt="' . esc_attr( $l[1] ) . '" loading="lazy" decoding="async">'
+            . $note
+            . '</div>';
+    }
 
     return '<section class="bhfe-band bhfe-card bhfe-accred" aria-labelledby="bhfe-accred-title">'
         . '<div class="bhfe-accred__head">'

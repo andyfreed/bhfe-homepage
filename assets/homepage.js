@@ -174,6 +174,24 @@
     });
   }
 
+  // Accreditation logos: hover/focus popovers are pure CSS; this adds
+  // tap-to-toggle for touch devices. A tap on a link inside the popover
+  // (e.g. nasbaregistry.org) still navigates. One popover open at a time.
+  function initAccredNotes() {
+    var tiles = Array.prototype.slice.call(
+      document.querySelectorAll(".bhfe-accred__logo[aria-describedby]")
+    );
+    if (!tiles.length) return;
+    tiles.forEach(function (tile) {
+      tile.addEventListener("click", function (e) {
+        if (e.target.closest("a")) return;
+        var open = tile.classList.contains("is-open");
+        tiles.forEach(function (t) { t.classList.remove("is-open"); });
+        if (!open) tile.classList.add("is-open");
+      });
+    });
+  }
+
   // Hero primary CTA: smooth-scroll to the course-finder band instead of a
   // hard jump. scroll-margin-top on #find-courses clears the sticky header.
   function initHeroScroll() {
@@ -202,6 +220,7 @@
       document.querySelectorAll(".bhfe-cf-courses--b, .bhfe-cf-courses--d, .bhfe-cf-courses--e"),
       function (el) { initCoursesExpand(el); }
     );
+    initAccredNotes();
     initHeroScroll();
   }
 
