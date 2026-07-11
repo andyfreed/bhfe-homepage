@@ -564,6 +564,82 @@ function bhfe_hp_band_courses_b() {
 }
 
 /**
+ * TEMP / TESTING — Claude Design redesign candidates for "Find Your Courses",
+ * rendered from one builder so both stay in sync with the real data:
+ *   'd' = Option 2A "Ink flip"    (.bhfe-cf-courses--d) — amber monogram; tile inverts to navy
+ *   'e' = Option 2B "Split shine" (.bhfe-cf-courses--e) — layered monogram w/ shine sweep; warm tile
+ * Same credentials/URLs/CPA state form as Version B; only presentation differs.
+ * Remove this function and its echoes in bhfe_hp_render() once a winner is picked.
+ */
+function bhfe_hp_band_courses_mono( $v, $label ) {
+    // per-credential monogram: text + design-tuned font px for variant d / e
+    $monos = array(
+        'cpa'    => array( 'CPA', 112, 96 ),
+        'cfp'    => array( 'CFP', 104, 88 ),
+        'eaotrp' => array( 'EA', 112, 96 ),
+        'iar'    => array( 'IAR', 108, 92 ),
+        'cima'   => array( 'CIMA', 84, 68 ),
+        'cdfa'   => array( 'CDFA', 92, 76 ),
+    );
+    $long = array( 'eaotrp', 'cima' ); // long credential names get smaller type
+
+    $tiles = '';
+    foreach ( bhfe_hp_credentials() as $c ) {
+        $m    = $monos[ $c['id'] ];
+        $size = ( 'd' === $v ) ? $m[1] : $m[2];
+        $mono = ( 'd' === $v )
+            ? '<span class="bhfe-cf-xmono" aria-hidden="true" style="font-size:' . $size . 'px">' . $m[0] . '</span>'
+            : '<span class="bhfe-cf-xmono2" aria-hidden="true" style="font-size:' . $size . 'px">'
+                . '<span class="bhfe-cf-xmono-b">' . $m[0] . '</span><span class="bhfe-cf-xmono-f">' . $m[0] . '</span>'
+                . '</span>';
+
+        $all = '<a class="bhfe-cf-xopt bhfe-cf-xopt--all" href="' . esc_url( $c['all']['href'] ) . '">All Courses</a>';
+        $mod = in_array( $c['id'], $long, true ) ? ' is-long' : '';
+        if ( 'cpa' === $c['id'] ) {
+            $mod .= ' is-cpa';
+            $tag  = 'Catalog &middot; Ethics by state';
+            $fan  = $all
+                . '<form class="bhfe-cf-stateform" method="get" action="' . esc_url( '/courses/ethics-courses-for-accountants/' ) . '">'
+                .   '<input type="hidden" name="credit_type[]" value="cpa">'
+                .   '<label class="bhfe-sr-only" for="bhfe-cpa-state-' . $v . '">Your state for CPA ethics</label>'
+                .   '<select class="bhfe-cf-stateselect" id="bhfe-cpa-state-' . $v . '" name="state">' . bhfe_hp_state_options( 'Ethics by state&hellip;' ) . '</select>'
+                .   '<button class="bhfe-cf-statego" type="submit" aria-label="View CPA ethics for the selected state">Go</button>'
+                . '</form>';
+        } elseif ( ! empty( $c['ethics'] ) ) {
+            $tag = 'Catalog &middot; Ethics';
+            $fan = $all
+                . '<a class="bhfe-cf-xopt bhfe-cf-xopt--eth" href="' . esc_url( bhfe_hp_ethics_url( $c['slug'] ) ) . '">Ethics</a>';
+        } else {
+            $mod .= ' is-solo';
+            $tag  = 'Full catalog';
+            $fan  = $all;
+        }
+
+        $tiles .= '<div class="bhfe-cf-xtile' . $mod . '" role="group" aria-label="' . esc_attr( wp_strip_all_tags( $c['name'] ) ) . ' course options">'
+            . $mono
+            . '<span class="bhfe-cf-xhead">'
+            .   '<span class="bhfe-cf-xname">' . wp_kses_post( $c['name'] ) . '</span>'
+            .   '<span class="bhfe-cf-xtag">' . $tag . '</span>'
+            . '</span>'
+            . '<span class="bhfe-cf-xcue" aria-hidden="true">Pick an option</span>'
+            . '<div class="bhfe-cf-xfan">' . $fan . '</div>'
+            . '</div>';
+    }
+    return '<section class="bhfe-band bhfe-cf-courses bhfe-cf-courses--' . $v . '" id="find-courses-' . $v . '" aria-labelledby="bhfe-cf-title-' . $v . '">'
+        . '<div class="bhfe-cf-card">'
+        .   '<div class="bhfe-cf-picker">'
+        .     '<div class="bhfe-cf-head">'
+        .       '<div class="bhfe-cf-head-eyebrow">Find Your Courses &middot; ' . $label . '</div>'
+        .       '<h2 class="bhfe-cf-h2" id="bhfe-cf-title-' . $v . '">Find the course you need now</h2>'
+        .       '<p class="bhfe-cf-lead">Hover a credential to fan out its options &mdash; jump to the full catalog or go straight to ethics.</p>'
+        .     '</div>'
+        .     '<div class="bhfe-cf-grid bhfe-cf-xgrid">' . $tiles . '</div>'
+        .   '</div>'
+        . '</div>'
+        . '</section>';
+}
+
+/**
  * Band — accreditations & required disclosures.
  * Logo grid (CFP, NASBA/QAS, IDFA, IRS CE, NASAA, IWI) over the CFP-marks
  * and NASBA-sponsor legal text. Logos load from the theme's /img/ dir or,
@@ -613,7 +689,9 @@ function bhfe_hp_render() {
     echo bhfe_hp_hero();
     echo bhfe_hp_band_discount();  // standalone bundle-discount band — once, right below the hero
     // echo bhfe_hp_band_courses(); // Version A hidden for now (kept in code)
-    echo bhfe_hp_band_courses_b(); // course finder — hover-expand tiles (Version B)
+    // echo bhfe_hp_band_courses_b(); // Version B hidden while comparing redesigns (kept in code)
+    echo bhfe_hp_band_courses_mono( 'd', 'Option 2A' ); // redesign candidate "Ink flip"
+    echo bhfe_hp_band_courses_mono( 'e', 'Option 2B' ); // redesign candidate "Split shine"
     echo bhfe_hp_band_accreditation();
     // echo bhfe_hp_band_promo();  // disabled: the bundle/discount band now lives inside bhfe_hp_band_courses()
     echo bhfe_hp_band_benefits();

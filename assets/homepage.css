@@ -441,6 +441,181 @@
 }
 
 /* ============================================================
+   Redesign candidate — Option 2A "Ink flip" (.bhfe-cf-courses--d)
+   Idle: solid amber monogram behind name + tag. Activate: tile
+   inverts to navy, monogram flips to a white outline, chips deal in.
+   (TESTING — from Claude Design handoff; delete loser when picked.)
+   ============================================================ */
+.bhfe-cf-courses--d .bhfe-cf-xtile{position:relative;overflow:hidden;height:196px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px 16px;border-radius:14px;border:2px solid #c2ccd5;background:#fff;cursor:pointer;transition:border-color .25s,background .35s,transform .25s,box-shadow .25s}
+.bhfe-cf-courses--d .bhfe-cf-xtile:hover,
+.bhfe-cf-courses--d .bhfe-cf-xtile:focus-within,
+.bhfe-cf-courses--d .bhfe-cf-xtile.is-open{border-color:var(--bhfe-amber);background:var(--bhfe-navy-2);transform:translateY(-4px);box-shadow:0 20px 44px -18px rgba(0,33,58,.6)}
+/* monogram: solid amber idle -> white outline on activate */
+.bhfe-cf-courses--d .bhfe-cf-xmono{position:absolute;right:-10px;bottom:-26px;line-height:1;font-family:"Patua One",Georgia,serif;color:var(--bhfe-amber);-webkit-text-stroke:2px transparent;pointer-events:none;transition:transform .5s cubic-bezier(.3,1.4,.45,1),color .3s}
+.bhfe-cf-courses--d .bhfe-cf-xtile:hover .bhfe-cf-xmono,
+.bhfe-cf-courses--d .bhfe-cf-xtile:focus-within .bhfe-cf-xmono,
+.bhfe-cf-courses--d .bhfe-cf-xtile.is-open .bhfe-cf-xmono{color:transparent;-webkit-text-stroke:2px rgba(255,255,255,.42);transform:scale(1.15) rotate(-6deg) translateY(6px)}
+/* name + tag cluster: slides up and recolors */
+.bhfe-cf-courses--d .bhfe-cf-xhead{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center;transform:translateY(0);transition:transform .4s cubic-bezier(.3,1.3,.45,1)}
+.bhfe-cf-courses--d .bhfe-cf-xtile:hover .bhfe-cf-xhead,
+.bhfe-cf-courses--d .bhfe-cf-xtile:focus-within .bhfe-cf-xhead,
+.bhfe-cf-courses--d .bhfe-cf-xtile.is-open .bhfe-cf-xhead{transform:translateY(-30px)}
+.bhfe-cf-courses--d .bhfe-cf-xtile.is-cpa:hover .bhfe-cf-xhead,
+.bhfe-cf-courses--d .bhfe-cf-xtile.is-cpa:focus-within .bhfe-cf-xhead,
+.bhfe-cf-courses--d .bhfe-cf-xtile.is-cpa.is-open .bhfe-cf-xhead{transform:translateY(-54px)}
+.bhfe-cf-courses--d .bhfe-cf-xname{font-family:"Patua One",Georgia,serif;font-size:24px;color:var(--bhfe-navy);line-height:1.12;transition:color .3s}
+.bhfe-cf-courses--d .bhfe-cf-xname sup{font-size:.6em}
+.bhfe-cf-courses--d .is-long .bhfe-cf-xname{font-size:19px}
+.bhfe-cf-courses--d .bhfe-cf-xtag{margin-top:6px;font-family:"Patua One",Georgia,serif;font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--bhfe-tag);transition:color .3s}
+.bhfe-cf-courses--d .bhfe-cf-xtile:hover .bhfe-cf-xname,
+.bhfe-cf-courses--d .bhfe-cf-xtile:focus-within .bhfe-cf-xname,
+.bhfe-cf-courses--d .bhfe-cf-xtile.is-open .bhfe-cf-xname{color:#fff}
+.bhfe-cf-courses--d .bhfe-cf-xtile:hover .bhfe-cf-xtag,
+.bhfe-cf-courses--d .bhfe-cf-xtile:focus-within .bhfe-cf-xtag,
+.bhfe-cf-courses--d .bhfe-cf-xtile.is-open .bhfe-cf-xtag{color:rgba(255,255,255,.6)}
+/* cue */
+.bhfe-cf-courses--d .bhfe-cf-xcue{position:absolute;left:0;right:0;bottom:14px;text-align:center;font-family:"Patua One",Georgia,serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--bhfe-tag);transition:opacity .18s}
+.bhfe-cf-courses--d .bhfe-cf-xcue::after{content:" +";color:var(--bhfe-amber)}
+.bhfe-cf-courses--d .bhfe-cf-xtile:hover .bhfe-cf-xcue,
+.bhfe-cf-courses--d .bhfe-cf-xtile:focus-within .bhfe-cf-xcue,
+.bhfe-cf-courses--d .bhfe-cf-xtile.is-open .bhfe-cf-xcue{opacity:0}
+/* fan container (chips deal in) */
+.bhfe-cf-courses--d .bhfe-cf-xfan{position:absolute;left:16px;right:16px;bottom:14px;z-index:3;display:flex;gap:8px;pointer-events:none}
+.bhfe-cf-courses--d .is-cpa .bhfe-cf-xfan{flex-direction:column;gap:6px;bottom:12px}
+.bhfe-cf-courses--d .bhfe-cf-xtile:hover .bhfe-cf-xfan,
+.bhfe-cf-courses--d .bhfe-cf-xtile:focus-within .bhfe-cf-xfan,
+.bhfe-cf-courses--d .bhfe-cf-xtile.is-open .bhfe-cf-xfan{pointer-events:auto}
+/* chips — scoped !important beats the theme's a:hover/button rules */
+.bhfe-cf-courses--d .bhfe-cf-xopt,
+.bhfe-cf-courses--d .bhfe-cf-xopt:hover,
+.bhfe-cf-courses--d .bhfe-cf-xopt:focus,
+.bhfe-cf-courses--d .bhfe-cf-xopt:active{
+  flex:1;display:flex;align-items:center;justify-content:center;height:42px;box-sizing:border-box;
+  border-radius:11px;text-align:center;text-decoration:none !important;
+  font-family:"Patua One",Georgia,serif !important;font-weight:400 !important;font-size:15px !important;
+  box-shadow:0 10px 22px -10px rgba(0,0,0,.55);
+  opacity:0;transform:translateY(26px) rotate(var(--deal,-10deg)) scale(.9);
+  transition:transform .5s cubic-bezier(.34,1.8,.5,1),opacity .22s,filter .15s}
+.bhfe-cf-courses--d .bhfe-cf-xopt::before{content:none !important;display:none !important}
+.bhfe-cf-courses--d .bhfe-cf-xopt--all{--deal:-10deg;background:var(--bhfe-amber) !important;color:var(--bhfe-navy) !important}
+.bhfe-cf-courses--d .bhfe-cf-xopt--eth{--deal:10deg;background:#fff !important;color:var(--bhfe-navy) !important;transition:transform .5s cubic-bezier(.34,1.8,.5,1) 80ms,opacity .22s 80ms,filter .15s}
+.bhfe-cf-courses--d .is-cpa .bhfe-cf-xopt--all{flex:none;height:40px}
+.bhfe-cf-courses--d .bhfe-cf-xtile:hover .bhfe-cf-xopt,
+.bhfe-cf-courses--d .bhfe-cf-xtile:focus-within .bhfe-cf-xopt,
+.bhfe-cf-courses--d .bhfe-cf-xtile.is-open .bhfe-cf-xopt{opacity:1;transform:translateY(0) rotate(0) scale(1)}
+.bhfe-cf-courses--d .bhfe-cf-xopt--all:hover{filter:brightness(1.07) !important}
+.bhfe-cf-courses--d .bhfe-cf-xopt--eth:hover{filter:brightness(.94) !important}
+.bhfe-cf-courses--d .bhfe-cf-xopt:focus-visible{outline:3px solid var(--bhfe-amber) !important;outline-offset:2px}
+/* CPA ethics — native state select + Go (works without JS) */
+.bhfe-cf-courses--d .bhfe-cf-stateform{display:flex;gap:6px;align-items:stretch;width:100%;opacity:0;transform:translateY(26px) rotate(10deg) scale(.9);transition:transform .5s cubic-bezier(.34,1.8,.5,1) 80ms,opacity .22s 80ms}
+.bhfe-cf-courses--d .bhfe-cf-xtile:hover .bhfe-cf-stateform,
+.bhfe-cf-courses--d .bhfe-cf-xtile:focus-within .bhfe-cf-stateform,
+.bhfe-cf-courses--d .bhfe-cf-xtile.is-open .bhfe-cf-stateform{opacity:1;transform:translateY(0) rotate(0) scale(1)}
+.bhfe-cf-courses--d .bhfe-cf-stateselect{flex:1;min-width:0;border:1.5px solid var(--bhfe-navy);border-radius:10px;padding:8px 10px;font-family:Georgia,serif;font-size:13px;color:var(--bhfe-navy);background:#fff}
+.bhfe-cf-courses--d .bhfe-cf-statego,
+.bhfe-cf-courses--d .bhfe-cf-statego:hover,
+.bhfe-cf-courses--d .bhfe-cf-statego:focus,
+.bhfe-cf-courses--d .bhfe-cf-statego:active{
+  flex:none;display:inline-flex;align-items:center;border:0 !important;cursor:pointer;
+  border-radius:10px;padding:8px 14px;font-family:"Patua One",Georgia,serif !important;font-weight:400 !important;font-size:13px !important;
+  background:var(--bhfe-amber) !important;color:var(--bhfe-navy) !important;text-decoration:none !important}
+.bhfe-cf-courses--d .bhfe-cf-statego::before{content:none !important;display:none !important}
+.bhfe-cf-courses--d .bhfe-cf-statego:hover{filter:brightness(1.07)}
+.bhfe-cf-courses--d .bhfe-cf-stateselect:focus-visible,
+.bhfe-cf-courses--d .bhfe-cf-statego:focus-visible{outline:3px solid var(--bhfe-amber) !important;outline-offset:2px}
+@media (prefers-reduced-motion:reduce){
+  .bhfe-cf-courses--d .bhfe-cf-xtile,.bhfe-cf-courses--d .bhfe-cf-xmono,
+  .bhfe-cf-courses--d .bhfe-cf-xhead,.bhfe-cf-courses--d .bhfe-cf-xname,
+  .bhfe-cf-courses--d .bhfe-cf-xtag,.bhfe-cf-courses--d .bhfe-cf-xcue,
+  .bhfe-cf-courses--d .bhfe-cf-xopt,.bhfe-cf-courses--d .bhfe-cf-stateform{transition:none}
+}
+
+/* ============================================================
+   Redesign candidate — Option 2B "Split shine" (.bhfe-cf-courses--e)
+   Idle: layered monogram bottom-right (amber shine front + navy
+   outline behind), name + tag top-left. Activate: layers split with
+   a spring, chips deal in from opposite corners.
+   (TESTING — from Claude Design handoff; delete loser when picked.)
+   ============================================================ */
+.bhfe-cf-courses--e .bhfe-cf-xtile{position:relative;overflow:hidden;height:196px;box-sizing:border-box;border-radius:14px;border:2px solid #c2ccd5;background:#fff;cursor:pointer;transition:border-color .25s,background .25s,transform .25s,box-shadow .25s}
+.bhfe-cf-courses--e .bhfe-cf-xtile:hover,
+.bhfe-cf-courses--e .bhfe-cf-xtile:focus-within,
+.bhfe-cf-courses--e .bhfe-cf-xtile.is-open{border-color:var(--bhfe-amber);background:#fffaf0;transform:translateY(-5px);box-shadow:0 22px 44px -18px rgba(0,33,58,.55)}
+/* layered monogram: amber shine front + navy outline behind */
+@keyframes bhfeShine{0%{background-position:130% 0}100%{background-position:-60% 0}}
+.bhfe-cf-courses--e .bhfe-cf-xmono2{position:absolute;right:-8px;bottom:-24px;line-height:1;font-family:"Patua One",Georgia,serif;pointer-events:none}
+.bhfe-cf-courses--e .bhfe-cf-xmono-b{position:absolute;top:7px;left:10px;color:transparent;-webkit-text-stroke:2px rgba(0,33,58,.16);transform:none;transition:transform .55s cubic-bezier(.3,1.5,.45,1) 50ms}
+.bhfe-cf-courses--e .bhfe-cf-xmono-f{position:relative;background:linear-gradient(110deg,#ffb300 42%,#ffe397 50%,#ffb300 58%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:bhfeShine 3.4s linear infinite;transform:none;transition:transform .55s cubic-bezier(.3,1.5,.45,1)}
+.bhfe-cf-courses--e .bhfe-cf-xtile:hover .bhfe-cf-xmono-f,
+.bhfe-cf-courses--e .bhfe-cf-xtile:focus-within .bhfe-cf-xmono-f,
+.bhfe-cf-courses--e .bhfe-cf-xtile.is-open .bhfe-cf-xmono-f{transform:translate(-10px,-14px) rotate(-5deg) scale(1.05)}
+.bhfe-cf-courses--e .bhfe-cf-xtile:hover .bhfe-cf-xmono-b,
+.bhfe-cf-courses--e .bhfe-cf-xtile:focus-within .bhfe-cf-xmono-b,
+.bhfe-cf-courses--e .bhfe-cf-xtile.is-open .bhfe-cf-xmono-b{transform:translate(12px,4px) rotate(4deg) scale(1.08)}
+/* name + tag, top-left */
+.bhfe-cf-courses--e .bhfe-cf-xhead{position:absolute;top:18px;left:18px;right:18px;z-index:2;display:flex;flex-direction:column;align-items:flex-start;text-align:left}
+.bhfe-cf-courses--e .bhfe-cf-xname{font-family:"Patua One",Georgia,serif;font-size:24px;color:var(--bhfe-navy);line-height:1.12}
+.bhfe-cf-courses--e .bhfe-cf-xname sup{font-size:.6em}
+.bhfe-cf-courses--e .is-long .bhfe-cf-xname{font-size:19px}
+.bhfe-cf-courses--e .bhfe-cf-xtag{margin-top:6px;font-family:"Patua One",Georgia,serif;font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--bhfe-tag)}
+/* cue, bottom-left */
+.bhfe-cf-courses--e .bhfe-cf-xcue{position:absolute;left:18px;bottom:16px;font-family:"Patua One",Georgia,serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--bhfe-tag);transition:opacity .18s}
+.bhfe-cf-courses--e .bhfe-cf-xcue::after{content:" +";color:var(--bhfe-amber)}
+.bhfe-cf-courses--e .bhfe-cf-xtile:hover .bhfe-cf-xcue,
+.bhfe-cf-courses--e .bhfe-cf-xtile:focus-within .bhfe-cf-xcue,
+.bhfe-cf-courses--e .bhfe-cf-xtile.is-open .bhfe-cf-xcue{opacity:0}
+/* fan container (chips deal in from corners) */
+.bhfe-cf-courses--e .bhfe-cf-xfan{position:absolute;left:16px;right:16px;bottom:14px;z-index:3;display:flex;gap:8px;pointer-events:none}
+.bhfe-cf-courses--e .is-cpa .bhfe-cf-xfan{flex-direction:column;gap:6px;bottom:12px}
+.bhfe-cf-courses--e .bhfe-cf-xtile:hover .bhfe-cf-xfan,
+.bhfe-cf-courses--e .bhfe-cf-xtile:focus-within .bhfe-cf-xfan,
+.bhfe-cf-courses--e .bhfe-cf-xtile.is-open .bhfe-cf-xfan{pointer-events:auto}
+/* chips — scoped !important beats the theme's a:hover/button rules */
+.bhfe-cf-courses--e .bhfe-cf-xopt,
+.bhfe-cf-courses--e .bhfe-cf-xopt:hover,
+.bhfe-cf-courses--e .bhfe-cf-xopt:focus,
+.bhfe-cf-courses--e .bhfe-cf-xopt:active{
+  flex:1;display:flex;align-items:center;justify-content:center;height:42px;box-sizing:border-box;
+  border-radius:11px;text-align:center;text-decoration:none !important;
+  font-family:"Patua One",Georgia,serif !important;font-weight:400 !important;font-size:15px !important;
+  box-shadow:0 8px 18px -10px rgba(0,33,58,.5);
+  opacity:0;transform:translate(var(--dx,-14px),30px) rotate(var(--deal,-12deg)) scale(.9);
+  transition:transform .55s cubic-bezier(.3,1.7,.45,1),opacity .22s,filter .15s}
+.bhfe-cf-courses--e .bhfe-cf-xopt::before{content:none !important;display:none !important}
+.bhfe-cf-courses--e .bhfe-cf-xopt--all{--dx:-14px;--deal:-12deg;background:var(--bhfe-amber) !important;color:var(--bhfe-navy) !important}
+.bhfe-cf-courses--e .bhfe-cf-xopt--eth{--dx:14px;--deal:12deg;background:var(--bhfe-navy) !important;color:#fff !important;transition:transform .55s cubic-bezier(.3,1.7,.45,1) 90ms,opacity .22s 90ms,filter .15s}
+.bhfe-cf-courses--e .is-cpa .bhfe-cf-xopt--all{flex:none;height:40px}
+.bhfe-cf-courses--e .bhfe-cf-xtile:hover .bhfe-cf-xopt,
+.bhfe-cf-courses--e .bhfe-cf-xtile:focus-within .bhfe-cf-xopt,
+.bhfe-cf-courses--e .bhfe-cf-xtile.is-open .bhfe-cf-xopt{opacity:1;transform:translate(0,0) rotate(0) scale(1)}
+.bhfe-cf-courses--e .bhfe-cf-xopt--all:hover{filter:brightness(1.07) !important}
+.bhfe-cf-courses--e .bhfe-cf-xopt--eth:hover{filter:brightness(1.35) !important}
+.bhfe-cf-courses--e .bhfe-cf-xopt:focus-visible{outline:3px solid var(--bhfe-amber) !important;outline-offset:2px}
+/* CPA ethics — native state select + Go (works without JS) */
+.bhfe-cf-courses--e .bhfe-cf-stateform{display:flex;gap:6px;align-items:stretch;width:100%;opacity:0;transform:translate(14px,34px) rotate(12deg) scale(.9);transition:transform .55s cubic-bezier(.3,1.7,.45,1) 90ms,opacity .22s 90ms}
+.bhfe-cf-courses--e .bhfe-cf-xtile:hover .bhfe-cf-stateform,
+.bhfe-cf-courses--e .bhfe-cf-xtile:focus-within .bhfe-cf-stateform,
+.bhfe-cf-courses--e .bhfe-cf-xtile.is-open .bhfe-cf-stateform{opacity:1;transform:translate(0,0) rotate(0) scale(1)}
+.bhfe-cf-courses--e .bhfe-cf-stateselect{flex:1;min-width:0;border:1.5px solid var(--bhfe-navy);border-radius:10px;padding:8px 10px;font-family:Georgia,serif;font-size:13px;color:var(--bhfe-navy);background:#fff}
+.bhfe-cf-courses--e .bhfe-cf-statego,
+.bhfe-cf-courses--e .bhfe-cf-statego:hover,
+.bhfe-cf-courses--e .bhfe-cf-statego:focus,
+.bhfe-cf-courses--e .bhfe-cf-statego:active{
+  flex:none;display:inline-flex;align-items:center;border:0 !important;cursor:pointer;
+  border-radius:10px;padding:8px 14px;font-family:"Patua One",Georgia,serif !important;font-weight:400 !important;font-size:13px !important;
+  background:var(--bhfe-amber) !important;color:var(--bhfe-navy) !important;text-decoration:none !important}
+.bhfe-cf-courses--e .bhfe-cf-statego::before{content:none !important;display:none !important}
+.bhfe-cf-courses--e .bhfe-cf-statego:hover{filter:brightness(1.07)}
+.bhfe-cf-courses--e .bhfe-cf-stateselect:focus-visible,
+.bhfe-cf-courses--e .bhfe-cf-statego:focus-visible{outline:3px solid var(--bhfe-amber) !important;outline-offset:2px}
+@media (prefers-reduced-motion:reduce){
+  .bhfe-cf-courses--e .bhfe-cf-xtile,.bhfe-cf-courses--e .bhfe-cf-xmono-f,
+  .bhfe-cf-courses--e .bhfe-cf-xmono-b,.bhfe-cf-courses--e .bhfe-cf-xcue,
+  .bhfe-cf-courses--e .bhfe-cf-xopt,.bhfe-cf-courses--e .bhfe-cf-stateform{transition:none}
+  .bhfe-cf-courses--e .bhfe-cf-xmono-f{animation:none}
+}
+
+/* ============================================================
    Accreditations & required disclosures card (below the picker)
    ============================================================ */
 .bhfe-accred__head{text-align:center;max-width:680px;margin:0 auto 28px}
@@ -458,6 +633,6 @@
 .bhfe-accred__subtitle{font-family:"Patua One",Georgia,serif;color:var(--bhfe-navy);font-size:26px;line-height:1.12;margin:6px 0 0;text-wrap:balance}
 .bhfe-accred__legal{padding-top:0;column-gap:40px}
 @media (min-width:860px){.bhfe-accred__legal{columns:2}}
-.bhfe-accred__legal p{font-family:Georgia,serif;font-size:13.5px;line-height:1.6;color:var(--bhfe-muted);margin:0 0 14px;break-inside:avoid}
+.bhfe-accred__legal p{font-family:Georgia,serif;font-size:15.5px;line-height:1.6;color:var(--bhfe-muted);margin:0 0 14px;break-inside:avoid}
 .bhfe-accred__legal p sup{font-size:.7em}
 .bhfe-accred__legal a{color:var(--bhfe-navy);text-decoration:underline}

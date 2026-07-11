@@ -199,7 +199,7 @@
       function (el) { initCourses(el); }
     );
     Array.prototype.forEach.call(
-      document.querySelectorAll(".bhfe-cf-courses--b"),
+      document.querySelectorAll(".bhfe-cf-courses--b, .bhfe-cf-courses--d, .bhfe-cf-courses--e"),
       function (el) { initCoursesExpand(el); }
     );
     initHeroScroll();
