@@ -657,18 +657,18 @@ function bhfe_hp_band_accreditation() {
     // two paragraphs — the '</p><p>' break is intentional (note body allows markup)
     $p_irs   = 'Beacon Hill Financial Educators is a qualified sponsor of continuing professional education required for individuals enrolled to practice before the Internal Revenue Service (enrolled agents) and are in compliance with the requirements of Treasury Department Circular No 230, section 10.6(g). Sponsor ID: FKKO.'
         . '</p><p>We have entered into an agreement with the Office of Director of Practice, Internal Revenue Service, to meet the requirements of 31 Code of Federal Regulations, section 10.6(g), covering maintenance of attendance records, retention of program outlines, qualifications of instructors and length of class hours. This agreement does not constitute an endorsement by the Director of Practice as to the quality of the program or its contribution to the professional competence of the enrolled individual.';
-    $p_nasaa = 'Provider ID 222740';
+    $p_nasaa = 'NASAA does not endorse any particular provider of CE courses. The content of the course and any views expressed are my/our own and do not necessarily reflect the views of NASAA or any of its member jurisdictions. Sponsor ID S17460.';
+    $p_iwi   = 'Provider ID 222740';
 
     // 4th element = disclosure popover shown on hover / focus / tap of the tile
     // (empty = no popover); optional 5th = extra note class (e.g. wide for long text).
-    // IWI popover intentionally absent — copy TBD.
     $logos = array(
         array( $img . 'Affiliation-CFP.png',   'CFP® certification marks', '', $p1 ),
         array( $pimg . 'nasba.png',            'NASBA National Registry of CPE Sponsors — QAS Self Study', ' bhfe-accred__logo--tall', $p2 ),
         array( $pimg . 'idfa-logo.png',        'IDFA — Institute for Divorce Financial Analysts', '', $p_idfa ),
         array( $pimg . 'ce.png',               'IRS — Approved Continuing Education Provider', '', $p_irs, ' bhfe-accred__note--wide' ),
         array( $img . 'nasaa_logo_blue.png',   'NASAA — North American Securities Administrators Association', '', $p_nasaa ),
-        array( $img . 'iwi_logo.png',          'Investments & Wealth Institute', '', '' ),
+        array( $img . 'iwi_logo.png',          'Investments & Wealth Institute', '', $p_iwi ),
     );
     $tiles = '';
     $n = 0;
