@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       BHFE Homepage
  * Plugin URI:        https://github.com/andyfreed/bhfe-homepage
- * Description:       Self-contained front page for bhfe.com — credential finder (expand-in-place drawers), multi-license picker, promo, benefit cards, and browse row. Takes over the static front page via template_include and enqueues its own front-page-only CSS/JS. Theme-independent; the hero still reads the ACF hero band so staff can edit it in wp-admin.
+ * Description:       Self-contained front page for bhfe.com — hero, bundle-discount strip, "Find Your Courses" credential tiles (links mapped in Settings → BHFE Homepage), accreditation logos with disclosure popovers, and benefit cards. Takes over the static front page via template_include and enqueues its own front-page-only CSS/JS. The hero still reads the ACF hero band so staff can edit it in wp-admin.
  * Version:           1.0.0
  * Author:            Beacon Hill Financial Educators
  * License:           GPL-2.0-or-later

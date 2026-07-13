@@ -1,14 +1,12 @@
 /* ============================================================
-   BHFE homepage — below-hero redesign · VARIATION A
-   Credential finder (expand-in-place, row-aware drawer)
-   · multi-license finder · promo · benefits · browse
+   BHFE homepage (bhfe-homepage plugin) — front-page bands:
+   hero · bundle-discount strip · Find Your Courses (2C tiles) ·
+   accreditation logos + disclosure popovers · benefit cards
    ------------------------------------------------------------
-   • Every selector namespaced .bhfe-*  (homepage.css is site-wide)
-   • Mobile-first; breakpoints scale up
-   • No inline styles anywhere — all visual state lives here
-   • AA contrast + visible focus rings (see :focus-visible block)
-   PASTE/REPLACE: drop this block over the existing below-hero
-   rules in wp-content/themes/bhfe/min/css/homepage.css
+   • Every selector namespaced .bhfe-*
+   • Interactive elements use scoped !important to beat the theme's
+     global button/a:hover blanking rules
+   • AA contrast + visible focus rings
    ============================================================ */
 
 :root{
@@ -28,132 +26,7 @@
 .bhfe-band + .bhfe-band{margin-top:32px}
 .bhfe-card{background:#fff;border-radius:20px;box-shadow:0 24px 60px -28px rgba(0,33,58,.35);padding:40px 24px}
 @media (min-width:760px){.bhfe-card{padding:56px}}
-@media (min-width:1000px){.bhfe-finder.bhfe-card{padding:64px 56px}}
 .bhfe-sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
-
-/* ============================================================
-   1 · CREDENTIAL FINDER  (expand-in-place, row-aware drawer)
-   ============================================================ */
-.bhfe-finder__head{text-align:center;max-width:660px;margin:0 auto 32px}
-.bhfe-finder__kicker{font-family:"Patua One",Georgia,serif;color:var(--bhfe-amber-ink);letter-spacing:2px;font-size:13px;text-transform:uppercase;margin:0}
-.bhfe-finder__title{font-family:"Patua One",Georgia,serif;color:var(--bhfe-navy);font-size:30px;line-height:1.12;margin:8px 0 10px;text-wrap:balance}
-.bhfe-finder__sub{color:var(--bhfe-muted);font-size:18px;line-height:1.5;margin:0;text-wrap:pretty}
-@media (min-width:1000px){.bhfe-finder__title{font-size:40px}}
-
-.bhfe-finder__stack{display:flex;flex-direction:column;gap:18px}
-.bhfe-credrow{display:grid;grid-template-columns:1fr;gap:18px;align-items:stretch}
-@media (min-width:680px){.bhfe-credrow{grid-template-columns:1fr 1fr}}
-@media (min-width:900px){.bhfe-credrow{grid-template-columns:repeat(3,1fr)}}
-
-/* tile (collapsed + direct) */
-.bhfe-cred{display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;min-height:120px;padding:26px 28px;text-align:left;background:#fff;border:2px solid #c2ccd5;border-radius:18px;cursor:pointer;font:inherit;text-decoration:none;transition:box-shadow .2s,border-color .2s,transform .2s}
-.bhfe-cred:hover{box-shadow:0 18px 40px -22px rgba(0,33,58,.45);border-color:var(--bhfe-navy);transform:translateY(-2px)}
-.bhfe-cred:hover .bhfe-cred__mark--go{background:var(--bhfe-amber);color:var(--bhfe-navy)}
-.bhfe-cred__name{display:block;font-family:"Patua One",Georgia,serif;color:var(--bhfe-navy);font-size:26px;line-height:1.12;text-wrap:balance}
-.bhfe-cred__name sup{font-size:.62em}
-.bhfe-cred__tag{display:block;font-family:Georgia,serif;color:var(--bhfe-tag);font-size:15px;margin-top:5px}
-.bhfe-cred__mark{flex:none;width:42px;height:42px;border-radius:50%;background:#fff4d6;color:var(--bhfe-navy);font-family:"Patua One",serif;font-size:24px;line-height:40px;text-align:center;transition:background .2s,color .2s}
-.bhfe-cred__mark--go{background:var(--bhfe-navy);color:var(--bhfe-amber);font-size:21px;line-height:42px}
-/* active (open) tile — navy fill, matches drawer */
-.bhfe-cred[aria-expanded="true"]{background:var(--bhfe-navy);border-color:var(--bhfe-navy);box-shadow:0 16px 34px -20px rgba(0,33,58,.8)}
-.bhfe-cred[aria-expanded="true"] .bhfe-cred__name{color:#fff}
-.bhfe-cred[aria-expanded="true"] .bhfe-cred__tag{color:#9fb3c4}
-.bhfe-cred[aria-expanded="true"] .bhfe-cred__mark{background:var(--bhfe-amber);color:var(--bhfe-navy)}
-.bhfe-cred__mark--minus{display:none}
-.bhfe-cred[aria-expanded="true"] .bhfe-cred__mark--plus{display:none}
-.bhfe-cred[aria-expanded="true"] .bhfe-cred__mark--minus{display:block}
-
-/* drawer */
-.bhfe-drawer{position:relative;background:linear-gradient(150deg,var(--bhfe-navy),var(--bhfe-navy-2));border-radius:16px;padding:28px 24px;color:#fff}
-@media (min-width:760px){.bhfe-drawer{padding:28px 30px}}
-.bhfe-drawer[hidden]{display:none}
-.bhfe-drawer__pointer{display:none}
-@media (min-width:900px){
-  .bhfe-drawer__pointer{display:block;position:absolute;top:-8px;width:16px;height:16px;background:var(--bhfe-navy);border-radius:3px;transform:translateX(-50%) rotate(45deg)}
-  .bhfe-drawer[data-col="0"] .bhfe-drawer__pointer{left:15.8%}
-  .bhfe-drawer[data-col="1"] .bhfe-drawer__pointer{left:47.8%}
-  .bhfe-drawer[data-col="2"] .bhfe-drawer__pointer{left:84.2%}
-}
-.bhfe-drawer__head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px}
-.bhfe-drawer__kicker{font-family:"Patua One",Georgia,serif;color:var(--bhfe-amber);letter-spacing:1.5px;font-size:12px;text-transform:uppercase}
-.bhfe-drawer__name{font-family:"Patua One",Georgia,serif;font-size:26px;line-height:1.1;margin-top:4px}
-.bhfe-drawer__name sup{font-size:.6em}
-.bhfe-drawer__tag{font-family:Georgia,serif;color:#9fb3c4;font-size:14.5px}
-.bhfe-drawer__opts{display:grid;grid-template-columns:1fr;gap:14px;align-items:start}
-@media (min-width:620px){.bhfe-drawer__opts{grid-template-columns:1fr 1fr}}
-
-/* option tile inside drawer */
-.bhfe-opt{display:flex;flex-direction:column;justify-content:space-between;gap:20px;min-height:158px;background:#fff;border-radius:12px;padding:22px;text-decoration:none;color:var(--bhfe-navy);transition:transform .18s,box-shadow .18s}
-.bhfe-opt:hover{transform:translateY(-3px);box-shadow:0 16px 34px -16px rgba(0,0,0,.5)}
-.bhfe-opt__kicker{align-self:flex-start;font-family:"Patua One",serif;font-size:11px;letter-spacing:1.2px;color:var(--bhfe-amber-ink);background:#fff4d6;padding:4px 9px;border-radius:5px}
-.bhfe-opt__label{display:block;font-family:"Patua One",Georgia,serif;font-size:20px;line-height:1.15}
-.bhfe-opt__desc{display:block;color:var(--bhfe-muted);font-size:14px;margin-top:6px}
-.bhfe-opt__cta{margin-top:auto;font-family:"Patua One",Georgia,serif;font-size:15px}
-.bhfe-opt__cta span{color:#e09e00}
-
-/* CPA state-gated ethics (native GET form, works without JS) */
-.bhfe-state{display:flex;flex-direction:column;gap:12px;min-height:158px;background:#fff;border-radius:12px;padding:22px}
-.bhfe-state__select{font:inherit;font-size:15px;color:var(--bhfe-navy);padding:11px 12px;border:1.5px solid #cfd6dd;border-radius:10px;background:#fff;width:100%;cursor:pointer}
-.bhfe-state__go{margin-top:auto;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:10px;padding:12px 14px;font-family:"Patua One",Georgia,serif;font-size:15px;cursor:pointer;background:var(--bhfe-amber);color:var(--bhfe-navy)}
-.bhfe-state__go:hover{filter:brightness(.94)}
-.bhfe-state__go[disabled]{background:#eef0f2;color:#6b7785;cursor:not-allowed;filter:none}
-
-/* ============================================================
-   2 · MULTI-LICENSE FINDER
-   ============================================================ */
-.bhfe-multi{display:grid;grid-template-columns:1fr;gap:32px;align-items:center}
-@media (min-width:860px){.bhfe-multi{grid-template-columns:0.9fr 1.1fr;gap:48px}}
-.bhfe-multi__kicker{font-family:"Patua One",Georgia,serif;color:var(--bhfe-amber-ink);letter-spacing:2px;font-size:13px;text-transform:uppercase;margin:0}
-.bhfe-multi__title{font-family:"Patua One",Georgia,serif;color:var(--bhfe-navy);font-size:30px;line-height:1.12;margin:10px 0 12px;text-wrap:balance}
-@media (min-width:1000px){.bhfe-multi__title{font-size:34px}}
-.bhfe-multi__text{color:var(--bhfe-muted);font-size:17px;line-height:1.55;margin:0;text-wrap:pretty}
-.bhfe-multi__text strong{color:var(--bhfe-navy)}
-.bhfe-multi__panel{background:var(--bhfe-gray);border:1.5px solid #eceff1;border-radius:16px;padding:24px}
-@media (min-width:760px){.bhfe-multi__panel{padding:30px}}
-.bhfe-multi__legend{font-family:"Patua One",Georgia,serif;color:var(--bhfe-navy);font-size:15px;margin-bottom:14px;padding:0}
-.bhfe-chips{display:flex;flex-wrap:wrap;gap:10px;border:0;padding:0;margin:0}
-.bhfe-chip{position:relative;display:inline-flex;align-items:center;gap:9px;padding:10px 16px;border-radius:24px;border:1.5px solid #cfd6dd;background:#fff;color:var(--bhfe-navy);font-family:"Patua One",Georgia,serif;font-size:15px;cursor:pointer;transition:background .15s,border-color .15s,color .15s}
-.bhfe-chip:hover{border-color:var(--bhfe-navy)}
-.bhfe-chip sup{font-size:.62em}
-.bhfe-chip__box{flex:none;width:18px;height:18px;border-radius:50%;border:1.5px solid #b9c0c7;background:transparent;color:var(--bhfe-navy);font-size:12px;line-height:15px;text-align:center}
-.bhfe-chip__input{position:absolute;opacity:0;width:1px;height:1px}
-.bhfe-chip__input:checked + .bhfe-chip{background:var(--bhfe-navy);border-color:var(--bhfe-navy);color:#fff}
-.bhfe-chip__input:checked + .bhfe-chip .bhfe-chip__box{background:var(--bhfe-amber);border-color:var(--bhfe-amber)}
-.bhfe-chip__input:checked + .bhfe-chip .bhfe-chip__box::after{content:"\2713"}
-.bhfe-chip__input:focus-visible + .bhfe-chip{outline:3px solid var(--bhfe-navy);outline-offset:2px}
-.bhfe-multi__result{margin-top:22px;padding-top:22px;border-top:1px solid var(--bhfe-line)}
-.bhfe-multi__row{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
-.bhfe-multi__rlabel{font-family:Georgia,serif;color:var(--bhfe-muted);font-size:13px}
-.bhfe-multi__rnames{font-family:"Patua One",Georgia,serif;color:var(--bhfe-navy);font-size:18px;line-height:1.2;margin-top:2px}
-.bhfe-multi__go{flex:none;display:inline-flex;align-items:center;gap:9px;text-decoration:none;background:var(--bhfe-amber);color:var(--bhfe-navy);font-family:"Patua One",Georgia,serif;font-size:16px;padding:13px 24px;border:0;border-radius:11px;cursor:pointer;box-shadow:0 14px 28px -12px rgba(255,179,0,.7)}
-.bhfe-multi__go:hover{filter:brightness(.95)}
-.bhfe-multi__go[disabled]{background:#eef0f2;color:#6b7785;box-shadow:none;cursor:not-allowed;filter:none}
-.bhfe-multi__hint{display:flex;align-items:center;gap:10px;color:#9aa4ad;font-family:Georgia,serif;font-size:15px}
-.bhfe-multi__hint span{flex:none;width:22px;height:22px;border-radius:50%;background:#eef0f2;color:#9aa4ad;font-family:"Patua One",serif;font-size:14px;line-height:22px;text-align:center}
-
-/* ============================================================
-   3 · PROMO
-   ============================================================ */
-.bhfe-promo{position:relative;overflow:hidden;background:linear-gradient(135deg,var(--bhfe-navy),var(--bhfe-navy-2) 60%,#013a5e);border-radius:20px;padding:32px;display:grid;grid-template-columns:1fr;gap:28px;align-items:center}
-@media (min-width:820px){.bhfe-promo{grid-template-columns:1fr 1.05fr;padding:44px 48px;gap:44px}}
-.bhfe-promo__badge{display:inline-block;white-space:nowrap;font-family:"Patua One",serif;color:var(--bhfe-navy);background:var(--bhfe-amber);font-size:12px;letter-spacing:1.2px;padding:5px 12px;border-radius:20px}
-.bhfe-promo__title{font-family:"Patua One",Georgia,serif;color:#fff;font-size:30px;line-height:1.12;margin:14px 0 10px}
-.bhfe-promo__text{color:#aebecd;font-size:17px;line-height:1.5;margin:0;text-wrap:pretty}
-.bhfe-promo__tiers{display:flex;gap:16px}
-.bhfe-tier{flex:1;border-radius:16px;padding:24px 18px;text-align:center}
-.bhfe-tier--base{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16)}
-.bhfe-tier--best{position:relative;background:var(--bhfe-amber);box-shadow:0 16px 36px -14px rgba(255,179,0,.6)}
-.bhfe-tier__pct{font-family:"Patua One",Georgia,serif;font-size:46px;line-height:1}
-.bhfe-tier__pct sup{font-size:.46em;vertical-align:super}
-.bhfe-tier--base .bhfe-tier__pct{color:var(--bhfe-amber)}
-.bhfe-tier--best .bhfe-tier__pct{color:var(--bhfe-navy)}
-.bhfe-tier__note{font-size:14px;margin-top:8px}
-.bhfe-tier__note strong{display:block}
-.bhfe-tier--base .bhfe-tier__note{color:#cdd9e4}
-.bhfe-tier--base .bhfe-tier__note strong{color:#fff}
-.bhfe-tier--best .bhfe-tier__note{color:#5a4300}
-.bhfe-tier--best .bhfe-tier__note strong{color:var(--bhfe-navy)}
-.bhfe-tier__flag{position:absolute;top:-11px;left:50%;transform:translateX(-50%);white-space:nowrap;background:var(--bhfe-navy);color:var(--bhfe-amber);font-family:"Patua One",serif;font-size:11px;letter-spacing:1px;padding:4px 12px;border-radius:20px}
 
 /* ============================================================
    4 · BENEFIT CARDS
@@ -169,49 +42,9 @@
 .bhfe-benefit__stat-group + .bhfe-benefit__stat-group{margin-top:10px}
 
 /* ============================================================
-   5 · BROWSE ROW
-   ============================================================ */
-.bhfe-browse{text-align:center;border-top:1px solid #ececec;padding-top:36px}
-.bhfe-browse__title{font-family:"Patua One",Georgia,serif;color:var(--bhfe-navy);font-size:28px;margin:0 0 20px}
-/* Browse button — scoped + !important so the theme's a:hover (which was
-   blanking the label) can't recolor it. Navy text on amber, always visible. */
-.bhfe-browse .bhfe-browse__btn,
-.bhfe-browse .bhfe-browse__btn:hover,
-.bhfe-browse .bhfe-browse__btn:focus,
-.bhfe-browse .bhfe-browse__btn:active{display:inline-flex;align-items:center;gap:10px;text-decoration:none !important;background:var(--bhfe-amber) !important;color:var(--bhfe-navy) !important;font-family:"Patua One",Georgia,serif;font-size:18px;font-weight:400 !important;padding:14px 30px;border-radius:6px !important;border:2px solid var(--bhfe-amber) !important;box-shadow:0 14px 30px -12px rgba(255,179,0,.55);cursor:pointer;transition:filter .2s}
-.bhfe-browse .bhfe-browse__btn::before{content:none !important;display:none !important}
-.bhfe-browse .bhfe-browse__btn:hover{filter:brightness(.94)}
-/* browse-by-credential grid: license heading + scoped subject links */
-.bhfe-browse__grid{display:grid;grid-template-columns:1fr;gap:18px;text-align:left;max-width:1000px;margin:30px auto 0}
-@media (min-width:560px){.bhfe-browse__grid{grid-template-columns:repeat(2,1fr)}}
-@media (min-width:920px){.bhfe-browse__grid{grid-template-columns:repeat(3,1fr)}}
-.bhfe-browse__col{background:var(--bhfe-gray);border:1px solid var(--bhfe-line);border-radius:14px;padding:20px 22px}
-.bhfe-browse__col-title{margin:0 0 12px;padding-bottom:10px;border-bottom:2px solid var(--bhfe-amber);font-family:"Patua One",Georgia,serif;font-size:19px;line-height:1.15}
-.bhfe-browse__col-title sup{font-size:.6em}
-.bhfe-browse .bhfe-browse__col-title a,
-.bhfe-browse .bhfe-browse__col-title a:hover,
-.bhfe-browse .bhfe-browse__col-title a:focus{color:var(--bhfe-navy) !important;text-decoration:none !important}
-.bhfe-browse__links{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:1px}
-.bhfe-browse .bhfe-browse__links a,
-.bhfe-browse .bhfe-browse__links a:focus{display:block;color:var(--bhfe-muted) !important;text-decoration:none !important;font-family:Georgia,serif;font-size:18px;padding:8px 10px;border-radius:7px;transition:background .15s,color .15s}
-.bhfe-browse .bhfe-browse__links a:hover{background:#fff !important;color:var(--bhfe-navy) !important}
-.bhfe-browse .bhfe-browse__links a::before,
-.bhfe-browse .bhfe-browse__links a:hover::before,
-.bhfe-browse .bhfe-browse__col-title a::before,
-.bhfe-browse .bhfe-browse__col-title a:hover::before{content:none !important;display:none !important}
-.bhfe-browse .bhfe-browse__links a.bhfe-browse__viewall{margin-top:5px;font-family:"Patua One",Georgia,serif;color:var(--bhfe-navy) !important;font-size:16px}
-.bhfe-browse__pdf{margin-top:26px;color:var(--bhfe-muted);font-size:15px}
-.bhfe-browse__pdf a{color:var(--bhfe-navy);font-weight:bold}
-
-/* ============================================================
    FOCUS RINGS  (WCAG 2.4.7 / 2.4.13 — 3px, >=3:1 vs surface)
    ============================================================ */
 .bhfe-band :focus-visible{outline:3px solid var(--bhfe-navy);outline-offset:2px;border-radius:8px}
-.bhfe-cred[aria-expanded="true"]:focus-visible{outline-color:var(--bhfe-amber)}
-
-@media (prefers-reduced-motion:reduce){
-  .bhfe-cred,.bhfe-opt,.bhfe-browse__btn,.bhfe-chip{transition:none}
-}
 
 /* ============================================================
    0 · HERO  (plugin-rendered; full-bleed, reads ACF hero band)
@@ -229,20 +62,6 @@
 .bhfe-hero__sub{color:#fff;font-size:19px;line-height:1.5;margin:0 auto;max-width:46em;text-wrap:pretty;text-shadow:0 1px 8px rgba(0,0,0,.6)}
 @media (max-width:767px){.bhfe-hero__sub{font-size:17px}}
 .bhfe-hero__sub sup{font-size:.6em}
-.bhfe-hero__ctas{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:26px}
-/* Hero CTAs — scoped + !important to beat the theme's global a:hover rules
-   (which otherwise blank/recolor the buttons). Two theme-matched styles:
-   primary = amber fill, secondary = white fill -> navy fill on hover. */
-.bhfe-hero .bhfe-hero__btn{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:13px 28px;border-radius:6px !important;font-family:"Patua One",Georgia,serif;font-size:17px;font-weight:400 !important;text-decoration:none !important;cursor:pointer;border:2px solid var(--bhfe-amber) !important;background:var(--bhfe-amber) !important;color:var(--bhfe-navy) !important;transition:background .2s,color .2s,border-color .2s,filter .2s}
-.bhfe-hero .bhfe-hero__btn::before{content:none !important;display:none !important}
-.bhfe-hero .bhfe-hero__btn:hover,
-.bhfe-hero .bhfe-hero__btn:focus,
-.bhfe-hero .bhfe-hero__btn:active{background:var(--bhfe-amber) !important;color:var(--bhfe-navy) !important;border-color:var(--bhfe-amber) !important;filter:brightness(.94)}
-.bhfe-hero .bhfe-hero__btn--ghost{background:#fff !important;border-color:#fff !important;color:var(--bhfe-navy) !important;filter:none}
-.bhfe-hero .bhfe-hero__btn--ghost:hover,
-.bhfe-hero .bhfe-hero__btn--ghost:focus,
-.bhfe-hero .bhfe-hero__btn--ghost:active{background:var(--bhfe-navy) !important;border-color:var(--bhfe-navy) !important;color:#fff !important;filter:none}
-@media (max-width:560px){.bhfe-hero .bhfe-hero__btn{flex:1 1 100%}}
 .bhfe-hero :focus-visible{outline:3px solid #fff;outline-offset:2px;border-radius:8px}
 
 /* close the theme header's 1rem margin-bottom so the hero sits flush under the nav */
@@ -254,10 +73,9 @@
 #find-courses{scroll-margin-top:6rem}
 
 /* ============================================================
-   Combined "Find Your Courses — Bundle & Save" band
-   (replaces the separate finder + multi-license bands)
-   Design mapped to brand: Patua One headings/buttons, Georgia body,
-   navy/amber tokens; neutral grays kept from the source design.
+   Bundle-discount strip + shared course-finder shell
+   (card, picker head, grid — used by the discount band and the
+   2C finder below)
    ============================================================ */
 .bhfe-cf-card{background:#fff;border-radius:20px;box-shadow:0 24px 60px -28px rgba(0,33,58,.35);overflow:hidden}
 
@@ -292,152 +110,14 @@
 .bhfe-cf-head-eyebrow{font-family:"Patua One",Georgia,serif;font-size:18px;letter-spacing:.14em;text-transform:uppercase;color:var(--bhfe-navy)}
 .bhfe-cf-h2{font-family:"Patua One",Georgia,serif;font-size:34px;color:var(--bhfe-navy);margin:10px 0 12px;line-height:1.08;text-wrap:balance}
 .bhfe-cf-lead{margin:0 auto;max-width:560px;font-size:18px;color:var(--bhfe-muted);line-height:1.5;text-wrap:pretty}
-/* "Select all that apply" hint — noticeable pill above the grid */
-.bhfe-cf-applyhint{display:flex;align-items:center;gap:8px;width:max-content;max-width:100%;margin:18px auto 0;padding:8px 18px;border-radius:999px;background:var(--bhfe-navy);color:var(--bhfe-amber);font-family:"Patua One",Georgia,serif;font-size:13px;letter-spacing:.06em;text-transform:uppercase}
-.bhfe-cf-applyhint::before{content:"\2713";font-size:12px}
 
 .bhfe-cf-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 
-/* License buttons — exactly TWO states (unselected / selected).
-   Scoped under .bhfe-cf-courses + !important to beat the theme's global
-   button rules, which otherwise force navy fill on :hover/:focus/:active
-   (that was the stray fully-navy third state on the just-clicked button). */
-.bhfe-cf-courses .bhfe-cf-license,
-.bhfe-cf-courses .bhfe-cf-license:hover,
-.bhfe-cf-courses .bhfe-cf-license:focus,
-.bhfe-cf-courses .bhfe-cf-license:active{
-  display:flex;align-items:center;justify-content:space-between;gap:16px;
-  padding:20px 22px !important;border-radius:14px !important;cursor:pointer;
-  -webkit-user-select:none;user-select:none;
-  background:#fff !important;color:var(--bhfe-navy) !important;border:2px solid #c2ccd5 !important;
-  transition:background .15s,border-color .15s,box-shadow .15s;
-  font-family:"Patua One",Georgia,serif !important;font-weight:400 !important;font-size:19px !important;
-  line-height:1.18;text-align:left;width:100%}
-.bhfe-cf-courses .bhfe-cf-license sup{font-size:.62em}
-.bhfe-cf-courses .bhfe-cf-license:hover{border-color:var(--bhfe-navy) !important;box-shadow:0 6px 18px -10px rgba(0,33,58,.45)}
-.bhfe-cf-courses .bhfe-cf-license[aria-pressed="true"],
-.bhfe-cf-courses .bhfe-cf-license[aria-pressed="true"]:hover,
-.bhfe-cf-courses .bhfe-cf-license[aria-pressed="true"]:focus,
-.bhfe-cf-courses .bhfe-cf-license[aria-pressed="true"]:active{
-  background:var(--bhfe-navy) !important;color:#fff !important;border-color:var(--bhfe-navy) !important}
-.bhfe-cf-dot{flex:none;width:30px;height:30px;border-radius:999px;display:grid;place-items:center;font-size:15px;background:#fff;border:2px solid #cdd4dc;transition:background .15s,border-color .15s}
-.bhfe-cf-license[aria-pressed="true"] .bhfe-cf-dot{background:var(--bhfe-amber);border-color:var(--bhfe-amber)}
-.bhfe-cf-license[aria-pressed="true"] .bhfe-cf-dot::after{content:"\2713";color:var(--bhfe-navy);font-weight:700}
-
-.bhfe-cf-footer{margin-top:30px;padding-top:24px;border-top:1px solid var(--bhfe-line);display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
-.bhfe-cf-summary{font-size:16px;color:var(--bhfe-muted);line-height:1.4}
-.bhfe-cf-summary strong{color:var(--bhfe-navy);font-family:"Patua One",Georgia,serif}
-
-/* CTA — override the theme's a:hover (which blanks bg/text + adds a ::before overlay) */
-.bhfe-cf-courses .bhfe-cf-cta,
-.bhfe-cf-courses .bhfe-cf-cta:hover,
-.bhfe-cf-courses .bhfe-cf-cta:focus,
-.bhfe-cf-courses .bhfe-cf-cta:active{
-  display:inline-flex !important;align-items:center;gap:10px;
-  font-family:"Patua One",Georgia,serif;font-size:16px;padding:14px 26px;border-radius:10px;
-  text-decoration:none !important;white-space:nowrap;border:0;cursor:pointer;
-  background:var(--bhfe-amber) !important;color:var(--bhfe-navy) !important;
-  transition:filter .15s,background .15s,box-shadow .15s}
-.bhfe-cf-courses .bhfe-cf-cta::before{content:none !important;display:none !important}
-.bhfe-cf-courses .bhfe-cf-cta:hover{filter:brightness(1.05);box-shadow:0 8px 22px -10px rgba(255,179,0,.85)}
-.bhfe-cf-courses .bhfe-cf-cta.is-disabled,
-.bhfe-cf-courses .bhfe-cf-cta.is-disabled:hover{
-  background:#e9ebee !important;color:#9aa3ad !important;pointer-events:none;box-shadow:none;filter:none}
-
-.bhfe-cf-note{margin-top:16px;display:none;align-items:center;gap:10px;font-size:15px;color:#9a6a0f;font-style:italic}
-.bhfe-cf-note.is-on{display:flex}
-.bhfe-cf-bullet{flex:none;width:7px;height:7px;border-radius:999px;background:var(--bhfe-amber);display:inline-block}
-.bhfe-cf-courses .bhfe-cf-license:focus-visible,
-.bhfe-cf-courses .bhfe-cf-cta:focus-visible{outline:3px solid var(--bhfe-amber) !important;outline-offset:2px}
 @media (max-width:760px){
   .bhfe-cf-grid{grid-template-columns:1fr}
   .bhfe-cf-picker{padding:32px 24px 36px}
   .bhfe-cf-band{padding:28px 20px}
   .bhfe-cf-h2{font-size:27px}
-  .bhfe-cf-footer{flex-direction:column;align-items:stretch}
-  .bhfe-cf-cta{justify-content:center}
-}
-@media (prefers-reduced-motion:reduce){.bhfe-cf-license,.bhfe-cf-dot,.bhfe-cf-cta{transition:none}}
-
-/* ============================================================
-   A/B on-screen labels (flags) · split discount box · Version B
-   hover-to-expand credential tiles (TESTING sandbox).
-   ============================================================ */
-
-/* Standalone discount box: drop the divider that separated it from the picker. */
-/* standalone discount band: no white card — tiers sit directly on the page */
-.bhfe-cf-discount .bhfe-cf-card{background:transparent;border-radius:0;box-shadow:none;overflow:visible}
-.bhfe-cf-discount .bhfe-cf-band{background:transparent;border-bottom:0;padding:12px 0 4px}
-
-/* Version B (FAN-OUT variant) — the tile is a flex column centered vertically:
-   idle shows the name (+cue) centered; on hover/focus/tap the cue collapses and
-   the option chips FAN OPEN right below the name, the whole name+fan cluster
-   staying centered (so the space fills evenly — no empty middle). Reserved
-   min-height fits the expanded state, so opening doesn't reflow the row.
-   CPA reveals a native state <select> for ethics (requirements differ by state). */
-.bhfe-cf-courses--b .bhfe-cf-xtile{position:relative;overflow:hidden;min-height:168px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px 16px;border-radius:14px;border:2px solid #c2ccd5;background:#fff;transition:border-color .2s,box-shadow .2s,transform .2s,background .2s}
-.bhfe-cf-courses--b .bhfe-cf-xname{margin:0;text-align:center;font-family:"Patua One",Georgia,serif;font-size:21px;color:var(--bhfe-navy);line-height:1.12;transition:font-size .2s}
-.bhfe-cf-courses--b .bhfe-cf-xname sup{font-size:.6em}
-/* cue is absolutely positioned (out of flow) so its collapse never adds height
-   during the fan-open animation -> no transient reflow/twitch on the tall CPA tile */
-.bhfe-cf-courses--b .bhfe-cf-xcue{position:absolute;left:0;right:0;bottom:18px;text-align:center;font-family:"Patua One",Georgia,serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--bhfe-tag);transition:opacity .16s}
-.bhfe-cf-courses--b .bhfe-cf-xcue::after{content:" +";color:var(--bhfe-amber)}
-.bhfe-cf-courses--b .bhfe-cf-xfan{width:100%;display:flex;gap:10px;justify-content:center;align-items:stretch;max-height:0;opacity:0;margin-top:0;overflow:hidden;pointer-events:none;transition:max-height .28s cubic-bezier(.2,.7,.2,1),opacity .2s,margin-top .28s}
-.bhfe-cf-courses--b .is-cpa .bhfe-cf-xfan{flex-direction:column;gap:8px}
-/* active: lift the tile, keep the name big, collapse the cue, open the fan */
-.bhfe-cf-courses--b .bhfe-cf-xtile:hover,
-.bhfe-cf-courses--b .bhfe-cf-xtile:focus-within,
-.bhfe-cf-courses--b .bhfe-cf-xtile.is-open{border-color:var(--bhfe-amber);box-shadow:0 16px 36px -16px rgba(0,33,58,.5);transform:translateY(-3px);background:#fffaf0}
-.bhfe-cf-courses--b .bhfe-cf-xtile:hover .bhfe-cf-xname,
-.bhfe-cf-courses--b .bhfe-cf-xtile:focus-within .bhfe-cf-xname,
-.bhfe-cf-courses--b .bhfe-cf-xtile.is-open .bhfe-cf-xname{font-size:19px}
-.bhfe-cf-courses--b .bhfe-cf-xtile:hover .bhfe-cf-xcue,
-.bhfe-cf-courses--b .bhfe-cf-xtile:focus-within .bhfe-cf-xcue,
-.bhfe-cf-courses--b .bhfe-cf-xtile.is-open .bhfe-cf-xcue{opacity:0}
-.bhfe-cf-courses--b .bhfe-cf-xtile:hover .bhfe-cf-xfan,
-.bhfe-cf-courses--b .bhfe-cf-xtile:focus-within .bhfe-cf-xfan,
-.bhfe-cf-courses--b .bhfe-cf-xtile.is-open .bhfe-cf-xfan{max-height:120px;opacity:1;margin-top:16px;pointer-events:auto}
-/* fan chips — scoped !important beats the theme's a:hover (blanks bg/text + ::before overlay) */
-.bhfe-cf-courses--b .bhfe-cf-xopt,
-.bhfe-cf-courses--b .bhfe-cf-xopt:hover,
-.bhfe-cf-courses--b .bhfe-cf-xopt:focus,
-.bhfe-cf-courses--b .bhfe-cf-xopt:active{
-  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
-  text-decoration:none !important;border-radius:11px;padding:9px 8px;line-height:1.08;text-align:center;
-  font-family:"Patua One",Georgia,serif !important;font-weight:400 !important;font-size:15px !important;
-  box-shadow:0 8px 18px -10px rgba(0,33,58,.5);transform-origin:bottom center;
-  transform:rotate(var(--fan,0deg)) scale(.96);
-  transition:transform .26s cubic-bezier(.2,.8,.25,1),filter .15s,background .15s,color .15s}
-.bhfe-cf-courses--b .bhfe-cf-xopt::before{content:none !important;display:none !important}
-.bhfe-cf-courses--b .bhfe-cf-xopt--all{--fan:-6deg;background:var(--bhfe-amber) !important;color:var(--bhfe-navy) !important}
-.bhfe-cf-courses--b .bhfe-cf-xopt--eth{--fan:6deg;background:var(--bhfe-navy) !important;color:#fff !important}
-.bhfe-cf-courses--b .is-solo .bhfe-cf-xopt--all,
-.bhfe-cf-courses--b .is-cpa .bhfe-cf-xopt--all{--fan:0deg;flex:none}
-.bhfe-cf-courses--b .bhfe-cf-xopt-lead{font-size:10px;letter-spacing:.12em;text-transform:uppercase;opacity:.72}
-/* reveal: chips settle upright as the fan opens */
-.bhfe-cf-courses--b .bhfe-cf-xtile:hover .bhfe-cf-xopt,
-.bhfe-cf-courses--b .bhfe-cf-xtile:focus-within .bhfe-cf-xopt,
-.bhfe-cf-courses--b .bhfe-cf-xtile.is-open .bhfe-cf-xopt{transform:rotate(0) scale(1)}
-.bhfe-cf-courses--b .bhfe-cf-xopt--all:hover{filter:brightness(1.06) !important}
-.bhfe-cf-courses--b .bhfe-cf-xopt--eth:hover{filter:brightness(1.18) !important}
-.bhfe-cf-courses--b .bhfe-cf-xopt:focus-visible{outline:3px solid var(--bhfe-amber) !important;outline-offset:2px}
-/* CPA ethics — native state select + Go (works without JS) */
-.bhfe-cf-courses--b .bhfe-cf-stateform{display:flex;gap:6px;align-items:stretch;width:100%}
-.bhfe-cf-courses--b .bhfe-cf-stateselect{flex:1;min-width:0;border:1.5px solid var(--bhfe-navy);border-radius:10px;padding:8px 10px;font-family:Georgia,serif;font-size:13px;color:var(--bhfe-navy);background:#fff}
-.bhfe-cf-courses--b .bhfe-cf-statego,
-.bhfe-cf-courses--b .bhfe-cf-statego:hover,
-.bhfe-cf-courses--b .bhfe-cf-statego:focus,
-.bhfe-cf-courses--b .bhfe-cf-statego:active{
-  flex:none;display:inline-flex;align-items:center;gap:4px;border:0 !important;cursor:pointer;
-  border-radius:10px;padding:8px 13px;font-family:"Patua One",Georgia,serif !important;font-weight:400 !important;font-size:13px !important;
-  background:var(--bhfe-amber) !important;color:var(--bhfe-navy) !important;text-decoration:none !important}
-.bhfe-cf-courses--b .bhfe-cf-statego::before{content:none !important;display:none !important}
-.bhfe-cf-courses--b .bhfe-cf-statego:hover{filter:brightness(1.06)}
-.bhfe-cf-courses--b .bhfe-cf-stateselect:focus-visible,
-.bhfe-cf-courses--b .bhfe-cf-statego:focus-visible{outline:3px solid var(--bhfe-amber) !important;outline-offset:2px}
-@media (prefers-reduced-motion:reduce){
-  .bhfe-cf-courses--b .bhfe-cf-xtile,.bhfe-cf-courses--b .bhfe-cf-xname,
-  .bhfe-cf-courses--b .bhfe-cf-xopt,.bhfe-cf-courses--b .bhfe-cf-stateform{transition:none}
 }
 
 /* ============================================================
@@ -572,10 +252,3 @@
   .bhfe-accred__logo:nth-child(even).is-open .bhfe-accred__note{transform:translate(0,0)}
 }
 @media (prefers-reduced-motion:reduce){.bhfe-accred__note{transition:none}}
-.bhfe-accred__subhead{text-align:center;margin:4px auto 22px;padding-top:28px;border-top:1px solid var(--bhfe-line)}
-.bhfe-accred__subtitle{font-family:"Patua One",Georgia,serif;color:var(--bhfe-navy);font-size:26px;line-height:1.12;margin:6px 0 0;text-wrap:balance}
-.bhfe-accred__legal{padding-top:0;column-gap:40px}
-@media (min-width:860px){.bhfe-accred__legal{columns:2}}
-.bhfe-accred__legal p{font-family:Georgia,serif;font-size:15.5px;line-height:1.6;color:var(--bhfe-muted);margin:0 0 14px;break-inside:avoid}
-.bhfe-accred__legal p sup{font-size:.7em}
-.bhfe-accred__legal a{color:var(--bhfe-navy);text-decoration:underline}
