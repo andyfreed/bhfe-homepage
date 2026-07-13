@@ -594,9 +594,16 @@ function bhfe_hp_band_courses_c() {
         $col       = '';
         if ( 'cpa' === $key ) {
             $col   = ' is-col';
+            $filter  = bhfe_hp_cpa_filter();
+            // subject must be a hidden input, not a query arg on the action URL —
+            // browsers drop the action's query string on GET submit
+            $subject = $filter['subject'] > 0
+                ? '<input type="hidden" name="subject" value="' . (int) $filter['subject'] . '">'
+                : '';
             $chips = '<a class="bhfe-cf-xopt bhfe-cf-xopt--all is-cpa-all" href="' . esc_url( bhfe_hp_link( 'cpa_all' ) ) . '">' . $all_label . '</a>'
                 . '<form class="bhfe-cf-stateform" method="get" action="' . esc_url( bhfe_hp_link( 'cpa_ethics' ) ) . '">'
                 .   '<input type="hidden" name="credit_type[]" value="cpa">'
+                .   $subject
                 .   '<label class="bhfe-sr-only" for="bhfe-cpa-state-c">Your state for CPA ethics</label>'
                 .   '<select class="bhfe-cf-stateselect" id="bhfe-cpa-state-c" name="state">' . bhfe_hp_state_options( 'State Ethics: Select your state&hellip;' ) . '</select>'
                 .   '<button class="bhfe-cf-statego" type="submit" aria-label="View CPA ethics for the selected state">Go</button>'

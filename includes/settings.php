@@ -90,17 +90,35 @@ function bhfe_hp_states() {
     return $out;
 }
 
+/** All subjects from the live taxonomy (for the shop-filter subject dropdown). */
+function bhfe_hp_subjects() {
+    $subjects = get_terms( array( 'taxonomy' => 'subject', 'hide_empty' => false, 'orderby' => 'name' ) );
+    return is_wp_error( $subjects ) ? array() : $subjects;
+}
+
+/** Shop-filter customization for the CPA state fallback: array( 'subject' => term_id|0 ). */
+function bhfe_hp_cpa_filter() {
+    $f = get_option( 'bhfe_hp_cpa_filter', array() );
+    return array( 'subject' => isset( $f['subject'] ) ? (int) $f['subject'] : 0 );
+}
+
 /** Per-state CPA ethics override URL ('' = none — use the shop filter). */
 function bhfe_hp_cpa_state_link( $term_id ) {
     $map = get_option( 'bhfe_hp_cpa_state_links', array() );
     return isset( $map[ (int) $term_id ] ) ? (string) $map[ (int) $term_id ] : '';
 }
 
-/** Where a state lands when it has no override: the shop filter targeting CPA + that state. */
+/** Where a state lands when it has no override: the shop filter targeting CPA + that
+ *  state (+ the configured subject, if any). Mirrors what the native GET form submits. */
 function bhfe_hp_cpa_state_default_url( $term_id ) {
-    $base = bhfe_hp_link( 'cpa_ethics' );
-    $sep  = ( false === strpos( $base, '?' ) ) ? '?' : '&';
-    return $base . $sep . 'credit_type%5B%5D=cpa&state=' . (int) $term_id;
+    $base   = bhfe_hp_link( 'cpa_ethics' );
+    $sep    = ( false === strpos( $base, '?' ) ) ? '?' : '&';
+    $filter = bhfe_hp_cpa_filter();
+    $url    = $base . $sep . 'credit_type%5B%5D=cpa';
+    if ( $filter['subject'] > 0 ) {
+        $url .= '&subject=' . $filter['subject'];
+    }
+    return $url . '&state=' . (int) $term_id;
 }
 
 add_action( 'admin_menu', 'bhfe_hp_admin_menu' );
@@ -120,6 +138,16 @@ function bhfe_hp_register_settings() {
         'sanitize_callback' => 'bhfe_hp_sanitize_state_links',
         'default'           => array(),
     ) );
+    register_setting( 'bhfe_hp_links_group', 'bhfe_hp_cpa_filter', array(
+        'type'              => 'array',
+        'sanitize_callback' => 'bhfe_hp_sanitize_cpa_filter',
+        'default'           => array(),
+    ) );
+}
+
+/** Only a subject term id (0 = don't pre-select a subject). */
+function bhfe_hp_sanitize_cpa_filter( $input ) {
+    return array( 'subject' => isset( $input['subject'] ) ? absint( $input['subject'] ) : 0 );
 }
 
 /** Keep only known keys; empty/invalid values are dropped so the default kicks in. */
@@ -323,6 +351,24 @@ function bhfe_hp_settings_page() {
                     &ldquo;state ethics form target&rdquo; page above, filtered to CPA + their state
                     (the default URL is shown greyed out).</li>
             </ul>
+            <table class="form-table" role="presentation">
+                <tr>
+                    <th scope="row"><label for="bhfe-hp-cpa-subject">Shop filter &mdash; subject to pre-select</label></th>
+                    <td>
+                        <?php $filter = bhfe_hp_cpa_filter(); ?>
+                        <select id="bhfe-hp-cpa-subject" name="bhfe_hp_cpa_filter[subject]">
+                            <option value="0"<?php selected( 0, $filter['subject'] ); ?>>&mdash; none (page default) &mdash;</option>
+                            <?php foreach ( bhfe_hp_subjects() as $s ) : ?>
+                                <option value="<?php echo (int) $s->term_id; ?>"<?php selected( $s->term_id, $filter['subject'] ); ?>><?php echo esc_html( $s->name ); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        <p class="description">Applied to the shop-filter landing along with the visitor&rsquo;s chosen state
+                            (e.g. pick &ldquo;Ethics-State-Specific&rdquo; so the Subject filter arrives pre-selected).
+                            The State filter is always the state the visitor picked. Has no effect on states with a
+                            course-page URL below.</p>
+                    </td>
+                </tr>
+            </table>
             <table class="form-table" role="presentation">
                 <?php foreach ( bhfe_hp_states() as $t ) :
                     $val = isset( $state_map[ $t->term_id ] ) ? $state_map[ $t->term_id ] : '';
