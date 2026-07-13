@@ -174,6 +174,27 @@
     });
   }
 
+  // CPA state ethics: a state can carry a per-state destination (data-url on
+  // its <option>, set in Settings → BHFE Homepage) — e.g. straight to that
+  // state's course page. On submit, route there instead of the shop filter.
+  // With JS off the form submits normally, so every state still works.
+  function initStateRouting() {
+    Array.prototype.forEach.call(
+      document.querySelectorAll(".bhfe-cf-stateform"),
+      function (form) {
+        form.addEventListener("submit", function (e) {
+          var sel = form.querySelector(".bhfe-cf-stateselect");
+          if (!sel || sel.selectedIndex < 0) return;
+          var url = sel.options[sel.selectedIndex].getAttribute("data-url");
+          if (url) {
+            e.preventDefault();
+            window.location.assign(url);
+          }
+        });
+      }
+    );
+  }
+
   // Accreditation logos: hover/focus popovers are pure CSS; this adds
   // tap-to-toggle for touch devices. A tap on a link inside the popover
   // (e.g. nasbaregistry.org) still navigates. One popover open at a time.
@@ -220,6 +241,7 @@
       document.querySelectorAll(".bhfe-cf-courses--b, .bhfe-cf-courses--c"),
       function (el) { initCoursesExpand(el); }
     );
+    initStateRouting();
     initAccredNotes();
     initHeroScroll();
   }

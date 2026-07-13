@@ -101,15 +101,17 @@ function bhfe_hp_state_form() {
         . '</form>';
 }
 
-/** Just the <option>s for a state <select> (sentinels excluded). Shared by the pickers. */
+/** Just the <option>s for a state <select> (sentinels excluded). Shared by the pickers.
+ *  A state with a per-state override (Settings → BHFE Homepage) carries it as
+ *  data-url; homepage.js routes there on submit instead of the shop filter.
+ *  With JS off the data-url is inert and the form submits to the filter. */
 function bhfe_hp_state_options( $placeholder = 'Choose your state&hellip;' ) {
-    $states = get_terms( array( 'taxonomy'=>'state', 'hide_empty'=>false, 'orderby'=>'name' ) );
     $opts = '<option value="">' . $placeholder . '</option>';
-    if ( ! is_wp_error( $states ) ) {
-        foreach ( $states as $t ) {
-            if ( preg_match( '/^all(\s|-)?(states)?$/i', trim( $t->name ) ) ) { continue; }
-            $opts .= '<option value="' . esc_attr( $t->term_id ) . '">' . esc_html( $t->name ) . '</option>';
-        }
+    foreach ( bhfe_hp_states() as $t ) {
+        $url   = bhfe_hp_cpa_state_link( $t->term_id );
+        $opts .= '<option value="' . esc_attr( $t->term_id ) . '"'
+            . ( $url ? ' data-url="' . esc_url( $url ) . '"' : '' )
+            . '>' . esc_html( $t->name ) . '</option>';
     }
     return $opts;
 }
