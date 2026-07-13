@@ -217,7 +217,7 @@
       function (el) { initCourses(el); }
     );
     Array.prototype.forEach.call(
-      document.querySelectorAll(".bhfe-cf-courses--b, .bhfe-cf-courses--d, .bhfe-cf-courses--e"),
+      document.querySelectorAll(".bhfe-cf-courses--b, .bhfe-cf-courses--c"),
       function (el) { initCoursesExpand(el); }
     );
     initAccredNotes();

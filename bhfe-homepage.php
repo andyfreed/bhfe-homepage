@@ -21,6 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 define( 'BHFE_HP_DIR', plugin_dir_path( __FILE__ ) );
 define( 'BHFE_HP_URL', plugin_dir_url( __FILE__ ) );
 
+require_once BHFE_HP_DIR . 'includes/settings.php';
 require_once BHFE_HP_DIR . 'includes/render.php';
 
 /**
