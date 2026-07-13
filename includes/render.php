@@ -108,7 +108,12 @@ function bhfe_hp_state_form() {
 function bhfe_hp_state_options( $placeholder = 'Choose your state&hellip;' ) {
     $opts = '<option value="">' . $placeholder . '</option>';
     foreach ( bhfe_hp_states() as $t ) {
-        $url   = bhfe_hp_cpa_state_link( $t->term_id );
+        $url = bhfe_hp_cpa_state_link( $t->term_id );
+        if ( '' === $url && bhfe_hp_cpa_state_subject( $t->term_id ) > 0 ) {
+            // state has its own subject: route to the shop filter carrying it
+            // (the no-JS form submit still works, just with the default subject)
+            $url = bhfe_hp_cpa_state_default_url( $t->term_id );
+        }
         $opts .= '<option value="' . esc_attr( $t->term_id ) . '"'
             . ( $url ? ' data-url="' . esc_url( $url ) . '"' : '' )
             . '>' . esc_html( $t->name ) . '</option>';

@@ -102,21 +102,31 @@ function bhfe_hp_cpa_filter() {
     return array( 'subject' => isset( $f['subject'] ) ? (int) $f['subject'] : 0 );
 }
 
-/** Per-state CPA ethics override URL ('' = none — use the shop filter). */
+/** Per-state CPA ethics override URL ('' = none). Highest priority for a state. */
 function bhfe_hp_cpa_state_link( $term_id ) {
     $map = get_option( 'bhfe_hp_cpa_state_links', array() );
     return isset( $map[ (int) $term_id ] ) ? (string) $map[ (int) $term_id ] : '';
 }
 
-/** Where a state lands when it has no override: the shop filter targeting CPA + that
- *  state (+ the configured subject, if any). Mirrors what the native GET form submits. */
+/** Per-state subject override for the shop-filter route (0 = none — use the default subject). */
+function bhfe_hp_cpa_state_subject( $term_id ) {
+    $map = get_option( 'bhfe_hp_cpa_state_subjects', array() );
+    return isset( $map[ (int) $term_id ] ) ? (int) $map[ (int) $term_id ] : 0;
+}
+
+/** The shop-filter URL for a state: CPA + state + subject (state's own subject if set,
+ *  else the default subject, else none). Mirrors what the native GET form submits. */
 function bhfe_hp_cpa_state_default_url( $term_id ) {
-    $base   = bhfe_hp_link( 'cpa_ethics' );
-    $sep    = ( false === strpos( $base, '?' ) ) ? '?' : '&';
-    $filter = bhfe_hp_cpa_filter();
-    $url    = $base . $sep . 'credit_type%5B%5D=cpa';
-    if ( $filter['subject'] > 0 ) {
-        $url .= '&subject=' . $filter['subject'];
+    $base    = bhfe_hp_link( 'cpa_ethics' );
+    $sep     = ( false === strpos( $base, '?' ) ) ? '?' : '&';
+    $subject = bhfe_hp_cpa_state_subject( $term_id );
+    if ( $subject <= 0 ) {
+        $filter  = bhfe_hp_cpa_filter();
+        $subject = $filter['subject'];
+    }
+    $url = $base . $sep . 'credit_type%5B%5D=cpa';
+    if ( $subject > 0 ) {
+        $url .= '&subject=' . $subject;
     }
     return $url . '&state=' . (int) $term_id;
 }
@@ -143,6 +153,27 @@ function bhfe_hp_register_settings() {
         'sanitize_callback' => 'bhfe_hp_sanitize_cpa_filter',
         'default'           => array(),
     ) );
+    register_setting( 'bhfe_hp_links_group', 'bhfe_hp_cpa_state_subjects', array(
+        'type'              => 'array',
+        'sanitize_callback' => 'bhfe_hp_sanitize_state_subjects',
+        'default'           => array(),
+    ) );
+}
+
+/** Keep only state_term_id => subject_term_id pairs (0/empty = no override, dropped). */
+function bhfe_hp_sanitize_state_subjects( $input ) {
+    $clean = array();
+    if ( ! is_array( $input ) ) {
+        return $clean;
+    }
+    foreach ( $input as $term_id => $subject_id ) {
+        $term_id    = (int) $term_id;
+        $subject_id = absint( $subject_id );
+        if ( $term_id > 0 && $subject_id > 0 ) {
+            $clean[ $term_id ] = $subject_id;
+        }
+    }
+    return $clean;
 }
 
 /** Only a subject term id (0 = don't pre-select a subject). */
@@ -203,18 +234,29 @@ function bhfe_hp_export_csv() {
     }
     check_admin_referer( 'bhfe_hp_csv' );
 
-    $opts      = get_option( 'bhfe_hp_links', array() );
-    $state_map = get_option( 'bhfe_hp_cpa_state_links', array() );
+    $opts       = get_option( 'bhfe_hp_links', array() );
+    $state_map  = get_option( 'bhfe_hp_cpa_state_links', array() );
+    $state_subs = get_option( 'bhfe_hp_cpa_state_subjects', array() );
+    $sub_names  = array();
+    foreach ( bhfe_hp_subjects() as $s ) {
+        $sub_names[ (int) $s->term_id ] = $s->name;
+    }
 
     header( 'Content-Type: text/csv; charset=utf-8' );
     header( 'Content-Disposition: attachment; filename="bhfe-homepage-links-' . gmdate( 'Ymd' ) . '.csv"' );
     $out = fopen( 'php://output', 'w' );
-    fputcsv( $out, array( 'section', 'name', 'url' ) );
+    fputcsv( $out, array( 'section', 'name', 'url', 'subject' ) );
     foreach ( bhfe_hp_link_fields() as $key => $f ) {
-        fputcsv( $out, array( 'link', $key, isset( $opts[ $key ] ) ? $opts[ $key ] : '' ) );
+        fputcsv( $out, array( 'link', $key, isset( $opts[ $key ] ) ? $opts[ $key ] : '', '' ) );
     }
     foreach ( bhfe_hp_states() as $t ) {
-        fputcsv( $out, array( 'cpa_state', $t->name, isset( $state_map[ $t->term_id ] ) ? $state_map[ $t->term_id ] : '' ) );
+        $sub = isset( $state_subs[ $t->term_id ] ) ? (int) $state_subs[ $t->term_id ] : 0;
+        fputcsv( $out, array(
+            'cpa_state',
+            $t->name,
+            isset( $state_map[ $t->term_id ] ) ? $state_map[ $t->term_id ] : '',
+            ( $sub && isset( $sub_names[ $sub ] ) ) ? $sub_names[ $sub ] : '',
+        ) );
     }
     fclose( $out );
     exit;
@@ -233,12 +275,17 @@ function bhfe_hp_import_csv() {
         exit;
     }
 
-    $opts      = get_option( 'bhfe_hp_links', array() );
-    $state_map = get_option( 'bhfe_hp_cpa_state_links', array() );
-    $keys      = array_keys( bhfe_hp_link_fields() );
-    $by_name   = array();
+    $opts       = get_option( 'bhfe_hp_links', array() );
+    $state_map  = get_option( 'bhfe_hp_cpa_state_links', array() );
+    $state_subs = get_option( 'bhfe_hp_cpa_state_subjects', array() );
+    $keys       = array_keys( bhfe_hp_link_fields() );
+    $by_name    = array();
     foreach ( bhfe_hp_states() as $t ) {
         $by_name[ strtolower( trim( $t->name ) ) ] = (int) $t->term_id;
+    }
+    $sub_by_name = array();
+    foreach ( bhfe_hp_subjects() as $s ) {
+        $sub_by_name[ strtolower( trim( $s->name ) ) ] = (int) $s->term_id;
     }
 
     $fh = fopen( $_FILES['bhfe_hp_csv']['tmp_name'], 'r' );
@@ -247,6 +294,7 @@ function bhfe_hp_import_csv() {
             $section = isset( $row[0] ) ? strtolower( trim( $row[0] ) ) : '';
             $name    = isset( $row[1] ) ? trim( $row[1] ) : '';
             $url     = isset( $row[2] ) ? trim( $row[2] ) : '';
+            $subject = isset( $row[3] ) ? trim( $row[3] ) : '';
             if ( '' === $section || 'section' === $section ) { continue; } // blank / header row
             if ( 'link' === $section && in_array( $name, $keys, true ) ) {
                 if ( '' === $url ) {
@@ -257,12 +305,22 @@ function bhfe_hp_import_csv() {
                 if ( '' !== $clean ) { $opts[ $name ] = $clean; $set++; } else { $skipped++; }
             } elseif ( 'cpa_state' === $section && isset( $by_name[ strtolower( $name ) ] ) ) {
                 $tid = $by_name[ strtolower( $name ) ];
+                // url column
                 if ( '' === $url ) {
                     if ( isset( $state_map[ $tid ] ) ) { unset( $state_map[ $tid ] ); $cleared++; }
-                    continue;
+                } else {
+                    $clean = esc_url_raw( $url );
+                    if ( '' !== $clean ) { $state_map[ $tid ] = $clean; $set++; } else { $skipped++; }
                 }
-                $clean = esc_url_raw( $url );
-                if ( '' !== $clean ) { $state_map[ $tid ] = $clean; $set++; } else { $skipped++; }
+                // subject column (matched by subject NAME so the CSV ports across environments)
+                if ( '' === $subject ) {
+                    if ( isset( $state_subs[ $tid ] ) ) { unset( $state_subs[ $tid ] ); $cleared++; }
+                } elseif ( isset( $sub_by_name[ strtolower( $subject ) ] ) ) {
+                    $state_subs[ $tid ] = $sub_by_name[ strtolower( $subject ) ];
+                    $set++;
+                } else {
+                    $skipped++; // unknown subject name
+                }
             } else {
                 $skipped++;
             }
@@ -272,6 +330,7 @@ function bhfe_hp_import_csv() {
 
     update_option( 'bhfe_hp_links', $opts );
     update_option( 'bhfe_hp_cpa_state_links', $state_map );
+    update_option( 'bhfe_hp_cpa_state_subjects', $state_subs );
 
     wp_safe_redirect( add_query_arg( array(
         'page'     => 'bhfe-homepage',
@@ -344,45 +403,56 @@ function bhfe_hp_settings_page() {
             </table>
 
             <h2>CPA state ethics &mdash; where each state goes</h2>
-            <p>Each state has two options:</p>
-            <ul style="list-style:disc;padding-left:20px">
-                <li><strong>Straight to a course page</strong> &mdash; paste the course&rsquo;s URL in the state&rsquo;s field.</li>
-                <li><strong>Shop filter for that state</strong> &mdash; leave the field empty. The visitor lands on the
-                    &ldquo;state ethics form target&rdquo; page above, filtered to CPA + their state
-                    (the default URL is shown greyed out).</li>
-            </ul>
+            <p>Each state resolves in this order:</p>
+            <ol style="list-style:decimal;padding-left:20px">
+                <li><strong>Course page URL</strong> &mdash; one required course (e.g. MA)? Paste its URL and the visitor
+                    goes straight there.</li>
+                <li><strong>State&rsquo;s own subject</strong> &mdash; multiple courses (e.g. CA)? Tag them with a subject and
+                    pick it here; the visitor lands on the shop page filtered to that subject + their state.</li>
+                <li><strong>Default</strong> &mdash; neither set: shop page filtered to CPA + their state
+                    (+ the default subject below, if chosen). The greyed-out URL shows exactly where each state goes.</li>
+            </ol>
             <table class="form-table" role="presentation">
                 <tr>
-                    <th scope="row"><label for="bhfe-hp-cpa-subject">Shop filter &mdash; subject to pre-select</label></th>
+                    <th scope="row"><label for="bhfe-hp-cpa-subject">Default subject (states without their own)</label></th>
                     <td>
-                        <?php $filter = bhfe_hp_cpa_filter(); ?>
+                        <?php $filter = bhfe_hp_cpa_filter(); $subjects = bhfe_hp_subjects(); ?>
                         <select id="bhfe-hp-cpa-subject" name="bhfe_hp_cpa_filter[subject]">
                             <option value="0"<?php selected( 0, $filter['subject'] ); ?>>&mdash; none (page default) &mdash;</option>
-                            <?php foreach ( bhfe_hp_subjects() as $s ) : ?>
+                            <?php foreach ( $subjects as $s ) : ?>
                                 <option value="<?php echo (int) $s->term_id; ?>"<?php selected( $s->term_id, $filter['subject'] ); ?>><?php echo esc_html( $s->name ); ?></option>
                             <?php endforeach; ?>
                         </select>
-                        <p class="description">Applied to the shop-filter landing along with the visitor&rsquo;s chosen state
-                            (e.g. pick &ldquo;Ethics-State-Specific&rdquo; so the Subject filter arrives pre-selected).
-                            The State filter is always the state the visitor picked. Has no effect on states with a
-                            course-page URL below.</p>
+                        <p class="description">Pre-selected on the shop-filter landing along with the visitor&rsquo;s chosen state.
+                            Ignored for states with a course-page URL or their own subject.</p>
                     </td>
                 </tr>
             </table>
+            <?php $state_subjects = get_option( 'bhfe_hp_cpa_state_subjects', array() ); ?>
             <table class="form-table" role="presentation">
                 <?php foreach ( bhfe_hp_states() as $t ) :
                     $val = isset( $state_map[ $t->term_id ] ) ? $state_map[ $t->term_id ] : '';
+                    $sub = isset( $state_subjects[ $t->term_id ] ) ? (int) $state_subjects[ $t->term_id ] : 0;
                     ?>
                     <tr>
                         <th scope="row">
                             <label for="bhfe-hp-state-<?php echo (int) $t->term_id; ?>"><?php echo esc_html( $t->name ); ?></label>
                         </th>
                         <td>
-                            <input type="text" class="large-text code"
+                            <input type="text" class="regular-text code" style="width:420px;max-width:100%"
                                 id="bhfe-hp-state-<?php echo (int) $t->term_id; ?>"
                                 name="bhfe_hp_cpa_state_links[<?php echo (int) $t->term_id; ?>]"
                                 value="<?php echo esc_attr( $val ); ?>"
                                 placeholder="<?php echo esc_attr( bhfe_hp_cpa_state_default_url( $t->term_id ) ); ?>">
+                            &nbsp;or subject:&nbsp;
+                            <label class="screen-reader-text" for="bhfe-hp-state-subject-<?php echo (int) $t->term_id; ?>"><?php echo esc_html( $t->name ); ?> subject</label>
+                            <select id="bhfe-hp-state-subject-<?php echo (int) $t->term_id; ?>"
+                                name="bhfe_hp_cpa_state_subjects[<?php echo (int) $t->term_id; ?>]">
+                                <option value="0"<?php selected( 0, $sub ); ?>>&mdash; default &mdash;</option>
+                                <?php foreach ( $subjects as $s ) : ?>
+                                    <option value="<?php echo (int) $s->term_id; ?>"<?php selected( $s->term_id, $sub ); ?>><?php echo esc_html( $s->name ); ?></option>
+                                <?php endforeach; ?>
+                            </select>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -394,10 +464,11 @@ function bhfe_hp_settings_page() {
 
         <hr>
         <h2>Export / import CSV</h2>
-        <p>Export downloads every mapping above as a CSV (<code>section,name,url</code>) &mdash; rows with an
-           empty <code>url</code> are using the default, so the file doubles as a template: fill in the
-           <code>url</code> column and import it back. Importing sets the rows in the file (empty
-           <code>url</code> = back to default) and leaves rows not in the file untouched.</p>
+        <p>Export downloads every mapping above as a CSV (<code>section,name,url,subject</code>) &mdash; empty cells
+           are using the default, so the file doubles as a template: fill in the <code>url</code> column
+           (direct course page) and/or the <code>subject</code> column (subject name, for the shop-filter route)
+           and import it back. Importing sets the rows in the file (empty cell = back to default) and leaves
+           rows not in the file untouched.</p>
         <form method="get" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="display:inline-block;margin-right:24px">
             <input type="hidden" name="action" value="bhfe_hp_export_csv">
             <?php wp_nonce_field( 'bhfe_hp_csv' ); ?>
