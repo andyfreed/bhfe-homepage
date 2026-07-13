@@ -160,6 +160,16 @@ function bhfe_hp_register_settings() {
     ) );
 }
 
+/** Normalize a term name for CSV matching: decode entities, collapse whitespace, lowercase.
+ *  WP stores '&' in term names as '&amp;', and hand-edited CSVs pick up stray spaces —
+ *  without this, visually-identical names silently fail to match. */
+function bhfe_hp_norm_name( $name ) {
+    $name = html_entity_decode( (string) $name, ENT_QUOTES );
+    $name = str_replace( array( '-', '–' ), ' ', $name ); // dashes count as spaces ("Ethics-State" == "Ethics State")
+    $name = preg_replace( '/\s+/', ' ', trim( $name ) );
+    return strtolower( $name );
+}
+
 /** Keep only state_term_id => subject_term_id pairs (0/empty = no override, dropped). */
 function bhfe_hp_sanitize_state_subjects( $input ) {
     $clean = array();
@@ -281,12 +291,13 @@ function bhfe_hp_import_csv() {
     $keys       = array_keys( bhfe_hp_link_fields() );
     $by_name    = array();
     foreach ( bhfe_hp_states() as $t ) {
-        $by_name[ strtolower( trim( $t->name ) ) ] = (int) $t->term_id;
+        $by_name[ bhfe_hp_norm_name( $t->name ) ] = (int) $t->term_id;
     }
     $sub_by_name = array();
     foreach ( bhfe_hp_subjects() as $s ) {
-        $sub_by_name[ strtolower( trim( $s->name ) ) ] = (int) $s->term_id;
+        $sub_by_name[ bhfe_hp_norm_name( $s->name ) ] = (int) $s->term_id;
     }
+    $skip_detail = array();
 
     $fh = fopen( $_FILES['bhfe_hp_csv']['tmp_name'], 'r' );
     if ( $fh ) {
@@ -302,30 +313,37 @@ function bhfe_hp_import_csv() {
                     continue;
                 }
                 $clean = esc_url_raw( $url );
-                if ( '' !== $clean ) { $opts[ $name ] = $clean; $set++; } else { $skipped++; }
-            } elseif ( 'cpa_state' === $section && isset( $by_name[ strtolower( $name ) ] ) ) {
-                $tid = $by_name[ strtolower( $name ) ];
+                if ( '' !== $clean ) { $opts[ $name ] = $clean; $set++; }
+                else { $skipped++; $skip_detail[] = "link \"$name\": invalid URL"; }
+            } elseif ( 'cpa_state' === $section && isset( $by_name[ bhfe_hp_norm_name( $name ) ] ) ) {
+                $tid = $by_name[ bhfe_hp_norm_name( $name ) ];
                 // url column
                 if ( '' === $url ) {
                     if ( isset( $state_map[ $tid ] ) ) { unset( $state_map[ $tid ] ); $cleared++; }
                 } else {
                     $clean = esc_url_raw( $url );
-                    if ( '' !== $clean ) { $state_map[ $tid ] = $clean; $set++; } else { $skipped++; }
+                    if ( '' !== $clean ) { $state_map[ $tid ] = $clean; $set++; }
+                    else { $skipped++; $skip_detail[] = "$name: invalid URL"; }
                 }
                 // subject column (matched by subject NAME so the CSV ports across environments)
                 if ( '' === $subject ) {
                     if ( isset( $state_subs[ $tid ] ) ) { unset( $state_subs[ $tid ] ); $cleared++; }
-                } elseif ( isset( $sub_by_name[ strtolower( $subject ) ] ) ) {
-                    $state_subs[ $tid ] = $sub_by_name[ strtolower( $subject ) ];
+                } elseif ( isset( $sub_by_name[ bhfe_hp_norm_name( $subject ) ] ) ) {
+                    $state_subs[ $tid ] = $sub_by_name[ bhfe_hp_norm_name( $subject ) ];
                     $set++;
                 } else {
-                    $skipped++; // unknown subject name
+                    $skipped++;
+                    $skip_detail[] = "$name: no subject named \"$subject\" exists on this site";
                 }
             } else {
                 $skipped++;
+                $skip_detail[] = "unrecognized row \"$section, $name\"";
             }
         }
         fclose( $fh );
+    }
+    if ( $skip_detail ) {
+        set_transient( 'bhfe_hp_csv_skipped_' . get_current_user_id(), array_slice( $skip_detail, 0, 12 ), 300 );
     }
 
     update_option( 'bhfe_hp_links', $opts );
@@ -353,7 +371,17 @@ function bhfe_hp_settings_page() {
         } elseif ( preg_match( '/^(\d+)-(\d+)-(\d+)$/', $flag, $m ) ) {
             echo '<div class="notice notice-success is-dismissible"><p>CSV imported: '
                 . (int) $m[1] . ' override(s) set, ' . (int) $m[2] . ' cleared (back to default), '
-                . (int) $m[3] . ' row(s) skipped.</p></div>';
+                . (int) $m[3] . ' row(s) skipped.</p>';
+            $skip_detail = get_transient( 'bhfe_hp_csv_skipped_' . get_current_user_id() );
+            if ( is_array( $skip_detail ) && $skip_detail ) {
+                echo '<p><strong>Skipped rows:</strong></p><ul style="list-style:disc;padding-left:20px;margin-top:0">';
+                foreach ( $skip_detail as $d ) {
+                    echo '<li>' . esc_html( $d ) . '</li>';
+                }
+                echo '</ul>';
+                delete_transient( 'bhfe_hp_csv_skipped_' . get_current_user_id() );
+            }
+            echo '</div>';
         }
     }
     ?>
