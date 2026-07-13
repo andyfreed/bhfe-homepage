@@ -14,6 +14,41 @@
 
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
+/* ---------- fatal-error catcher (diagnostic) ----------
+ * Dev is intermittently 500ing at end-of-request for logged-in users, but the
+ * WPE error-log UI shows nothing. This records the last PHP fatal (message,
+ * file, line, URL, user) to an option and shows it on Settings → BHFE Homepage.
+ * Cheap and always-on: does nothing unless a fatal actually happens. */
+add_action( 'plugins_loaded', 'bhfe_hp_arm_fatal_catcher' );
+function bhfe_hp_arm_fatal_catcher() {
+    register_shutdown_function( function () {
+        $e = error_get_last();
+        if ( $e && in_array( $e['type'], array( E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_RECOVERABLE_ERROR ), true ) ) {
+            $user = function_exists( 'wp_get_current_user' ) && is_user_logged_in()
+                ? wp_get_current_user()->user_login : '(anonymous)';
+            update_option( 'bhfe_hp_last_fatal', array(
+                'time'    => gmdate( 'Y-m-d H:i:s' ) . ' UTC',
+                'message' => $e['message'],
+                'file'    => $e['file'],
+                'line'    => $e['line'],
+                'url'     => isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '',
+                'user'    => $user,
+            ), false );
+        }
+    } );
+}
+
+add_action( 'admin_post_bhfe_hp_clear_fatal', 'bhfe_hp_clear_fatal' );
+function bhfe_hp_clear_fatal() {
+    if ( ! current_user_can( 'manage_options' ) ) {
+        wp_die( 'Insufficient permissions.' );
+    }
+    check_admin_referer( 'bhfe_hp_clear_fatal' );
+    delete_option( 'bhfe_hp_last_fatal' );
+    wp_safe_redirect( add_query_arg( array( 'page' => 'bhfe-homepage' ), admin_url( 'options-general.php' ) ) );
+    exit;
+}
+
 /** Every mappable link: key => array( admin label, default URL ). */
 function bhfe_hp_link_fields() {
     return array(
@@ -237,6 +272,24 @@ function bhfe_hp_settings_page() {
     ?>
     <div class="wrap">
         <h1>BHFE Homepage &mdash; Find Your Courses links</h1>
+        <?php $fatal = get_option( 'bhfe_hp_last_fatal' );
+        if ( is_array( $fatal ) ) : ?>
+            <div class="notice notice-error" style="padding:12px 14px">
+                <p style="margin:0 0 8px"><strong>Last PHP fatal error captured on this site</strong> (recorded by the BHFE Homepage diagnostic):</p>
+                <table class="widefat striped" style="max-width:900px">
+                    <tr><td style="width:90px"><strong>When</strong></td><td><?php echo esc_html( $fatal['time'] ); ?></td></tr>
+                    <tr><td><strong>URL</strong></td><td><code><?php echo esc_html( $fatal['url'] ); ?></code></td></tr>
+                    <tr><td><strong>User</strong></td><td><?php echo esc_html( $fatal['user'] ); ?></td></tr>
+                    <tr><td><strong>Error</strong></td><td><code style="white-space:pre-wrap"><?php echo esc_html( $fatal['message'] ); ?></code></td></tr>
+                    <tr><td><strong>File</strong></td><td><code><?php echo esc_html( $fatal['file'] ); ?>:<?php echo (int) $fatal['line']; ?></code></td></tr>
+                </table>
+                <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin-top:8px">
+                    <input type="hidden" name="action" value="bhfe_hp_clear_fatal">
+                    <?php wp_nonce_field( 'bhfe_hp_clear_fatal' ); ?>
+                    <?php submit_button( 'Clear captured error', 'small', 'submit', false ); ?>
+                </form>
+            </div>
+        <?php endif; ?>
         <p>Where each link and button in the homepage &ldquo;Find Your Courses&rdquo; section goes.
            Leave a field empty to use the default (shown greyed out).
            Relative URLs like <code>/courses/</code> are recommended &mdash; they work unchanged on dev and production.</p>
