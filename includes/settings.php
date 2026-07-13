@@ -124,12 +124,116 @@ function bhfe_hp_sanitize_state_links( $input ) {
     return $clean;
 }
 
+/* ---------- CSV export / import ----------
+ * Format: section,name,url
+ *   link,<key>,<url>        e.g. link,cpa_all,/courses/all-cpa-courses/
+ *   cpa_state,<State>,<url> e.g. cpa_state,California,/courses/ca-ethics/
+ * Export writes EVERY row (empty url = no override, default in use), so the
+ * file doubles as a fill-in template. Import is authoritative for the rows it
+ * contains: a url sets that override, an empty url clears it; rows not in the
+ * file are left untouched; unknown names are counted and skipped. */
+
+add_action( 'admin_post_bhfe_hp_export_csv', 'bhfe_hp_export_csv' );
+function bhfe_hp_export_csv() {
+    if ( ! current_user_can( 'manage_options' ) ) {
+        wp_die( 'Insufficient permissions.' );
+    }
+    check_admin_referer( 'bhfe_hp_csv' );
+
+    $opts      = get_option( 'bhfe_hp_links', array() );
+    $state_map = get_option( 'bhfe_hp_cpa_state_links', array() );
+
+    header( 'Content-Type: text/csv; charset=utf-8' );
+    header( 'Content-Disposition: attachment; filename="bhfe-homepage-links-' . gmdate( 'Ymd' ) . '.csv"' );
+    $out = fopen( 'php://output', 'w' );
+    fputcsv( $out, array( 'section', 'name', 'url' ) );
+    foreach ( bhfe_hp_link_fields() as $key => $f ) {
+        fputcsv( $out, array( 'link', $key, isset( $opts[ $key ] ) ? $opts[ $key ] : '' ) );
+    }
+    foreach ( bhfe_hp_states() as $t ) {
+        fputcsv( $out, array( 'cpa_state', $t->name, isset( $state_map[ $t->term_id ] ) ? $state_map[ $t->term_id ] : '' ) );
+    }
+    fclose( $out );
+    exit;
+}
+
+add_action( 'admin_post_bhfe_hp_import_csv', 'bhfe_hp_import_csv' );
+function bhfe_hp_import_csv() {
+    if ( ! current_user_can( 'manage_options' ) ) {
+        wp_die( 'Insufficient permissions.' );
+    }
+    check_admin_referer( 'bhfe_hp_csv' );
+
+    $set = 0; $cleared = 0; $skipped = 0;
+    if ( empty( $_FILES['bhfe_hp_csv']['tmp_name'] ) || ! is_uploaded_file( $_FILES['bhfe_hp_csv']['tmp_name'] ) ) {
+        wp_safe_redirect( add_query_arg( array( 'page' => 'bhfe-homepage', 'bhfe_csv' => 'nofile' ), admin_url( 'options-general.php' ) ) );
+        exit;
+    }
+
+    $opts      = get_option( 'bhfe_hp_links', array() );
+    $state_map = get_option( 'bhfe_hp_cpa_state_links', array() );
+    $keys      = array_keys( bhfe_hp_link_fields() );
+    $by_name   = array();
+    foreach ( bhfe_hp_states() as $t ) {
+        $by_name[ strtolower( trim( $t->name ) ) ] = (int) $t->term_id;
+    }
+
+    $fh = fopen( $_FILES['bhfe_hp_csv']['tmp_name'], 'r' );
+    if ( $fh ) {
+        while ( ( $row = fgetcsv( $fh ) ) !== false ) {
+            $section = isset( $row[0] ) ? strtolower( trim( $row[0] ) ) : '';
+            $name    = isset( $row[1] ) ? trim( $row[1] ) : '';
+            $url     = isset( $row[2] ) ? trim( $row[2] ) : '';
+            if ( '' === $section || 'section' === $section ) { continue; } // blank / header row
+            if ( 'link' === $section && in_array( $name, $keys, true ) ) {
+                if ( '' === $url ) {
+                    if ( isset( $opts[ $name ] ) ) { unset( $opts[ $name ] ); $cleared++; }
+                    continue;
+                }
+                $clean = esc_url_raw( $url );
+                if ( '' !== $clean ) { $opts[ $name ] = $clean; $set++; } else { $skipped++; }
+            } elseif ( 'cpa_state' === $section && isset( $by_name[ strtolower( $name ) ] ) ) {
+                $tid = $by_name[ strtolower( $name ) ];
+                if ( '' === $url ) {
+                    if ( isset( $state_map[ $tid ] ) ) { unset( $state_map[ $tid ] ); $cleared++; }
+                    continue;
+                }
+                $clean = esc_url_raw( $url );
+                if ( '' !== $clean ) { $state_map[ $tid ] = $clean; $set++; } else { $skipped++; }
+            } else {
+                $skipped++;
+            }
+        }
+        fclose( $fh );
+    }
+
+    update_option( 'bhfe_hp_links', $opts );
+    update_option( 'bhfe_hp_cpa_state_links', $state_map );
+
+    wp_safe_redirect( add_query_arg( array(
+        'page'     => 'bhfe-homepage',
+        'bhfe_csv' => $set . '-' . $cleared . '-' . $skipped,
+    ), admin_url( 'options-general.php' ) ) );
+    exit;
+}
+
 function bhfe_hp_settings_page() {
     if ( ! current_user_can( 'manage_options' ) ) {
         return;
     }
     $opts      = get_option( 'bhfe_hp_links', array() );
     $state_map = get_option( 'bhfe_hp_cpa_state_links', array() );
+
+    if ( isset( $_GET['bhfe_csv'] ) ) {
+        $flag = sanitize_text_field( wp_unslash( $_GET['bhfe_csv'] ) );
+        if ( 'nofile' === $flag ) {
+            echo '<div class="notice notice-error"><p>Import failed: no CSV file was uploaded.</p></div>';
+        } elseif ( preg_match( '/^(\d+)-(\d+)-(\d+)$/', $flag, $m ) ) {
+            echo '<div class="notice notice-success is-dismissible"><p>CSV imported: '
+                . (int) $m[1] . ' override(s) set, ' . (int) $m[2] . ' cleared (back to default), '
+                . (int) $m[3] . ' row(s) skipped.</p></div>';
+        }
+    }
     ?>
     <div class="wrap">
         <h1>BHFE Homepage &mdash; Find Your Courses links</h1>
@@ -188,6 +292,24 @@ function bhfe_hp_settings_page() {
         </form>
         <p class="description">State overrides need JavaScript in the visitor&rsquo;s browser; with JS off the dropdown
             always submits to the shop filter, so both routes stay functional.</p>
+
+        <hr>
+        <h2>Export / import CSV</h2>
+        <p>Export downloads every mapping above as a CSV (<code>section,name,url</code>) &mdash; rows with an
+           empty <code>url</code> are using the default, so the file doubles as a template: fill in the
+           <code>url</code> column and import it back. Importing sets the rows in the file (empty
+           <code>url</code> = back to default) and leaves rows not in the file untouched.</p>
+        <form method="get" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="display:inline-block;margin-right:24px">
+            <input type="hidden" name="action" value="bhfe_hp_export_csv">
+            <?php wp_nonce_field( 'bhfe_hp_csv' ); ?>
+            <?php submit_button( 'Export CSV', 'secondary', 'submit', false ); ?>
+        </form>
+        <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" enctype="multipart/form-data" style="display:inline-block">
+            <input type="hidden" name="action" value="bhfe_hp_import_csv">
+            <?php wp_nonce_field( 'bhfe_hp_csv' ); ?>
+            <input type="file" name="bhfe_hp_csv" accept=".csv,text/csv" required>
+            <?php submit_button( 'Import CSV', 'secondary', 'submit', false ); ?>
+        </form>
     </div>
     <?php
 }
